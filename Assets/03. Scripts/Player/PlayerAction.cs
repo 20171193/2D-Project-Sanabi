@@ -1,10 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
+using Unity.Burst.Intrinsics;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Animations;
 using UnityEngine.InputSystem;
+using static UnityEditor.PlayerSettings.SplashScreen;
+
 public class PlayerAction : MonoBehaviour
 {
     [Header("Components")]
@@ -22,6 +25,9 @@ public class PlayerAction : MonoBehaviour
 
     [SerializeField]
     private Camera mainCamera;
+
+    [SerializeField]
+    private GameObject arm;
 
     [SerializeField]
     private GameObject cursorOB;
@@ -78,6 +84,10 @@ public class PlayerAction : MonoBehaviour
     [Space(3)]
     [Header("Ballancing")]
     [Space(2)]
+
+    [SerializeField]
+    RaycastHit2D ropeHit;
+
     // 로프 액션 조인트되어있는 상태인지 체크
     [SerializeField]
     private bool isJointed = false;
@@ -199,8 +209,10 @@ public class PlayerAction : MonoBehaviour
     private void OnMousePos(InputValue value)
     {
         mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+
         // 마우스 커서 이동
         cursorOB.transform.position = new Vector3(mousePos.x, mousePos.y, 0);
+        RopeRayCast();
         Debug.Log(mousePos);
     }
     private void OnMouseClick(InputValue value)
@@ -208,13 +220,46 @@ public class PlayerAction : MonoBehaviour
         RopeShoot();
     }
 
-    private void RopeShoot()
+    private void RopeRayCast()
     {
         Vector2 rayDir = (mousePos - transform.position).normalized;
-        RaycastHit2D hit = Physics2D.Raycast(transform.position, rayDir, 100f, ropeInteractableLM);
-        
-    }
+        ropeHit = Physics2D.Raycast(transform.position, rayDir, 100f, ropeInteractableLM);
 
+        if (ropeHit)
+        { 
+            Debug.Log("hit!");
+            lr.positionCount = 2;
+            lr.SetPosition(0, this.transform.position);
+            lr.SetPosition(1, ropeHit.point);
+            DrawDummyRope();
+        }
+        else
+        {
+            lr.positionCount = 0;
+        }
+    }
+    private void DrawDummyRope()
+    {
+
+    }
+    private void RopeShoot()
+    {
+        if(ropeHit)
+        {
+            GameObject hitObj = ropeHit.transform.gameObject;
+            DistanceJoint2D distJoint = hitObj.AddComponent<DistanceJoint2D>();
+            distJoint.autoConfigureConnectedAnchor = false;
+            distJoint.autoConfigureDistance = false;
+            distJoint.distance = 5;
+            distJoint.connectedAnchor = ropeHit.point;
+            distJoint.connectedBody = rigid;
+            //DrawRope();
+        }
+    }
+    private void DrawRope()
+    {
+
+    }
     #endregion
 
     #region Collision Callback
