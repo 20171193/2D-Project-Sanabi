@@ -792,11 +792,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rigid: {fileID: 1942553670}
-  spRenderer: {fileID: 1105458391}
   anim: {fileID: 1942553671}
   movePower: 25
   maxMoveSpeed: 8
   jumpPower: 15
+  MoveForce_Threshold: 0.1
+  JumpForce_Threshold: 0.01
+  groundLM:
+    serializedVersion: 2
+    m_Bits: 0
+  isJointed: 1
+  isGround: 0
   hztBrakePower: 10
   vtcBrakePower: 0
   moveHzt: 0

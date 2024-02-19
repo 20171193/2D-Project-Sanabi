@@ -9,11 +9,13 @@ public struct Transition
 {
     public string end;
     public Func<bool> condition;
+    public float exitTime;  // animation Has Exit Time
 
-    public Transition(string end, Func<bool> condition)
+    public Transition(string end, Func<bool> condition, float exitTime)
     {
         this.end = end;
         this.condition = condition;
+        this.exitTime = exitTime;
     }
 }
 public class BaseState

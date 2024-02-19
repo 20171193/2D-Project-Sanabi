@@ -3,16 +3,20 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class StateMachine
+public class StateMachine<TOwner>
 {
+    private TOwner owner;
+    public TOwner Owner { get { return owner; } }
+
     private string curState;
     public string CurState { get { return curState; } }
 
     private Dictionary<string, BaseState> stateDic;
     private List<Transition> anyStateTransition;
 
-    public StateMachine()
+    public StateMachine(TOwner owner)
     {
+        this.owner = owner;
         stateDic = new Dictionary<string, BaseState>();
         anyStateTransition = new List<Transition>();
     }
@@ -26,13 +30,13 @@ public class StateMachine
     // 어떤 상태에서든 전이 가능
     public void AddAnyState(string key, Func<bool> condition)
     {
-        anyStateTransition.Add(new Transition(key, condition));
+        anyStateTransition.Add(new Transition(key, condition, 0f));
     }
 
     // 트랜지션 추가
-    public void AddTransition(string start, string end, Func<bool> condition)
+    public void AddTransition(string start, string end, float exitTime, Func<bool> condition)
     {
-        stateDic[start].Transitions.Add(new Transition(end, condition));
+        stateDic[start].Transitions.Add(new Transition(end, condition, exitTime));
     }
 
     // 초기 상태 지정
@@ -61,7 +65,7 @@ public class StateMachine
             if (transition.condition())
             {
                 Debug.Log("AnyState Change : " + transition.end);
-                ChangeState(transition.end);
+                Manager.Coroutine.StartCoroutine(HasExitTime(transition));
                 return;
             }
         }
@@ -72,19 +76,24 @@ public class StateMachine
             if (transition.condition())
             {
                 Debug.Log("Transitions Change : " + transition.end);
-                ChangeState(transition.end);
+                Manager.Coroutine.StartCoroutine(HasExitTime(transition));
                 return;
             }
         }
     }
-
     public void LateUpdate()
     {
         stateDic[curState].LateUpdate();
     }
-
     public void FixedUpdate()
     {
         stateDic[curState].FixedUpdate();
+    }
+
+    IEnumerator HasExitTime(Transition transition)
+    {
+        yield return new WaitForSeconds(transition.exitTime);
+        Debug.Log("Done HasExitTime Coroutine");
+        ChangeState(transition.end);
     }
 }
