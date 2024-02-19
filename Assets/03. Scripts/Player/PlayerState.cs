@@ -102,11 +102,21 @@ public class PlayerJump : PlayerBaseState
         owner.Anim.Play("Jump");
     }
 
-    public override void Update()
+    public override void FixedUpdate()
     {
-        
+        FlyMoveMent();
     }
+    private void FlyMoveMent()
+    {
+        // 캐릭터 회전
+        if (owner.MoveHzt > 0)
+            owner.transform.rotation = Quaternion.Euler(0, 0, 0);
+        else if (owner.MoveHzt < 0)
+            owner.transform.rotation = Quaternion.Euler(0, -180, 0);
 
+        // 실제 이동
+        owner.Rigid.AddForce(Vector2.right * owner.MoveHzt * owner.FlyMovePower);
+    }
 }
 
 public class PlayerFall : PlayerBaseState
@@ -121,8 +131,19 @@ public class PlayerFall : PlayerBaseState
         owner.Anim.Play("Fall");
     }
 
-    public override void Update()
+    public override void FixedUpdate()
     {
-        
+        FlyMoveMent();
+    }
+    private void FlyMoveMent()
+    {
+        // 캐릭터 회전
+        if (owner.MoveHzt > 0)
+            owner.transform.rotation = Quaternion.Euler(0, 0, 0);
+        else if (owner.MoveHzt < 0)
+            owner.transform.rotation = Quaternion.Euler(0, -180, 0);
+
+        // 실제 이동
+        owner.Rigid.AddForce(Vector2.right * owner.MoveHzt * owner.FlyMovePower);
     }
 }
