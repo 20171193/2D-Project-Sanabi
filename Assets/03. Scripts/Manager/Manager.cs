@@ -1,12 +1,18 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.Build.Content;
 using UnityEngine;
 
 public class Manager : MonoBehaviour
 {
     #region 싱글턴 메서드
     private static Manager instance = null;
-    [SerializeField] CoroutineManager coroutineManager;
+    [SerializeField]
+    private CoroutineManager coroutineManager;
+    [SerializeField]
+    private GameManager gameManager;
+
+    public static GameManager Game { get { return instance.gameManager; } }
     public static CoroutineManager Coroutine { get { return instance.coroutineManager; } }
    
 

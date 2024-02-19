@@ -17,6 +17,15 @@ public class PlayerAction : MonoBehaviour
     private Animator anim;
     public Animator Anim { get { return anim; } }
 
+    [SerializeField]
+    private LineRenderer lr;
+
+    [SerializeField]
+    private Camera mainCamera;
+
+    [SerializeField]
+    private GameObject cursorOB;
+
     [Space(3)]
     [Header("Specs")]
     [Space(2)]
@@ -26,9 +35,12 @@ public class PlayerAction : MonoBehaviour
     public float MovePower { get { return movePower; } }
 
     [SerializeField]
+    private float flyMovePower;
+    public float FlyMovePower { get { return flyMovePower; } }
+
+    [SerializeField]
     private float maxMoveSpeed;
     public float MaxMoveSpeed { get { return maxMoveSpeed; } }
-
 
     [SerializeField]
     private float jumpPower;
@@ -57,6 +69,10 @@ public class PlayerAction : MonoBehaviour
     [SerializeField]
     private LayerMask groundLM;
     public LayerMask GroundLM { get { return groundLM; } }
+
+    [SerializeField]
+    private LayerMask ropeInteractableLM;
+    public LayerMask RopeInteractableLM { get { return ropeInteractableLM; } }
 
 
     [Space(3)]
@@ -93,8 +109,13 @@ public class PlayerAction : MonoBehaviour
     [SerializeField]
     private float inputJumpPower;
 
+    [SerializeField]
+    private Vector3 mousePos;
+
     private void Awake()
     {
+        mainCamera = Camera.main;
+        lr = GetComponent<LineRenderer>();
         rigid = GetComponent<Rigidbody2D>();
         fsm = new StateMachine<PlayerAction>(this);
 
@@ -165,7 +186,6 @@ public class PlayerAction : MonoBehaviour
         moveHzt = value.Get<Vector2>().x;
         moveVtc = value.Get<Vector2>().y;
     }
-
     private void OnJump(InputValue value)
     {
         if(isGround)
@@ -175,6 +195,26 @@ public class PlayerAction : MonoBehaviour
     {
         rigid.velocity = new Vector2(rigid.velocity.x, rigid.velocity.y + jumpPower);
     }
+
+    private void OnMousePos(InputValue value)
+    {
+        mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        // 마우스 커서 이동
+        cursorOB.transform.position = new Vector3(mousePos.x, mousePos.y, 0);
+        Debug.Log(mousePos);
+    }
+    private void OnMouseClick(InputValue value)
+    {
+        RopeShoot();
+    }
+
+    private void RopeShoot()
+    {
+        Vector2 rayDir = (mousePos - transform.position).normalized;
+        RaycastHit2D hit = Physics2D.Raycast(transform.position, rayDir, 100f, ropeInteractableLM);
+        
+    }
+
     #endregion
 
     #region Collision Callback
