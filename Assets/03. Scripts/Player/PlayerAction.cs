@@ -103,11 +103,11 @@ public class PlayerAction : MonoBehaviour
 
     [SerializeField]
     private GameObject jointedOB;
+    public GameObject JointedOB { get { return jointedOB; } set { jointedOB = value; } }
 
     private void Awake()
     {
         mainCamera = Camera.main;
-        lr = GetComponent<LineRenderer>();
         rigid = GetComponent<Rigidbody2D>();
         fsm = new StateMachine<PlayerAction>(this);
 

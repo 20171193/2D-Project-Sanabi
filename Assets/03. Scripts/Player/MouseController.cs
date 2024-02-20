@@ -19,10 +19,15 @@ public class MouseController : MonoBehaviour
     [SerializeField]
     private LineRenderer lr;
 
+    [SerializeField]
+    private Material[] dummyRopeMt;
+    [SerializeField]
+    private Material[] realRopeMt;
 
     [Space(3)]
     [Header("Layer")]
     [Space(2)]
+    [SerializeField]
     private LayerMask ropeInteractableLM;
 
     [Space(3)]
@@ -32,8 +37,6 @@ public class MouseController : MonoBehaviour
     private Vector3 mousePos;
     [SerializeField]
     private RaycastHit2D hookHit;
-    [SerializeField]
-    private GameObject jointedOb;
 
 
     private void Awake()
@@ -45,12 +48,31 @@ public class MouseController : MonoBehaviour
 
         if (lr == null)
             lr = GetComponent<LineRenderer>();
+
+        cursorOb = Instantiate(cursorOb, transform.position, Quaternion.identity);
     }
 
 
     private void Update()
     {
-        
+        if (lr.positionCount > 0)
+            DrawRope();
+    }
+    private void DrawRope()
+    {
+        lr.SetPosition(0, hookPos.position);
+        // Draw Real Rope
+        if (prAction.IsJointed)
+        {
+            lr.materials = realRopeMt;
+            lr.SetPosition(1, prAction.JointedOB.GetComponent<Hook>().HookingPos.position);
+        }
+        // Draw Dummy Rope
+        else
+        {
+            lr.materials = dummyRopeMt;
+            lr.SetPosition(1, hookHit.point);
+        }
     }
 
     #region Mouse / Rope Action
@@ -79,42 +101,27 @@ public class MouseController : MonoBehaviour
 
         if (hookHit)
         {
-            //Debug.Log("hit!");
             lr.positionCount = 2;
-            lr.SetPosition(0, this.transform.position);
-            lr.SetPosition(1, hookHit.point);
-            DrawDummyRope();
         }
         else
         {
-            //Debug.Log("not hit");
             lr.positionCount = 0;
         }
     }
-
     private void OnMouseClick(InputValue value)
     {
         if (!prAction.IsJointed)
             RopeShoot();
     }
-    private void DrawDummyRope()
-    {
-
-    }
     private void RopeShoot()
     {
         if (hookHit)
         {
-            jointedOb = Instantiate(hookOb, hookHit.point, Quaternion.identity);    // Instantiate Hook Object
-            DistanceJoint2D distJoint = jointedOb.GetComponent<DistanceJoint2D>();  
+            prAction.JointedOB = Instantiate(hookOb, hookHit.point + hookHit.normal*0.5f, Quaternion.identity);    // Instantiate Hook Object
+            DistanceJoint2D distJoint = prAction.JointedOB.GetComponent<DistanceJoint2D>();  
             distJoint.connectedBody = owner.GetComponent<Rigidbody2D>();            // Connect joint to Player
             prAction.IsJointed = true;
-            DrawRope();
         }
-    }
-    private void DrawRope()
-    {
-
     }
     #endregion
 
