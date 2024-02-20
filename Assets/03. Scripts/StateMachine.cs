@@ -62,7 +62,7 @@ public class StateMachine<TOwner>
         // AnyState »Æ¿Œ
         foreach (var transition in anyStateTransition)
         {
-            if (transition.condition())
+            if (transition.condition() && transition.end != curState)
             {
                 Debug.Log("AnyState Change : " + transition.end);
                 Manager.Coroutine.StartCoroutine(HasExitTime(transition));

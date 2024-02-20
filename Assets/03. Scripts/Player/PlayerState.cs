@@ -8,7 +8,7 @@ public class PlayerBaseState : BaseState
     protected PlayerAction owner;
     
 }
-
+#region Idle
 public class PlayerIdle : PlayerBaseState
 {
     public PlayerIdle(PlayerAction owner)
@@ -21,7 +21,9 @@ public class PlayerIdle : PlayerBaseState
         owner.Anim.Play("Idle");
     }
 }
+#endregion
 
+#region Run
 public class PlayerRun : PlayerBaseState
 {
     public PlayerRun(PlayerAction owner)
@@ -60,7 +62,6 @@ public class PlayerRun : PlayerBaseState
         owner.Anim.SetFloat("MovePower", 0);
     }
 }
-
 public class PlayerRunStop : PlayerBaseState
 {
 
@@ -88,7 +89,9 @@ public class PlayerRunStop : PlayerBaseState
             owner.Rigid.AddForce(Vector2.right * owner.HztBrakePower);
     }
 }
+#endregion
 
+#region Jump / Fall
 public class PlayerJump : PlayerBaseState
 {
     public PlayerJump(PlayerAction owner)
@@ -106,19 +109,25 @@ public class PlayerJump : PlayerBaseState
     {
         FlyMoveMent();
     }
-    private void FlyMoveMent()
+    public override void Update()
+    {
+        Rotation();
+    }
+    private void Rotation()
     {
         // 캐릭터 회전
         if (owner.MoveHzt > 0)
             owner.transform.rotation = Quaternion.Euler(0, 0, 0);
         else if (owner.MoveHzt < 0)
             owner.transform.rotation = Quaternion.Euler(0, -180, 0);
+    }
 
+    private void FlyMoveMent()
+    {
         // 실제 이동
         owner.Rigid.AddForce(Vector2.right * owner.MoveHzt * owner.FlyMovePower);
     }
 }
-
 public class PlayerFall : PlayerBaseState
 {
     public PlayerFall(PlayerAction owner)
@@ -135,15 +144,59 @@ public class PlayerFall : PlayerBaseState
     {
         FlyMoveMent();
     }
-    private void FlyMoveMent()
+
+    public override void Update()
+    {
+        Rotation();
+    }
+    private void Rotation()
     {
         // 캐릭터 회전
         if (owner.MoveHzt > 0)
             owner.transform.rotation = Quaternion.Euler(0, 0, 0);
         else if (owner.MoveHzt < 0)
             owner.transform.rotation = Quaternion.Euler(0, -180, 0);
-
+    }
+    private void FlyMoveMent()
+    {
         // 실제 이동
         owner.Rigid.AddForce(Vector2.right * owner.MoveHzt * owner.FlyMovePower);
     }
 }
+#endregion
+
+#region RopeAction
+public class PlayerRope : PlayerBaseState
+{
+    public PlayerRope(PlayerAction owner)
+    {
+        this.owner = owner;
+    }
+
+    public override void Enter()
+    {
+    }
+    public override void FixedUpdate()
+    {
+        RopeMoveMent();
+    }
+    public override void Update()
+    {
+        Rotation();
+    }
+    private void Rotation()
+    {
+        // 캐릭터 회전
+        if (owner.MoveHzt > 0)
+            owner.transform.rotation = Quaternion.Euler(0, 0, 0);
+        else if (owner.MoveHzt < 0)
+            owner.transform.rotation = Quaternion.Euler(0, -180, 0);
+    }
+    private void RopeMoveMent()
+    {
+        // 실제 이동
+        owner.Rigid.AddForce(Vector2.right * owner.MoveHzt * owner.RopeMovePower);
+    }
+}
+
+#endregion
