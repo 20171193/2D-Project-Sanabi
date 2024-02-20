@@ -1,10 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
+using Unity.Burst.Intrinsics;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Animations;
 using UnityEngine.InputSystem;
+using static UnityEditor.PlayerSettings.SplashScreen;
+
 public class PlayerAction : MonoBehaviour
 {
     [Header("Components")]
@@ -12,19 +15,11 @@ public class PlayerAction : MonoBehaviour
     [SerializeField]
     private Rigidbody2D rigid;
     public Rigidbody2D Rigid { get { return rigid; } }
-
     [SerializeField]
     private Animator anim;
     public Animator Anim { get { return anim; } }
-
-    [SerializeField]
-    private LineRenderer lr;
-
     [SerializeField]
     private Camera mainCamera;
-
-    [SerializeField]
-    private GameObject cursorOB;
 
     [Space(3)]
     [Header("Specs")]
@@ -39,6 +34,14 @@ public class PlayerAction : MonoBehaviour
     public float FlyMovePower { get { return flyMovePower; } }
 
     [SerializeField]
+    private float ropeMovePower;
+    public float RopeMovePower { get { return ropeMovePower; } }
+
+    [SerializeField]
+    private float ropeAccelerationPower; 
+    public float RopeAccelerationPower { get { return ropeAccelerationPower; } }
+
+    [SerializeField]
     private float maxMoveSpeed;
     public float MaxMoveSpeed { get { return maxMoveSpeed; } }
 
@@ -47,11 +50,9 @@ public class PlayerAction : MonoBehaviour
     public float JumpPower { get { return jumpPower; } }
 
 
-    // 수평이동 힘 임계치
     [ReadOnly(true)]
     public float MoveForce_Threshold = 0.1f;
 
-    // 수직이동 힘 임계치
     [ReadOnly(true)]
     public float JumpForce_Threshold = 0.05f;
 
@@ -60,62 +61,53 @@ public class PlayerAction : MonoBehaviour
     [Header("FSM")]
     [Space(2)]
     [SerializeField]
-    private StateMachine<PlayerAction> fsm;
+    private StateMachine<PlayerAction> fsm; // Player finite state machine
     public StateMachine<PlayerAction> FSM { get { return fsm; } }
 
     [Space(3)]
     [Header("Layer")]
     [Space(2)]
     [SerializeField]
-    private LayerMask groundLM;
+    private LayerMask groundLM; // ground check layermask
     public LayerMask GroundLM { get { return groundLM; } }
-
-    [SerializeField]
-    private LayerMask ropeInteractableLM;
-    public LayerMask RopeInteractableLM { get { return ropeInteractableLM; } }
-
 
     [Space(3)]
     [Header("Ballancing")]
     [Space(2)]
-    // 로프 액션 조인트되어있는 상태인지 체크
     [SerializeField]
-    private bool isJointed = false;
-    public bool IsJointed { get { return isJointed; } }
+    private bool isJointed = false; 
+    public bool IsJointed { get { return isJointed; } set { isJointed = value; } }
 
     [SerializeField]
-    private bool isGround;
+    private bool isGround; 
     public bool IsGround { get { return isGround; } }
 
-
-    // 좌우 정지력
     [SerializeField]
-    private float hztBrakePower;
+    private float hztBrakePower;    // horizontal movement brake force
     public float HztBrakePower { get { return hztBrakePower; } }
 
-    // 상하 정지력
     [SerializeField]
-    private float vtcBrakePower;
+    private float vtcBrakePower;    // vertical movement brake force
     public float VtcBrakePower { get { return vtcBrakePower; } }
 
     [SerializeField]
-    private float moveHzt;
+    private float moveHzt;  // Keyboard input - 'A', 'D'
     public float MoveHzt { get { return moveHzt; } }
 
     [SerializeField]
-    private float moveVtc;
+    private float moveVtc;  // Keyboard input - 'W', 'S'
     public float MoveVtc { get { return moveVtc; } }
 
     [SerializeField]
-    private float inputJumpPower;
+    private float inputJumpPower;   
 
     [SerializeField]
-    private Vector3 mousePos;
+    private GameObject jointedOB;
+    public GameObject JointedOB { get { return jointedOB; } set { jointedOB = value; } }
 
     private void Awake()
     {
         mainCamera = Camera.main;
-        lr = GetComponent<LineRenderer>();
         rigid = GetComponent<Rigidbody2D>();
         fsm = new StateMachine<PlayerAction>(this);
 
@@ -124,28 +116,29 @@ public class PlayerAction : MonoBehaviour
         fsm.AddState("RunStop", new PlayerRunStop(this));
         fsm.AddState("Fall", new PlayerFall(this));
         fsm.AddState("Jump", new PlayerJump(this));
+        fsm.AddState("Rope", new PlayerRope(this));
 
         fsm.AddAnyState("Jump", () =>
         {
             return !isGround && !isJointed && rigid.velocity.y > JumpForce_Threshold;
         });
-
         fsm.AddAnyState("Fall", () =>
         {
             return !isGround && !isJointed && rigid.velocity.y < -JumpForce_Threshold;
         });
-        fsm.AddTransition("Fall", "Idle",0f, () =>
+        fsm.AddAnyState("Rope", () =>
+        {
+            return isJointed;
+        });
+
+        fsm.AddTransition("Fall", "Idle", 0f, () =>
         {
             return isGround;
         });
-
-
-        
         // 입력을 받은 경우 Idle -> Run 상태
         // 입력이 없는 경우 Run -> RunStop 
         // 바로 입력을 받은 경우 Run -> RunStop
         //  멈춘 경우 RunStop -> Idle 
-
         fsm.AddTransition("Idle", "Run", 0f, () =>
         {
             return Mathf.Abs(moveHzt) > MoveForce_Threshold;
@@ -181,6 +174,8 @@ public class PlayerAction : MonoBehaviour
     }
 
     #region Input Action
+
+    #region Normal Movement
     private void OnMove(InputValue value)
     {
         moveHzt = value.Get<Vector2>().x;
@@ -188,32 +183,36 @@ public class PlayerAction : MonoBehaviour
     }
     private void OnJump(InputValue value)
     {
-        if(isGround)
+        if(isGround || isJointed)
             Jump();
     }
     private void Jump()
     {
+        if (isJointed)
+        {
+            Destroy(jointedOB);
+            isJointed = false;
+        }
+
         rigid.velocity = new Vector2(rigid.velocity.x, rigid.velocity.y + jumpPower);
     }
+    #endregion
 
-    private void OnMousePos(InputValue value)
+    #region Skills
+    private void OnRopeForce(InputValue value)
     {
-        mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        // 마우스 커서 이동
-        cursorOB.transform.position = new Vector3(mousePos.x, mousePos.y, 0);
-        Debug.Log(mousePos);
+        if (isJointed)
+            RopeForce();
     }
-    private void OnMouseClick(InputValue value)
+    private void RopeForce()
     {
-        RopeShoot();
+        // 강한 반동 적용
+        // 잔상 등 이펙트 추가
+        Debug.Log("RopeForce! : " + rigid.transform.forward);
+        Vector2 forceDir = transform.rotation.y == 0 ? Vector2.right : Vector2.left;
+        rigid.AddForce(ropeAccelerationPower * forceDir, ForceMode2D.Impulse);
     }
-
-    private void RopeShoot()
-    {
-        Vector2 rayDir = (mousePos - transform.position).normalized;
-        RaycastHit2D hit = Physics2D.Raycast(transform.position, rayDir, 100f, ropeInteractableLM);
-        
-    }
+    #endregion
 
     #endregion
 
