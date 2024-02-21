@@ -5,6 +5,7 @@ using Unity.Burst.Intrinsics;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Animations;
+using UnityEngine.Events;
 using UnityEngine.InputSystem;
 using static UnityEditor.PlayerSettings.SplashScreen;
 
@@ -56,6 +57,10 @@ public class PlayerAction : MonoBehaviour
     [ReadOnly(true)]
     public float JumpForce_Threshold = 0.05f;
 
+    [Space(3)]
+    [Header("Event")]
+    [Space(2)]
+    public UnityAction OnHookEnd;
 
     [Space(3)]
     [Header("FSM")]
@@ -116,7 +121,7 @@ public class PlayerAction : MonoBehaviour
         fsm.AddState("RunStop", new PlayerRunStop(this));
         fsm.AddState("Fall", new PlayerFall(this));
         fsm.AddState("Jump", new PlayerJump(this));
-        fsm.AddState("Rope", new PlayerRope(this));
+        fsm.AddState("Roping", new PlayerRoping(this));
 
         fsm.AddAnyState("Jump", () =>
         {
@@ -126,11 +131,10 @@ public class PlayerAction : MonoBehaviour
         {
             return !isGround && !isJointed && rigid.velocity.y < -JumpForce_Threshold;
         });
-        fsm.AddAnyState("Rope", () =>
+        fsm.AddAnyState("Roping", () =>
         {
             return isJointed;
         });
-
         fsm.AddTransition("Fall", "Idle", 0f, () =>
         {
             return isGround;
@@ -183,18 +187,19 @@ public class PlayerAction : MonoBehaviour
     }
     private void OnJump(InputValue value)
     {
-        if(isGround || isJointed)
+        if (isGround)
             Jump();
+        else if (isJointed)
+            RopeJump();
     }
     private void Jump()
     {
-        if (isJointed)
-        {
-            Destroy(jointedOB);
-            isJointed = false;
-        }
-
         rigid.velocity = new Vector2(rigid.velocity.x, rigid.velocity.y + jumpPower);
+    }
+    private void RopeJump()
+    {
+        OnHookEnd?.Invoke();
+        rigid.AddForce(rigid.velocity.normalized * rigid.velocity.magnitude, ForceMode2D.Impulse);
     }
     #endregion
 

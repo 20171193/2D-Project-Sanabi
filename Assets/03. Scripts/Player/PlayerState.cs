@@ -166,24 +166,29 @@ public class PlayerFall : PlayerBaseState
 #endregion
 
 #region RopeAction
-public class PlayerRope : PlayerBaseState
+public class PlayerRoping : PlayerBaseState
 {
-    public PlayerRope(PlayerAction owner)
+    public PlayerRoping(PlayerAction owner)
     {
         this.owner = owner;
     }
 
     public override void Enter()
     {
+        owner.Anim.Play("RopeAction");
     }
+
     public override void FixedUpdate()
     {
         RopeMoveMent();
     }
+
     public override void Update()
     {
         Rotation();
+        //owner.Anim.SetFloat("RopeMovingPower", Mathf.Abs(owner.Rigid.velocity.magnitude));
     }
+
     private void Rotation()
     {
         // 캐릭터 회전
@@ -192,6 +197,7 @@ public class PlayerRope : PlayerBaseState
         else if (owner.MoveHzt < 0)
             owner.transform.rotation = Quaternion.Euler(0, -180, 0);
     }
+
     private void RopeMoveMent()
     {
         // 실제 이동
