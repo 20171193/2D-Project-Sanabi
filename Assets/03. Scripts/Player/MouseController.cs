@@ -12,6 +12,8 @@ public class MouseController : MonoBehaviour
     private PlayerAction prAction;
     [SerializeField]
     private GameObject hookOb;
+    private Hook hook;
+
     [SerializeField]
     private GameObject cursorOb;
     [SerializeField]
@@ -38,6 +40,9 @@ public class MouseController : MonoBehaviour
     [SerializeField]
     private RaycastHit2D hookHit;
 
+    [SerializeField]
+    private GameObject dummyHook;
+
 
     private void Awake()
     {
@@ -45,6 +50,7 @@ public class MouseController : MonoBehaviour
             owner = GameObject.FindWithTag("Player");
 
         prAction = owner.GetComponent<PlayerAction>();
+        //hook = hookOb.GetComponent<Hook>(); 
 
         if (lr == null)
             lr = GetComponent<LineRenderer>();
@@ -61,18 +67,7 @@ public class MouseController : MonoBehaviour
     private void DrawRope()
     {
         lr.SetPosition(0, hookPos.position);
-        // Draw Real Rope
-        if (prAction.IsJointed)
-        {
-            lr.materials = realRopeMt;
-            lr.SetPosition(1, prAction.JointedOB.GetComponent<Hook>().HookingPos.position);
-        }
-        // Draw Dummy Rope
-        else
-        {
-            lr.materials = dummyRopeMt;
-            lr.SetPosition(1, hookHit.point);
-        }
+        lr.SetPosition(1, hookHit.point);
     }
 
     #region Mouse / Rope Action
@@ -100,29 +95,32 @@ public class MouseController : MonoBehaviour
         hookHit = Physics2D.Raycast(transform.position, rayDir, 100f, ropeInteractableLM);
 
         if (hookHit)
-        {
             lr.positionCount = 2;
-        }
         else
-        {
             lr.positionCount = 0;
-        }
+        
     }
     private void OnMouseClick(InputValue value)
     {
-        if (!prAction.IsJointed)
+        if (!prAction.IsJointed && hookHit)
             RopeShoot();
     }
     private void RopeShoot()
     {
-        if (hookHit)
-        {
-            prAction.JointedOB = Instantiate(hookOb, hookHit.point + hookHit.normal*0.5f, Quaternion.identity);    // Instantiate Hook Object
-            DistanceJoint2D distJoint = prAction.JointedOB.GetComponent<DistanceJoint2D>();  
-            distJoint.connectedBody = owner.GetComponent<Rigidbody2D>();            // Connect joint to Player
-            prAction.IsJointed = true;
-        }
+        GameObject hook = Instantiate(dummyHook, transform.position, Quaternion.identity);
+        Rigidbody2D rd = hook.AddComponent<Rigidbody2D>();
+        rd.gravityScale = 0;
+
+        Vector3 dist = new Vector3(hookHit.point.x - prAction.Rigid.transform.position.x, hookHit.point.y - prAction.Rigid.transform.position.y, 0);
+        float zRot = Mathf.Atan2(dist.y, dist.x) * Mathf.Rad2Deg;
+
+        // È¸Àü
+        rd.transform.rotation = Quaternion.Euler(0, 0, zRot-90f);  
+        // ½¸
+        rd.AddForce(dist.normalized * 1000f, ForceMode2D.Impulse);
+        Destroy(hook, 2.0f);
     }
+
     #endregion
 
 }
