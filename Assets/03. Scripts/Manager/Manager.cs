@@ -8,12 +8,15 @@ public class Manager : MonoBehaviour
     #region 싱글턴 메서드
     private static Manager instance = null;
     [SerializeField]
+    private GameManager gameManager;
+    [SerializeField]
     private CoroutineManager coroutineManager;
     [SerializeField]
-    private GameManager gameManager;
+    private LayerManager layerManager;
 
     public static GameManager Game { get { return instance.gameManager; } }
     public static CoroutineManager Coroutine { get { return instance.coroutineManager; } }
+    public static LayerManager Layer { get { return instance.layerManager; }} 
    
 
     private void Awake()

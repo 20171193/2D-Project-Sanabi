@@ -66,10 +66,10 @@ AnimatorStateMachine:
     m_Position: {x: 210, y: 260, z: 0}
   - serializedVersion: 1
     m_State: {fileID: -2646549997243803514}
-    m_Position: {x: 160, y: -10, z: 0}
+    m_Position: {x: 150, y: -30, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 6242121234020520707}
-    m_Position: {x: 160, y: -90, z: 0}
+    m_Position: {x: 150, y: -80, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 6773274502080452179}
     m_Position: {x: -20, y: 260, z: 0}
@@ -82,14 +82,17 @@ AnimatorStateMachine:
   - serializedVersion: 1
     m_State: {fileID: 4156351752131662285}
     m_Position: {x: 450, y: 80, z: 0}
+  - serializedVersion: 1
+    m_State: {fileID: 2594708125498466763}
+    m_Position: {x: -240, y: 180, z: 0}
   m_ChildStateMachines: []
   m_AnyStateTransitions: []
   m_EntryTransitions: []
   m_StateMachineTransitions: {}
   m_StateMachineBehaviours: []
-  m_AnyStatePosition: {x: -80, y: -50, z: 0}
+  m_AnyStatePosition: {x: -30, y: -50, z: 0}
   m_EntryPosition: {x: -190, y: 100, z: 0}
-  m_ExitPosition: {x: 410, y: -40, z: 0}
+  m_ExitPosition: {x: 370, y: -40, z: 0}
   m_ParentStateMachinePosition: {x: 800, y: 20, z: 0}
   m_DefaultState: {fileID: 7859758130169085441}
 --- !u!1102 &-2646549997243803514
@@ -132,25 +135,25 @@ AnimatorController:
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
-    m_Controller: {fileID: 0}
+    m_Controller: {fileID: 9100000}
   - m_Name: RopeMovingPower
     m_Type: 1
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
-    m_Controller: {fileID: 0}
+    m_Controller: {fileID: 9100000}
   - m_Name: ySpeed
     m_Type: 1
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
-    m_Controller: {fileID: 0}
+    m_Controller: {fileID: 9100000}
   - m_Name: IsGround
     m_Type: 4
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
-    m_Controller: {fileID: 0}
+    m_Controller: {fileID: 9100000}
   m_AnimatorLayers:
   - serializedVersion: 5
     m_Name: Base Layer
@@ -171,8 +174,8 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: RopeIdle
-  m_Speed: 1
+  m_Name: RopeJump
+  m_Speed: 0.3
   m_CycleOffset: 0
   m_Transitions: []
   m_StateMachineBehaviours: []
@@ -216,6 +219,32 @@ AnimatorState:
   m_MirrorParameter: 
   m_CycleOffsetParameter: 
   m_TimeParameter: 
+--- !u!1102 &2594708125498466763
+AnimatorState:
+  serializedVersion: 6
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: ChargeDash
+  m_Speed: 1
+  m_CycleOffset: 0
+  m_Transitions: []
+  m_StateMachineBehaviours: []
+  m_Position: {x: 50, y: 50, z: 0}
+  m_IKOnFeet: 0
+  m_WriteDefaultValues: 1
+  m_Mirror: 0
+  m_SpeedParameterActive: 0
+  m_MirrorParameterActive: 0
+  m_CycleOffsetParameterActive: 0
+  m_TimeParameterActive: 0
+  m_Motion: {fileID: 7400000, guid: 3f5bc4aa25ce9ca459c9fbdd674083c7, type: 2}
+  m_Tag: 
+  m_SpeedParameter: 
+  m_MirrorParameter: 
+  m_CycleOffsetParameter: 
+  m_TimeParameter: 
 --- !u!1102 &4156351752131662285
 AnimatorState:
   serializedVersion: 6
@@ -223,8 +252,8 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: RopeShoot
-  m_Speed: 0.5
+  m_Name: RopeShot
+  m_Speed: 1
   m_CycleOffset: 0
   m_Transitions: []
   m_StateMachineBehaviours: []

@@ -64,7 +64,6 @@ public class StateMachine<TOwner>
         {
             if (transition.condition() && transition.end != curState)
             {
-                Debug.Log("AnyState Change : " + transition.end);
                 Manager.Coroutine.StartCoroutine(HasExitTime(transition));
                 return;
             }
@@ -75,7 +74,6 @@ public class StateMachine<TOwner>
         {
             if (transition.condition())
             {
-                Debug.Log("Transitions Change : " + transition.end);
                 Manager.Coroutine.StartCoroutine(HasExitTime(transition));
                 return;
             }
