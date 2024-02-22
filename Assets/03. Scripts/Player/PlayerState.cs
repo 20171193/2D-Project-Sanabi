@@ -99,12 +99,6 @@ public class PlayerJump : PlayerBaseState
         this.owner = owner;
     }
 
-    public override void Enter()
-    {
-        // 로프액션 추가 시 수정
-        owner.Anim.Play("Jump");
-    }
-
     public override void FixedUpdate()
     {
         FlyMoveMent();

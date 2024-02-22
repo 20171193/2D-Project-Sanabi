@@ -70,13 +70,6 @@ public class PlayerAction : MonoBehaviour
     public StateMachine<PlayerAction> FSM { get { return fsm; } }
 
     [Space(3)]
-    [Header("Layer")]
-    [Space(2)]
-    [SerializeField]
-    private LayerMask groundLM; // ground check layermask
-    public LayerMask GroundLM { get { return groundLM; } }
-
-    [Space(3)]
     [Header("Ballancing")]
     [Space(2)]
     [SerializeField]
@@ -104,11 +97,11 @@ public class PlayerAction : MonoBehaviour
     public float MoveVtc { get { return moveVtc; } }
 
     [SerializeField]
-    private float inputJumpPower;   
+    private float inputJumpPower;
 
     [SerializeField]
-    private GameObject jointedOB;
-    public GameObject JointedOB { get { return jointedOB; } set { jointedOB = value; } }
+    private Hook jointedHook;
+    public Hook JointedHook { get { return jointedHook; } set { jointedHook = value; } }
 
     private void Awake()
     {
@@ -192,13 +185,20 @@ public class PlayerAction : MonoBehaviour
         else if (isJointed)
             RopeJump();
     }
+
+    // normal jumpping
     private void Jump()
     {
+        anim.Play("Jump");
         rigid.velocity = new Vector2(rigid.velocity.x, rigid.velocity.y + jumpPower);
     }
+
+    // disjoint hook and rope jumpping
     private void RopeJump()
     {
-        OnHookEnd?.Invoke();
+        Destroy(jointedHook.gameObject);
+        anim.Play("RopeJump");
+        isJointed = false;
         rigid.AddForce(rigid.velocity.normalized * rigid.velocity.magnitude, ForceMode2D.Impulse);
     }
     #endregion
@@ -226,7 +226,7 @@ public class PlayerAction : MonoBehaviour
     {
         Debug.Log(collision.gameObject.layer);
 
-        if(groundLM.Contain(collision.gameObject.layer))
+        if(Manager.Layer.groundLM.Contain(collision.gameObject.layer))
         {
             // ground check
             isGround = true;
@@ -234,7 +234,7 @@ public class PlayerAction : MonoBehaviour
     }
     private void OnTriggerExit2D(Collider2D collision)
     {
-        if (groundLM.Contain(collision.gameObject.layer))
+        if (Manager.Layer.groundLM.Contain(collision.gameObject.layer))
         {
             // ground check
             isGround = false;
