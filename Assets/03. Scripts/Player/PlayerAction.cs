@@ -167,7 +167,7 @@ public class PlayerAction : MonoBehaviour
     }
     private void LateUpdate()
     {
-        fsm.FixedUpdate();
+        fsm.LateUpdate();
     }
 
     #region Input Action

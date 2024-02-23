@@ -6,8 +6,8 @@ using static UnityEngine.RuleTile.TilingRuleOutput;
 public class PlayerBaseState : BaseState
 {
     protected PlayerAction owner;
-    
 }
+
 #region Idle
 public class PlayerIdle : PlayerBaseState
 {
