@@ -23,6 +23,7 @@ public class Enemy : MonoBehaviour
 
     [SerializeField]
     protected PlayerAction prAction;
+    public PlayerAction PrAction { get { return prAction; } }
 
     [Header("FSM")]
     [Space(2)]
@@ -30,12 +31,10 @@ public class Enemy : MonoBehaviour
     protected StateMachine<Enemy> fsm;
     public StateMachine<Enemy> FSM { get { return fsm; } }
 
-    private void Awake()
+    protected virtual void Awake()
     {
+        Debug.Log("Enemy Awake");
         fsm = new StateMachine<Enemy>(this);
-
-        fsm.AddState("Grabbed", new EnemyGrabbed(this));
-        fsm.AddState("Die", new EnemyDie(this));
 
         // find Player
         prAction = GameObject.FindWithTag("Player").GetComponent<PlayerAction>();
