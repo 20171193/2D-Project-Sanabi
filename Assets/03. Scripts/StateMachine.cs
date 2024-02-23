@@ -12,6 +12,8 @@ public class StateMachine<TOwner>
     public string CurState { get { return curState; } }
 
     private Dictionary<string, BaseState> stateDic;
+    public Dictionary<string, BaseState> StateDic { get { return stateDic; } }  
+
     private List<Transition> anyStateTransition;
 
     public StateMachine(TOwner owner)
