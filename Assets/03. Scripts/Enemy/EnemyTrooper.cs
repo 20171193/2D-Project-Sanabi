@@ -39,7 +39,6 @@ public class EnemyTrooper : Enemy
     protected override void Awake()
     {
         base.Awake();
-        Debug.Log("Enemy Trooper Awake");
 
         fsm.AddState("Detect", new TrooperDetect(this));
         fsm.AddState("Grabbed", new TrooperGrabbed(this));

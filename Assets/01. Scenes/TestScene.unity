@@ -1612,10 +1612,10 @@ MonoBehaviour:
     m_Bits: 192
   hookInteractableLM:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 384
   enemyLM:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 256
 --- !u!1 &1477094885
 GameObject:
   m_ObjectHideFlags: 0
@@ -4231,7 +4231,7 @@ MonoBehaviour:
   isHookShoot: 0
   isDash: 0
   firedHook: {fileID: 0}
-  ropeLength: 0
+  ropeLength: 100
   mousePos: {x: 0, y: 0, z: 0}
 --- !u!50 &1942553670
 Rigidbody2D:

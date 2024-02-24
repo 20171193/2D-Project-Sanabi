@@ -93,7 +93,6 @@ public class StateMachine<TOwner>
     IEnumerator HasExitTime(Transition transition)
     {
         yield return new WaitForSeconds(transition.exitTime);
-        Debug.Log("Done HasExitTime Coroutine");
         ChangeState(transition.end);
     }
 }

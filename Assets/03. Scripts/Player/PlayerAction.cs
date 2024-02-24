@@ -261,8 +261,9 @@ public class PlayerAction : MonoBehaviour
     // if Raycast hit is not null, linerendering to hit.point
     private void RopeRayCast()
     {
-        Vector2 rayDir = (mousePos - transform.position).normalized;
+        Vector2 rayDir = (mousePos-transform.position).normalized;
         hookHitInfo = Physics2D.Raycast(transform.position, rayDir, ropeLength, Manager.Layer.hookInteractableLM);
+        Debug.DrawRay(transform.position, rayDir*ropeLength, Color.red, 0.3f);
 
         if (hookHitInfo)
         {
@@ -314,7 +315,7 @@ public class PlayerAction : MonoBehaviour
     #region Hooking
     private void HookAimSet()
     {
-        hookAim.transform.rotation = Quaternion.Euler(0, 0, transform.position.GetAngleToTarget2D(hookHitInfo.point) - 90f);
+        hookAim.transform.rotation = Quaternion.Euler(0, 0, transform.position.GetAngleToTarget2D(hookHitInfo.point)- 90f);
         hookAim.transform.position = transform.position + transform.position.GetDirectionToTarget2D(hookHitInfo.point) * 2f;
     }
 
@@ -323,6 +324,7 @@ public class PlayerAction : MonoBehaviour
     private void HookShoot()
     {
         isHookShoot = true;
+        hookAim.LineOff();
         anim.Play("RopeShot");
 
         firedHook = Instantiate(hookPrefab, hookAim.transform.position, hookAim.transform.rotation);
@@ -334,19 +336,19 @@ public class PlayerAction : MonoBehaviour
     private void FiredHookInitialSetting(Hook hook)
     {
         // assign player rigidbody2D for DistanceJoint2D
-        firedHook.OwnerRigid = rigid;
+        hook.OwnerRigid = rigid;
 
         // hook action setting
-        firedHook.OnDestroyHook += HookReloading;
-        firedHook.OnHookHitEnemy += HookHitEnemy;
-        firedHook.OnHookHitGround += HookHitGround;
+        hook.OnDestroyHook += HookReloading;
+        hook.OnHookHitEnemy += HookHitEnemy;
+        hook.OnHookHitGround += HookHitGround;
 
         // Convex Collision Detection setting
         // Time = Distance / Velocity
-        firedHook.ccdRoutine = StartCoroutine(firedHook.CCD(ropeLength / hookShootPower, new Vector3(hookHitInfo.point.x, hookHitInfo.point.y, 0)));
+        hook.ccdRoutine = StartCoroutine(hook.CCD(ropeLength / hookShootPower, new Vector3(hookHitInfo.point.x, hookHitInfo.point.y, 0)));
 
         // destroy by no collision
-        firedHook.destroyTime = hookShootCoolTime;
+        hook.destroyTime = hookShootCoolTime;
     }
     #endregion
     #region Hooking Action
@@ -388,8 +390,6 @@ public class PlayerAction : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        Debug.Log(collision.gameObject.layer);
-
         if(Manager.Layer.groundLM.Contain(collision.gameObject.layer))
         {
             // ground check

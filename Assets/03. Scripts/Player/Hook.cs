@@ -92,8 +92,12 @@ public class Hook : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        StopCoroutine(ccdRoutine);
-        StopCoroutine(destroyRoutine);
+        if(ccdRoutine != null)
+            StopCoroutine(ccdRoutine);
+        if(destroyRoutine != null)
+            StopCoroutine(destroyRoutine);
+
+        Debug.Log("Connecting");
 
         rigid.velocity = Vector3.zero;
 
@@ -128,10 +132,13 @@ public class Hook : MonoBehaviour
 
     private void OnDestroy()
     {
+        Debug.Log("Hook Destroyed");
         // Player Hook Reloading
         OnDestroyHook?.Invoke();
 
-        StopCoroutine(ccdRoutine);
-        StopCoroutine(destroyRoutine);
+        if(ccdRoutine != null)
+            StopCoroutine(ccdRoutine);
+        if (destroyRoutine != null)
+            StopCoroutine(destroyRoutine);
     }
 }
