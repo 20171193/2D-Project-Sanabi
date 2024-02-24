@@ -30,26 +30,18 @@ public class PlayerAction : MonoBehaviour
 
     [SerializeField]
     private HookAim hookAim;
-      
+
+    [SerializeField]
+    private Hook hookPrefab;
+
     #region Specs
     [Space(3)]
     [Header("Specs")]
     [Space(2)]
+    #region Normal Movement
     [SerializeField]
     private float movePower;
     public float MovePower { get { return movePower; } }
-
-    [SerializeField]
-    private float flyMovePower;
-    public float FlyMovePower { get { return flyMovePower; } }
-
-    [SerializeField]
-    private float ropeMovePower;
-    public float RopeMovePower { get { return ropeMovePower; } }
-
-    [SerializeField]
-    private float ropeAccelerationPower; 
-    public float RopeAccelerationPower { get { return ropeAccelerationPower; } }
 
     [SerializeField]
     private float maxMoveSpeed;
@@ -58,6 +50,26 @@ public class PlayerAction : MonoBehaviour
     [SerializeField]
     private float jumpPower;
     public float JumpPower { get { return jumpPower; } }
+
+    [SerializeField]
+    private float flyMovePower;
+    public float FlyMovePower { get { return flyMovePower; } }
+    #endregion
+
+    #region Rope Movement
+    [SerializeField]
+    private float ropeMovePower;
+    public float RopeMovePower { get { return ropeMovePower; } }
+
+    [SerializeField]
+    private float ropeAccelerationPower; 
+    public float RopeAccelerationPower { get { return ropeAccelerationPower; } }
+    #endregion
+
+    [SerializeField]
+    private float hookShootPower;
+    public float HookShootPower { get { return hookShootPower; } }
+
     #endregion
 
     [ReadOnly(true)]
@@ -105,8 +117,8 @@ public class PlayerAction : MonoBehaviour
     private float inputJumpPower;
 
     [SerializeField]
-    private Hook jointedHook;
-    public Hook JointedHook { get { return jointedHook; } set { jointedHook = value; } }
+    private Hook firedHook;
+    public Hook FiredHook { get { return firedHook; } }
 
     [SerializeField]
     private RaycastHit2D hookHitInfo;
@@ -304,26 +316,21 @@ public class PlayerAction : MonoBehaviour
 
     private void HookAimSet()
     {
-        float zRot = transform.position.GetAngleToTarget2D(hookHitInfo.point);
-
-        hookAim.transform.rotation = Quaternion.Euler(0, 0, zRot - 90f);
+        hookAim.transform.rotation = Quaternion.Euler(0, 0, transform.position.GetAngleToTarget2D(hookHitInfo.point) - 90f);
         hookAim.transform.position = transform.position + transform.position.GetDirectionToTarget2D(hookHitInfo.point) * 2f;
     }
+
     // if hook collide with enemy, Invoke OnGrabbedEnemy
     // else if hook collide with ground, Invoke OnGrabbedGround
-    private void HookShot(RaycastHit2D hookHitInfo)
+    private void HookShot()
     {
-        Vector3 dist = new Vector3(hookHitInfo.point.x - prAction.Rigid.transform.position.x, hookHitInfo.point.y - prAction.Rigid.transform.position.y, 0);
-        float zRot = Mathf.Atan2(dist.y, dist.x) * Mathf.Rad2Deg;
         anim.Play("RopeShot");
-        isHookShot = true;
 
-        GameObject hookOb = Instantiate(hookPrefab, hookPosOb.transform.position, hookPosOb.transform.rotation);
-        Hook hook = hookOb.GetComponent<Hook>();
+        firedHook = Instantiate(hookPrefab, hookAim.transform.position, hookAim.transform.rotation);
 
         // CCD setting
         // time = distance / velocity
-        hook.ccdRoutine = StartCoroutine(hook.CCD(dist.magnitude / hookShotPower, new Vector3(hookHitInfo.point.x, hookHitInfo.point.y, 0)));
+        hook.ccdRoutine = StartCoroutine(hook.CCD(ropeLength / hookShotPower, new Vector3(hookHitInfo.point.x, hookHitInfo.point.y, 0)));
         hook.Owner = prAction;
 
         // rope shot
