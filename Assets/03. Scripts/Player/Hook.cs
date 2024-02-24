@@ -31,7 +31,7 @@ public class Hook : MonoBehaviour
     [Header("Hook Action")]
     [Space(2)]
     public UnityAction<GameObject> OnGrabbedEnemy;
-    public UnityAction<Vector3> OnGrabbedGround;
+    public UnityAction<Transform> OnGrabbedGround;
 
 
     [Header("Ballancing")]
@@ -63,7 +63,8 @@ public class Hook : MonoBehaviour
         OnGrabbedEnemy?.Invoke(target);
         Destroy(gameObject);
     }
-    private void Conecting()
+
+    private void Conecting(Vector3 pos)
     {
         anim.Play("Grabbing");
         lr.positionCount = 2;
@@ -83,13 +84,12 @@ public class Hook : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (Manager.Layer.enemyLM.Contain(collision.gameObject.layer))
+        if (Manager.Layer.hookInteractableLM.Contain(collision.gameObject.layer))
         {
-            Grab(collision.gameObject);
-        }
-        else if (Manager.Layer.hookGroundLM.Contain(collision.gameObject.layer))
-        {
-            Conecting();
+            if (Manager.Layer.enemyLM.Contain(collision.gameObject.layer))
+                Grab(collision.gameObject);
+            else
+                Conecting(transform.position);
         }
         else
             Destroy(gameObject);
@@ -100,7 +100,7 @@ public class Hook : MonoBehaviour
         if (!owner.IsJointed)
         {
             transform.position = limitPosition;
-            Conecting();
+            //Conecting();
         }
     }
 
