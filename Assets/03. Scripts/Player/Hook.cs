@@ -1,3 +1,4 @@
+using System.Buffers;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -19,26 +20,27 @@ public class Hook : MonoBehaviour
     [SerializeField]
     private LineRenderer lr;
 
-    [SerializeField]
-    private PlayerAction owner;
-    public PlayerAction Owner { get { return owner; } set { owner = value; } }
-
-    [SerializeField]
-    private Transform hookingPos;
-    public Transform HookingPos { get { return hookingPos; } }
-
     [Space(3)]
     [Header("Hook Action")]
     [Space(2)]
-    public UnityAction<GameObject> OnGrabbedEnemy;
-    public UnityAction<Transform> OnGrabbedGround;
-
+    public UnityAction<GameObject> OnHookHitEnemy;
+    public UnityAction OnHookHitGround;
+    public UnityAction OnDestroyHook;
 
     [Header("Ballancing")]
     [SerializeField]
-    private float restorationTime;
+    private Rigidbody2D ownerRigid;
+    public Rigidbody2D OwnerRigid { set { ownerRigid = value; } }
+
+    [SerializeField]
+    private bool isConnected = false;
+    [SerializeField]
+    private bool isGrabbed = false;
+
+    public float destroyTime;
 
     public Coroutine ccdRoutine;
+    private Coroutine destroyRoutine;
 
     private void OnEnable()
     {
@@ -51,62 +53,85 @@ public class Hook : MonoBehaviour
 
     private void Update()
     {
-        if (lr.positionCount > 0)
-        {
-            anim.SetFloat("Velocity", owner.Rigid.velocity.magnitude);
-            lr.SetPosition(0, hookingPos.transform.position);
-            lr.SetPosition(1, owner.transform.position);
-        }
+        if (isConnected)
+            LineRendering();
     }
+
+    private void LineRendering()
+    {
+        lr.positionCount = 2;
+        lr.SetPosition(0, transform.position);
+        lr.SetPosition(1, ownerRigid.position);
+    }
+
     private void Grab(GameObject target)
     {
-        OnGrabbedEnemy?.Invoke(target);
+        isGrabbed = true;
+        OnHookHitEnemy?.Invoke(target);
+
         Destroy(gameObject);
     }
 
-    private void Conecting(Vector3 pos)
+    private void Conecting()
     {
-        anim.Play("Grabbing");
-        lr.positionCount = 2;
+        isConnected = true;
+        OnHookHitGround?.Invoke();
 
-        rigid.velocity = Vector3.zero;
+        anim.Play("Grabbing");
+
         rigid.isKinematic = true;
         rigid.freezeRotation = true;
         distJoint.enabled = true;
-        distJoint.connectedBody = owner.Rigid;
-        owner.IsJointed = true;
-        owner.JointedHook = this;
+        distJoint.connectedBody = ownerRigid;
     }
+
     public void DisConnecting()
     {
-
+        Destroy(gameObject);
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
+        StopCoroutine(ccdRoutine);
+        StopCoroutine(destroyRoutine);
+
+        rigid.velocity = Vector3.zero;
+
         if (Manager.Layer.hookInteractableLM.Contain(collision.gameObject.layer))
         {
             if (Manager.Layer.enemyLM.Contain(collision.gameObject.layer))
                 Grab(collision.gameObject);
             else
-                Conecting(transform.position);
+                Conecting();
         }
         else
-            Destroy(gameObject);
-    }
-    public IEnumerator CCD(float time, Vector3 limitPosition)
-    {
-        yield return new WaitForSeconds(time);
-        if (!owner.IsJointed)
         {
-            transform.position = limitPosition;
-            //Conecting();
+            Destroy(gameObject);
         }
     }
 
+    // Convex Collision Detection
+    public IEnumerator CCD(float time, Vector3 limitPosition)
+    {
+        yield return new WaitForSeconds(time);
+        if (!isConnected && !isGrabbed)
+            transform.position = limitPosition;
+        destroyRoutine = StartCoroutine(DestroyRouine());
+    }
+
+    private IEnumerator DestroyRouine()
+    {
+        yield return new WaitForSeconds(destroyTime);
+        Destroy(gameObject);
+    }
+
+
     private void OnDestroy()
     {
-        // LineRenderer Setting
+        // Player Hook Reloading
+        OnDestroyHook?.Invoke();
+
         StopCoroutine(ccdRoutine);
+        StopCoroutine(destroyRoutine);
     }
 }

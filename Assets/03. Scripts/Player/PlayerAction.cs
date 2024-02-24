@@ -70,6 +70,10 @@ public class PlayerAction : MonoBehaviour
     private float hookShootPower;
     public float HookShootPower { get { return hookShootPower; } }
 
+    [SerializeField]
+    private float hookShootCoolTime;
+    public float HookShootCoolTime { get { return hookShootCoolTime; } }
+
     #endregion
 
     [ReadOnly(true)]
@@ -89,10 +93,6 @@ public class PlayerAction : MonoBehaviour
     [Space(3)]
     [Header("Ballancing")]
     [Space(2)]
-    [SerializeField]
-    private bool isJointed = false; 
-    public bool IsJointed { get { return isJointed; } set { isJointed = value; } }
-
     [SerializeField]
     private bool isGround; 
     public bool IsGround { get { return isGround; } }
@@ -115,6 +115,17 @@ public class PlayerAction : MonoBehaviour
 
     [SerializeField]
     private float inputJumpPower;
+
+    [SerializeField]
+    private bool isJointed = false;
+    public bool IsJointed { get { return isJointed; } set { isJointed = value; } }
+
+    [SerializeField]
+    private bool isHookShoot = false;
+    public bool IsHookShoot { get { return isHookShoot; } }
+    [SerializeField]
+    private bool isDash = false;
+    public bool IsDash { get { return isDash; } }
 
     [SerializeField]
     private Hook firedHook;
@@ -144,6 +155,8 @@ public class PlayerAction : MonoBehaviour
         fsm.AddState("Fall", new PlayerFall(this));
         fsm.AddState("Jump", new PlayerJump(this));
         fsm.AddState("Roping", new PlayerRoping(this));
+        fsm.AddState("Dash", new PlayerDash(this));
+        fsm.AddState("Grab", new PlayerGrab(this));
 
         fsm.AddAnyState("Jump", () =>
         {
@@ -152,10 +165,6 @@ public class PlayerAction : MonoBehaviour
         fsm.AddAnyState("Fall", () =>
         {
             return !isGround && !isJointed && rigid.velocity.y < -JumpForce_Threshold;
-        });
-        fsm.AddAnyState("Roping", () =>
-        {
-            return isJointed;
         });
         fsm.AddTransition("Fall", "Idle", 0f, () =>
         {
@@ -228,20 +237,20 @@ public class PlayerAction : MonoBehaviour
     // disjoint hook and rope jumpping
     private void RopeJump()
     {
-        Destroy(jointedHook.gameObject);
-
-        anim.Play("RopeJump");
+        firedHook?.DisConnecting();
         isJointed = false;
         rigid.AddForce(rigid.velocity.normalized * rigid.velocity.magnitude, ForceMode2D.Impulse);
+        anim.Play("RopeJump");
     }
     #endregion
+
     #region Mouse / Rope Action
     // Raycast to mouse position
     private void OnMousePos(InputValue value)
     {
         // cursorPos is mousePos
         // +Linerendering
-        mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        mousePos = mainCamera.ScreenToWorldPoint(Input.mousePosition);
 
         // move cursor
         cursorOb.transform.position = new Vector3(mousePos.x, mousePos.y, 0);
@@ -275,12 +284,12 @@ public class PlayerAction : MonoBehaviour
     {
         if (value.isPressed)
         {
-            if (!prAction.IsJointed && hookHitInfo)
-                OnHookShot?.Invoke(hookHitInfo.point);
+            if (!IsJointed && hookHitInfo)
+                HookShoot();
         }
         else
         {
-
+            firedHook?.DisConnecting();
         }
     }
 
@@ -302,18 +311,7 @@ public class PlayerAction : MonoBehaviour
     }
     #endregion
     #endregion
-
-    #region Hook Action
-
-    private void GrabGround(Vector3 pos)
-    {
-
-    }
-    private void GrabEnemy(GameObject enemy)
-    {
-
-    }
-
+    #region Hooking
     private void HookAimSet()
     {
         hookAim.transform.rotation = Quaternion.Euler(0, 0, transform.position.GetAngleToTarget2D(hookHitInfo.point) - 90f);
@@ -322,23 +320,72 @@ public class PlayerAction : MonoBehaviour
 
     // if hook collide with enemy, Invoke OnGrabbedEnemy
     // else if hook collide with ground, Invoke OnGrabbedGround
-    private void HookShot()
+    private void HookShoot()
     {
+        isHookShoot = true;
         anim.Play("RopeShot");
 
         firedHook = Instantiate(hookPrefab, hookAim.transform.position, hookAim.transform.rotation);
+        FiredHookInitialSetting(firedHook);
 
-        // CCD setting
-        // time = distance / velocity
-        hook.ccdRoutine = StartCoroutine(hook.CCD(ropeLength / hookShotPower, new Vector3(hookHitInfo.point.x, hookHitInfo.point.y, 0)));
-        hook.Owner = prAction;
-
-        // rope shot
-        hook.Rigid?.AddForce(dist.normalized * hookShotPower, ForceMode2D.Impulse);
+        // Hook shoot
+        firedHook.Rigid?.AddForce(hookAim.transform.position.GetDirectionToTarget2D(hookHitInfo.point) * hookShootPower, ForceMode2D.Impulse);
     }
+    private void FiredHookInitialSetting(Hook hook)
+    {
+        // assign player rigidbody2D for DistanceJoint2D
+        firedHook.OwnerRigid = rigid;
+
+        // hook action setting
+        firedHook.OnDestroyHook += HookReloading;
+        firedHook.OnHookHitEnemy += HookHitEnemy;
+        firedHook.OnHookHitGround += HookHitGround;
+
+        // Convex Collision Detection setting
+        // Time = Distance / Velocity
+        firedHook.ccdRoutine = StartCoroutine(firedHook.CCD(ropeLength / hookShootPower, new Vector3(hookHitInfo.point.x, hookHitInfo.point.y, 0)));
+
+        // destroy by no collision
+        firedHook.destroyTime = hookShootCoolTime;
+    }
+    #endregion
+    #region Hooking Action
+    private void HookReloading()
+    {
+        isHookShoot = false;
+    }
+
+    private void HookHitGround()
+    {
+        isJointed = true;
+        fsm.ChangeState("Roping");
+    }
+    private void HookHitEnemy(GameObject enemy)
+    {
+        Dash(enemy);
+    }
+    private void Dash(GameObject target)
+    {
+        isDash = true;
+        rigid.gravityScale = 0;
+        rigid.AddForce((transform.position - target.transform.position).normalized * 10f, ForceMode2D.Impulse);
+    }
+    private void Grab(GameObject target)
+    {
+
+    }
+
     #endregion
 
     #region Collision Callback
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if(isDash && Manager.Layer.enemyLM.Contain(collision.gameObject.layer))
+        {
+            rigid.gravityScale = 1;
+        }
+    }
+
     private void OnTriggerEnter2D(Collider2D collision)
     {
         Debug.Log(collision.gameObject.layer);
