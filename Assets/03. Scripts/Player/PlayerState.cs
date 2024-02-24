@@ -200,3 +200,20 @@ public class PlayerRoping : PlayerBaseState
 }
 
 #endregion
+
+#region Grab
+public class PlayerDash : PlayerBaseState
+{
+    public PlayerDash(PlayerAction owner) 
+    { 
+        this.owner = owner; 
+    }
+}
+public class PlayerGrab : PlayerBaseState
+{
+    public PlayerGrab(PlayerAction owner)
+    {
+        this.owner = owner;
+    }
+}
+#endregion

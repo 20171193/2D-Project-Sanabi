@@ -123,6 +123,9 @@ public class PlayerAction : MonoBehaviour
     [SerializeField]
     private bool isHookShoot = false;
     public bool IsHookShoot { get { return isHookShoot; } }
+    [SerializeField]
+    private bool isDash = false;
+    public bool IsDash { get { return isDash; } }
 
     [SerializeField]
     private Hook firedHook;
@@ -152,6 +155,8 @@ public class PlayerAction : MonoBehaviour
         fsm.AddState("Fall", new PlayerFall(this));
         fsm.AddState("Jump", new PlayerJump(this));
         fsm.AddState("Roping", new PlayerRoping(this));
+        fsm.AddState("Dash", new PlayerDash(this));
+        fsm.AddState("Grab", new PlayerGrab(this));
 
         fsm.AddAnyState("Jump", () =>
         {
@@ -160,10 +165,6 @@ public class PlayerAction : MonoBehaviour
         fsm.AddAnyState("Fall", () =>
         {
             return !isGround && !isJointed && rigid.velocity.y < -JumpForce_Threshold;
-        });
-        fsm.AddAnyState("Roping", () =>
-        {
-            return isJointed;
         });
         fsm.AddTransition("Fall", "Idle", 0f, () =>
         {
@@ -249,7 +250,7 @@ public class PlayerAction : MonoBehaviour
     {
         // cursorPos is mousePos
         // +Linerendering
-        mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        mousePos = mainCamera.ScreenToWorldPoint(Input.mousePosition);
 
         // move cursor
         cursorOb.transform.position = new Vector3(mousePos.x, mousePos.y, 0);
@@ -284,7 +285,7 @@ public class PlayerAction : MonoBehaviour
         if (value.isPressed)
         {
             if (!IsJointed && hookHitInfo)
-                HookShot();
+                HookShoot();
         }
         else
         {
@@ -310,30 +311,13 @@ public class PlayerAction : MonoBehaviour
     }
     #endregion
     #endregion
-
-    #region Hooking Action
-    private void HookReloading()
-    {
-        isHookShoot = false;
-    }
-
-    private void GrabGround(Vector3 pos)
-    {
-
-    }
-    private void GrabEnemy(GameObject enemy)
-    {
-
-    }
-
+    #region Hooking
     private void HookAimSet()
     {
         hookAim.transform.rotation = Quaternion.Euler(0, 0, transform.position.GetAngleToTarget2D(hookHitInfo.point) - 90f);
         hookAim.transform.position = transform.position + transform.position.GetDirectionToTarget2D(hookHitInfo.point) * 2f;
     }
-    #endregion
 
-    #region Hooking
     // if hook collide with enemy, Invoke OnGrabbedEnemy
     // else if hook collide with ground, Invoke OnGrabbedGround
     private void HookShoot()
@@ -354,8 +338,8 @@ public class PlayerAction : MonoBehaviour
 
         // hook action setting
         firedHook.OnDestroyHook += HookReloading;
-        firedHook.OnGrabbedEnemy += GrabEnemy;
-        firedHook.OnGrabbedGround += GrabGround;
+        firedHook.OnHookHitEnemy += HookHitEnemy;
+        firedHook.OnHookHitGround += HookHitGround;
 
         // Convex Collision Detection setting
         // Time = Distance / Velocity
@@ -365,7 +349,43 @@ public class PlayerAction : MonoBehaviour
         firedHook.destroyTime = hookShootCoolTime;
     }
     #endregion
+    #region Hooking Action
+    private void HookReloading()
+    {
+        isHookShoot = false;
+    }
+
+    private void HookHitGround()
+    {
+        isJointed = true;
+        fsm.ChangeState("Roping");
+    }
+    private void HookHitEnemy(GameObject enemy)
+    {
+        Dash(enemy);
+    }
+    private void Dash(GameObject target)
+    {
+        isDash = true;
+        rigid.gravityScale = 0;
+        rigid.AddForce((transform.position - target.transform.position).normalized * 10f, ForceMode2D.Impulse);
+    }
+    private void Grab(GameObject target)
+    {
+
+    }
+
+    #endregion
+
     #region Collision Callback
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if(isDash && Manager.Layer.enemyLM.Contain(collision.gameObject.layer))
+        {
+            rigid.gravityScale = 1;
+        }
+    }
+
     private void OnTriggerEnter2D(Collider2D collision)
     {
         Debug.Log(collision.gameObject.layer);

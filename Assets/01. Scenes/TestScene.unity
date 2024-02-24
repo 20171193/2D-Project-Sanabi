@@ -133,7 +133,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4568733}
   - component: {fileID: 4568734}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: GunPos
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -339,6 +339,68 @@ SpriteRenderer:
   m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!1001 &69789308
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 7456489832700954451, guid: 214ffe87a7ae5c948831ccd301165b9e, type: 3}
+      propertyPath: m_Name
+      value: Cursor
+      objectReference: {fileID: 0}
+    - target: {fileID: 7456489832700954453, guid: 214ffe87a7ae5c948831ccd301165b9e, type: 3}
+      propertyPath: m_RootOrder
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7456489832700954453, guid: 214ffe87a7ae5c948831ccd301165b9e, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 20.268402
+      objectReference: {fileID: 0}
+    - target: {fileID: 7456489832700954453, guid: 214ffe87a7ae5c948831ccd301165b9e, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 1.7508168
+      objectReference: {fileID: 0}
+    - target: {fileID: 7456489832700954453, guid: 214ffe87a7ae5c948831ccd301165b9e, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7456489832700954453, guid: 214ffe87a7ae5c948831ccd301165b9e, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7456489832700954453, guid: 214ffe87a7ae5c948831ccd301165b9e, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7456489832700954453, guid: 214ffe87a7ae5c948831ccd301165b9e, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7456489832700954453, guid: 214ffe87a7ae5c948831ccd301165b9e, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7456489832700954453, guid: 214ffe87a7ae5c948831ccd301165b9e, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7456489832700954453, guid: 214ffe87a7ae5c948831ccd301165b9e, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7456489832700954453, guid: 214ffe87a7ae5c948831ccd301165b9e, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 214ffe87a7ae5c948831ccd301165b9e, type: 3}
+--- !u!1 &113746422 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7456489832700954451, guid: 214ffe87a7ae5c948831ccd301165b9e, type: 3}
+  m_PrefabInstance: {fileID: 69789308}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &145007135
 GameObject:
   m_ObjectHideFlags: 0
@@ -349,7 +411,7 @@ GameObject:
   m_Component:
   - component: {fileID: 145007136}
   - component: {fileID: 145007137}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: BodyRenderer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -812,7 +874,7 @@ Transform:
   m_Children:
   - {fileID: 869633036}
   m_Father: {fileID: 0}
-  m_RootOrder: 3
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &869633035
 GameObject:
@@ -940,6 +1002,7 @@ GameObject:
   m_Component:
   - component: {fileID: 955482360}
   - component: {fileID: 955482361}
+  - component: {fileID: 955482362}
   m_Layer: 0
   m_Name: HookPos
   m_TagString: Untagged
@@ -984,6 +1047,8 @@ LineRenderer:
   m_RendererPriority: 0
   m_Materials:
   - {fileID: 2100000, guid: 0338845cc8edd89429fd3d53b9a149d9, type: 2}
+  - {fileID: 2100000, guid: 80acb1071874db44a956bcaf67d18e76, type: 2}
+  - {fileID: 2100000, guid: 302ca3dbec43da14190b4ce1032d6094, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1062,6 +1127,30 @@ LineRenderer:
     generateLightingData: 0
   m_UseWorldSpace: 1
   m_Loop: 0
+--- !u!114 &955482362
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 955482359}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 36f261a8d0bba84439cdf33d5299b49c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  lr: {fileID: 955482361}
+  aimRendererOb: {fileID: 1477094885}
+  enemyLineMt:
+  - {fileID: 2100000, guid: 887cc20b518a3174fa4242551eca7308, type: 2}
+  - {fileID: 2100000, guid: 887cc20b518a3174fa4242551eca7308, type: 2}
+  - {fileID: 2100000, guid: 887cc20b518a3174fa4242551eca7308, type: 2}
+  groundLineMt:
+  - {fileID: 2100000, guid: 0338845cc8edd89429fd3d53b9a149d9, type: 2}
+  - {fileID: 2100000, guid: 80acb1071874db44a956bcaf67d18e76, type: 2}
+  - {fileID: 2100000, guid: 302ca3dbec43da14190b4ce1032d6094, type: 2}
+  renderTargetPos: {x: 0, y: 0, z: 0}
+  isLineRendering: 0
 --- !u!1 &1076338516
 GameObject:
   m_ObjectHideFlags: 0
@@ -1075,7 +1164,7 @@ GameObject:
   - component: {fileID: 1076338521}
   - component: {fileID: 1076338520}
   - component: {fileID: 1076338519}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Enemy_Trooper
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1097,7 +1186,7 @@ Transform:
   - {fileID: 145007136}
   - {fileID: 4568733}
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!95 &1076338518
 Animator:
@@ -1358,7 +1447,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1363832730}
   - component: {fileID: 1363832731}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: GunRenderer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1492,7 +1581,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1410960321
 MonoBehaviour:
@@ -1521,9 +1610,12 @@ MonoBehaviour:
   groundLM:
     serializedVersion: 2
     m_Bits: 192
-  ropeInteractableLM:
+  hookInteractableLM:
     serializedVersion: 2
-    m_Bits: 128
+    m_Bits: 0
+  enemyLM:
+    serializedVersion: 2
+    m_Bits: 0
 --- !u!1 &1477094885
 GameObject:
   m_ObjectHideFlags: 0
@@ -4012,7 +4104,7 @@ Transform:
   - {fileID: 1707678822}
   - {fileID: 2061982343}
   m_Father: {fileID: 0}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1942553664
 GameObject:
@@ -4028,7 +4120,6 @@ GameObject:
   - component: {fileID: 1942553668}
   - component: {fileID: 1942553671}
   - component: {fileID: 1942553669}
-  - component: {fileID: 1942553672}
   m_Layer: 0
   m_Name: Player_SNB
   m_TagString: Player
@@ -4084,7 +4175,7 @@ Transform:
   - {fileID: 1999953288}
   - {fileID: 1136606539}
   m_Father: {fileID: 0}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!70 &1942553668
 CapsuleCollider2D:
@@ -4117,22 +4208,31 @@ MonoBehaviour:
   rigid: {fileID: 1942553670}
   anim: {fileID: 1942553671}
   mainCamera: {fileID: 519420031}
+  cursorOb: {fileID: 113746422}
+  hookAim: {fileID: 955482362}
+  hookPrefab: {fileID: 504550284057011342, guid: 9c0c4d3285540fc4cb9aa73ead938b19, type: 3}
   movePower: 25
+  maxMoveSpeed: 8
+  jumpPower: 12
   flyMovePower: 1
   ropeMovePower: 1.5
   ropeAccelerationPower: 5
-  maxMoveSpeed: 8
-  jumpPower: 12
+  hookShootPower: 50
+  hookShootCoolTime: 2
   MoveForce_Threshold: 0.1
   JumpForce_Threshold: 0.01
-  isJointed: 0
   isGround: 0
   hztBrakePower: 10
   vtcBrakePower: 0
   moveHzt: 0
   moveVtc: 0
   inputJumpPower: 0
-  jointedHook: {fileID: 0}
+  isJointed: 0
+  isHookShoot: 0
+  isDash: 0
+  firedHook: {fileID: 0}
+  ropeLength: 0
+  mousePos: {x: 0, y: 0, z: 0}
 --- !u!50 &1942553670
 Rigidbody2D:
   serializedVersion: 4
@@ -4174,35 +4274,6 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
---- !u!114 &1942553672
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1942553664}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 36f261a8d0bba84439cdf33d5299b49c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  prAction: {fileID: 1942553669}
-  cursorOb: {fileID: 7456489832700954451, guid: 214ffe87a7ae5c948831ccd301165b9e, type: 3}
-  hookPrefab: {fileID: 5563271056111807986, guid: 9c0c4d3285540fc4cb9aa73ead938b19, type: 3}
-  hookPosOb: {fileID: 955482359}
-  hookAimOb: {fileID: 1477094885}
-  lr: {fileID: 955482361}
-  dummyRopeMt:
-  - {fileID: 2100000, guid: 0338845cc8edd89429fd3d53b9a149d9, type: 2}
-  - {fileID: 2100000, guid: 80acb1071874db44a956bcaf67d18e76, type: 2}
-  - {fileID: 2100000, guid: 302ca3dbec43da14190b4ce1032d6094, type: 2}
-  realRopeMt:
-  - {fileID: 2100000, guid: a957893dc26502445bc106ce24244d1e, type: 2}
-  - {fileID: 2100000, guid: 9280039993bd2f445b58b9f62af3586d, type: 2}
-  - {fileID: 2100000, guid: 9448413e580665b459406f86ef74f62e, type: 2}
-  mousePos: {x: 0, y: 0, z: 0}
-  hookShotPower: 70
-  isHookShot: 0
 --- !u!1 &1999953287
 GameObject:
   m_ObjectHideFlags: 0

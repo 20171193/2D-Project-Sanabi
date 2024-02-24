@@ -23,8 +23,8 @@ public class Hook : MonoBehaviour
     [Space(3)]
     [Header("Hook Action")]
     [Space(2)]
-    public UnityAction<GameObject> OnGrabbedEnemy;
-    public UnityAction<Vector3> OnGrabbedGround;
+    public UnityAction<GameObject> OnHookHitEnemy;
+    public UnityAction OnHookHitGround;
     public UnityAction OnDestroyHook;
 
     [Header("Ballancing")]
@@ -59,26 +59,26 @@ public class Hook : MonoBehaviour
 
     private void LineRendering()
     {
-
+        lr.positionCount = 2;
+        lr.SetPosition(0, transform.position);
+        lr.SetPosition(1, ownerRigid.position);
     }
 
     private void Grab(GameObject target)
     {
         isGrabbed = true;
-        OnGrabbedEnemy?.Invoke(target);
+        OnHookHitEnemy?.Invoke(target);
 
         Destroy(gameObject);
     }
 
-    private void Conecting(Vector3 pos)
+    private void Conecting()
     {
         isConnected = true;
-        OnGrabbedGround?.Invoke(pos);
+        OnHookHitGround?.Invoke();
 
         anim.Play("Grabbing");
-        lr.positionCount = 2;
 
-        rigid.velocity = Vector3.zero;
         rigid.isKinematic = true;
         rigid.freezeRotation = true;
         distJoint.enabled = true;
@@ -95,12 +95,14 @@ public class Hook : MonoBehaviour
         StopCoroutine(ccdRoutine);
         StopCoroutine(destroyRoutine);
 
+        rigid.velocity = Vector3.zero;
+
         if (Manager.Layer.hookInteractableLM.Contain(collision.gameObject.layer))
         {
             if (Manager.Layer.enemyLM.Contain(collision.gameObject.layer))
                 Grab(collision.gameObject);
             else
-                Conecting(transform.position);
+                Conecting();
         }
         else
         {
