@@ -27,8 +27,12 @@ public class Hook : MonoBehaviour
     private Transform hookingPos;
     public Transform HookingPos { get { return hookingPos; } }
 
-    public UnityAction OnJointed;
-    public UnityAction OnDisJointed;
+    [Space(3)]
+    [Header("Hook Action")]
+    [Space(2)]
+    public UnityAction<GameObject> OnGrabbedEnemy;
+    public UnityAction<Vector3> OnGrabbedGround;
+
 
     [Header("Ballancing")]
     [SerializeField]
@@ -54,14 +58,15 @@ public class Hook : MonoBehaviour
             lr.SetPosition(1, owner.transform.position);
         }
     }
-
+    private void Grab(GameObject target)
+    {
+        OnGrabbedEnemy?.Invoke(target);
+        Destroy(gameObject);
+    }
     private void Conecting()
     {
         anim.Play("Grabbing");
         lr.positionCount = 2;
-
-        // LineRenderer Setting
-        OnJointed?.Invoke();
 
         rigid.velocity = Vector3.zero;
         rigid.isKinematic = true;
@@ -71,14 +76,24 @@ public class Hook : MonoBehaviour
         owner.IsJointed = true;
         owner.JointedHook = this;
     }
+    public void DisConnecting()
+    {
+
+    }
+
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (Manager.Layer.ropeInteractableLM.Contain(collision.gameObject.layer))
+        if (Manager.Layer.enemyLM.Contain(collision.gameObject.layer))
+        {
+            Grab(collision.gameObject);
+        }
+        else if (Manager.Layer.hookGroundLM.Contain(collision.gameObject.layer))
+        {
             Conecting();
+        }
         else
             Destroy(gameObject);
     }
-
     public IEnumerator CCD(float time, Vector3 limitPosition)
     {
         yield return new WaitForSeconds(time);
@@ -92,7 +107,6 @@ public class Hook : MonoBehaviour
     private void OnDestroy()
     {
         // LineRenderer Setting
-        OnDisJointed?.Invoke();
         StopCoroutine(ccdRoutine);
     }
 }

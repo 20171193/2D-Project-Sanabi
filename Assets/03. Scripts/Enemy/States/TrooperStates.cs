@@ -80,8 +80,8 @@ public class TrooperDetect : TrooperBaseState
         {
             yield return new WaitForSeconds(owner.DetectingTime);
             isDetect = false;
-            yield return new WaitForSeconds(1f);
-            OnShooting?.Invoke(targetPos);
+            //yield return new WaitForSeconds(1f);
+            //OnShooting?.Invoke(targetPos);
             yield return new WaitForSeconds(owner.AttackCoolTime);
             isDetect = true;
         }

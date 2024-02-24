@@ -6,6 +6,8 @@ public class LayerManager : MonoBehaviour
 {
     [Header("IsGround Check")]
     public LayerMask groundLM;
-    [Header("RopeInteractable Check")]
-    public LayerMask ropeInteractableLM;
+    [Header("HookGround Check")]
+    public LayerMask hookGroundLM;
+    [Header("Enemy Check")]
+    public LayerMask enemyLM;
 }
