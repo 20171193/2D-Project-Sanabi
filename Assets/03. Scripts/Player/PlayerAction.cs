@@ -173,6 +173,10 @@ public class PlayerAction : MonoBehaviour
     #region Input Action
 
     #region Normal Movement
+    // Keyboard Acition
+    // move horizontally with keyboard "a" key and "d" key
+    // jump with keyboard "space" key
+    // +rope jump 
     private void OnMove(InputValue value)
     {
         moveHzt = value.Get<Vector2>().x;
@@ -204,6 +208,7 @@ public class PlayerAction : MonoBehaviour
     #endregion
 
     #region Skills
+    // 
     private void OnRopeForce(InputValue value)
     {
         if (isJointed)
