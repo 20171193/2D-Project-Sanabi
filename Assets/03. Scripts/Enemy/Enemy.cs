@@ -33,7 +33,6 @@ public class Enemy : MonoBehaviour
 
     protected virtual void Awake()
     {
-        Debug.Log("Enemy Awake");
         fsm = new StateMachine<Enemy>(this);
 
         // find Player
