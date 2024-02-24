@@ -70,6 +70,10 @@ public class PlayerAction : MonoBehaviour
     private float hookShootPower;
     public float HookShootPower { get { return hookShootPower; } }
 
+    [SerializeField]
+    private float hookShootCoolTime;
+    public float HookShootCoolTime { get { return hookShootCoolTime; } }
+
     #endregion
 
     [ReadOnly(true)]
@@ -89,10 +93,6 @@ public class PlayerAction : MonoBehaviour
     [Space(3)]
     [Header("Ballancing")]
     [Space(2)]
-    [SerializeField]
-    private bool isJointed = false; 
-    public bool IsJointed { get { return isJointed; } set { isJointed = value; } }
-
     [SerializeField]
     private bool isGround; 
     public bool IsGround { get { return isGround; } }
@@ -115,6 +115,14 @@ public class PlayerAction : MonoBehaviour
 
     [SerializeField]
     private float inputJumpPower;
+
+    [SerializeField]
+    private bool isJointed = false;
+    public bool IsJointed { get { return isJointed; } set { isJointed = value; } }
+
+    [SerializeField]
+    private bool isHookShoot = false;
+    public bool IsHookShoot { get { return isHookShoot; } }
 
     [SerializeField]
     private Hook firedHook;
@@ -228,13 +236,13 @@ public class PlayerAction : MonoBehaviour
     // disjoint hook and rope jumpping
     private void RopeJump()
     {
-        Destroy(jointedHook.gameObject);
-
-        anim.Play("RopeJump");
+        firedHook?.DisConnecting();
         isJointed = false;
         rigid.AddForce(rigid.velocity.normalized * rigid.velocity.magnitude, ForceMode2D.Impulse);
+        anim.Play("RopeJump");
     }
     #endregion
+
     #region Mouse / Rope Action
     // Raycast to mouse position
     private void OnMousePos(InputValue value)
@@ -275,12 +283,12 @@ public class PlayerAction : MonoBehaviour
     {
         if (value.isPressed)
         {
-            if (!prAction.IsJointed && hookHitInfo)
-                OnHookShot?.Invoke(hookHitInfo.point);
+            if (!IsJointed && hookHitInfo)
+                HookShot();
         }
         else
         {
-
+            firedHook?.DisConnecting();
         }
     }
 
@@ -303,7 +311,11 @@ public class PlayerAction : MonoBehaviour
     #endregion
     #endregion
 
-    #region Hook Action
+    #region Hooking Action
+    private void HookReloading()
+    {
+        isHookShoot = false;
+    }
 
     private void GrabGround(Vector3 pos)
     {
@@ -319,25 +331,40 @@ public class PlayerAction : MonoBehaviour
         hookAim.transform.rotation = Quaternion.Euler(0, 0, transform.position.GetAngleToTarget2D(hookHitInfo.point) - 90f);
         hookAim.transform.position = transform.position + transform.position.GetDirectionToTarget2D(hookHitInfo.point) * 2f;
     }
+    #endregion
 
+    #region Hooking
     // if hook collide with enemy, Invoke OnGrabbedEnemy
     // else if hook collide with ground, Invoke OnGrabbedGround
-    private void HookShot()
+    private void HookShoot()
     {
+        isHookShoot = true;
         anim.Play("RopeShot");
 
         firedHook = Instantiate(hookPrefab, hookAim.transform.position, hookAim.transform.rotation);
+        FiredHookInitialSetting(firedHook);
 
-        // CCD setting
-        // time = distance / velocity
-        hook.ccdRoutine = StartCoroutine(hook.CCD(ropeLength / hookShotPower, new Vector3(hookHitInfo.point.x, hookHitInfo.point.y, 0)));
-        hook.Owner = prAction;
+        // Hook shoot
+        firedHook.Rigid?.AddForce(hookAim.transform.position.GetDirectionToTarget2D(hookHitInfo.point) * hookShootPower, ForceMode2D.Impulse);
+    }
+    private void FiredHookInitialSetting(Hook hook)
+    {
+        // assign player rigidbody2D for DistanceJoint2D
+        firedHook.OwnerRigid = rigid;
 
-        // rope shot
-        hook.Rigid?.AddForce(dist.normalized * hookShotPower, ForceMode2D.Impulse);
+        // hook action setting
+        firedHook.OnDestroyHook += HookReloading;
+        firedHook.OnGrabbedEnemy += GrabEnemy;
+        firedHook.OnGrabbedGround += GrabGround;
+
+        // Convex Collision Detection setting
+        // Time = Distance / Velocity
+        firedHook.ccdRoutine = StartCoroutine(firedHook.CCD(ropeLength / hookShootPower, new Vector3(hookHitInfo.point.x, hookHitInfo.point.y, 0)));
+
+        // destroy by no collision
+        firedHook.destroyTime = hookShootCoolTime;
     }
     #endregion
-
     #region Collision Callback
     private void OnTriggerEnter2D(Collider2D collision)
     {
