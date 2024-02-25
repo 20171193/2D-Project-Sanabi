@@ -54,6 +54,7 @@ public class PlayerAction : MonoBehaviour
     [SerializeField]
     private float flyMovePower;
     public float FlyMovePower { get { return flyMovePower; } }
+
     #endregion
 
     #region Rope Movement
@@ -141,6 +142,9 @@ public class PlayerAction : MonoBehaviour
     [SerializeField]
     private Vector3 mousePos;
 
+    [SerializeField]
+    private Enemy grabEnemy;
+    public Enemy GrabEnemy { get { return grabEnemy; } }
     #endregion
 
     private void Awake()
@@ -263,7 +267,6 @@ public class PlayerAction : MonoBehaviour
     {
         Vector2 rayDir = (mousePos-transform.position).normalized;
         hookHitInfo = Physics2D.Raycast(transform.position, rayDir, ropeLength, Manager.Layer.hookInteractableLM);
-        Debug.DrawRay(transform.position, rayDir*ropeLength, Color.red, 0.3f);
 
         if (hookHitInfo)
         {
@@ -306,12 +309,12 @@ public class PlayerAction : MonoBehaviour
     {
         // 강한 반동 적용
         // 잔상 등 이펙트 추가
-        Debug.Log("RopeForce! : " + rigid.transform.forward);
         Vector2 forceDir = transform.rotation.y == 0 ? Vector2.right : Vector2.left;
         rigid.AddForce(ropeAccelerationPower * forceDir, ForceMode2D.Impulse);
     }
     #endregion
     #endregion
+
     #region Hooking
     private void HookAimSet()
     {
@@ -359,33 +362,53 @@ public class PlayerAction : MonoBehaviour
 
     private void HookHitGround()
     {
+        StopCoroutine(firedHook.ccdRoutine);
+
         isJointed = true;
         fsm.ChangeState("Roping");
     }
     private void HookHitEnemy(GameObject enemy)
     {
+        StopCoroutine(firedHook.ccdRoutine);
+
         Dash(enemy);
     }
     private void Dash(GameObject target)
     {
         isDash = true;
+        rigid.velocity = Vector3.zero;
         rigid.gravityScale = 0;
-        rigid.AddForce((transform.position - target.transform.position).normalized * 10f, ForceMode2D.Impulse);
+
+        fsm.ChangeState("Dash");
+       
+        rigid.AddForce(Vector3.up * 5f, ForceMode2D.Impulse);
+        rigid.AddForce((target.transform.position - transform.position).normalized * 50f, ForceMode2D.Impulse);
+        
+        // add Player CCD
+        // if player and enemy not collide,
+        // Dash -> Idle 
     }
     private void Grab(GameObject target)
     {
+        grabEnemy = target.GetComponent<Enemy>();
+        if (grabEnemy == null)
+        {
+            Debug.Log("Grabbed Object is not Enemy");
+        }
 
+        rigid.velocity = Vector3.zero;
+        Vector3 enemyPos = grabEnemy.transform.position;
+        transform.position = new Vector3(enemyPos.x, enemyPos.y + grabEnemy.GrabbedYPos, 0);
+
+        fsm.ChangeState("Grab");
+        grabEnemy.Grabbed();
     }
-
     #endregion
 
     #region Collision Callback
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if(isDash && Manager.Layer.enemyLM.Contain(collision.gameObject.layer))
-        {
-            rigid.gravityScale = 1;
-        }
+
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -395,6 +418,14 @@ public class PlayerAction : MonoBehaviour
             // ground check
             isGround = true;
         }
+
+        // Dash Enemy
+        if (isDash && Manager.Layer.enemyLM.Contain(collision.gameObject.layer))
+        {
+            isDash = false;
+            Grab(collision.gameObject);
+        }
+
     }
     private void OnTriggerExit2D(Collider2D collision)
     {

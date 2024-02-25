@@ -59,7 +59,7 @@ public class HookAim : MonoBehaviour
                 lr.materials = groundLineMt;
                 break;
             case LineRenderType.Enemy:
-                lr.materials = enemyLineMt;
+                lr.materials = groundLineMt;
                 break;
         }
 

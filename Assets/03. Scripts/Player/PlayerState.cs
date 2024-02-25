@@ -201,12 +201,18 @@ public class PlayerRoping : PlayerBaseState
 
 #endregion
 
-#region Grab
+#region Dash and Grab
+
 public class PlayerDash : PlayerBaseState
 {
-    public PlayerDash(PlayerAction owner) 
+    public PlayerDash(PlayerAction owner)
+    {
+        this.owner = owner;
+    }
+
+    public override void Enter()
     { 
-        this.owner = owner; 
+        owner.Anim.Play("Dash");
     }
 }
 public class PlayerGrab : PlayerBaseState
@@ -215,5 +221,55 @@ public class PlayerGrab : PlayerBaseState
     {
         this.owner = owner;
     }
+
+    public override void Enter()
+    {
+        owner.Anim.Play("Grab");
+    }
+
+    public override void FixedUpdate()
+    {
+        // Grab Moving
+        GrabMove();
+    }
+
+    public override void Update()
+    {
+        owner.Anim.SetFloat("MovePower", owner.MoveHzt);
+        owner.GrabEnemy.Anim.SetFloat("MovePower", owner.MoveHzt);
+
+        // follow enemy x position
+        owner.transform.position = new Vector3(owner.GrabEnemy.transform.position.x, owner.transform.position.y, owner.transform.position.z);
+    }
+
+
+    private void GrabMove()
+    {
+        // In the state of Grab an enemy,
+        // the movement speed is halved compared to the player run movement speed.
+        // also brake power is halved compared to the player runstop brake speed to.
+
+
+        // Move Braking
+        if (owner.MoveHzt == 0)
+        {
+            if (owner.GrabEnemy.Rigid.velocity.x > owner.MoveForce_Threshold)
+                owner.GrabEnemy.Rigid.AddForce(Vector2.left * (owner.HztBrakePower/2f));
+            else if (owner.GrabEnemy.Rigid.velocity.x < owner.MoveForce_Threshold)
+                owner.GrabEnemy.Rigid.AddForce(Vector2.right * (owner.HztBrakePower/2f));
+        }
+        else
+        {
+            // Controll Grab Enemy
+            owner.GrabEnemy.Rigid.AddForce(Vector2.right * owner.MoveHzt * (owner.MovePower / 2f));
+            owner.GrabEnemy.Rigid.velocity = new Vector2(Mathf.Clamp(owner.GrabEnemy.Rigid.velocity.x, -owner.MaxMoveSpeed / 2f, owner.MaxMoveSpeed / 2f), owner.GrabEnemy.Rigid.velocity.y);
+        }
+    }
+
+    public override void Exit()
+    {
+        
+    }
+
 }
 #endregion
