@@ -129,6 +129,11 @@ public class PlayerAction : MonoBehaviour
     public bool IsDash { get { return isDash; } }
 
     [SerializeField]
+    private bool isGrab = false;
+    public bool IsGrab { get { return isGrab; } }
+
+
+    [SerializeField]
     private Hook firedHook;
     public Hook FiredHook { get { return firedHook; } }
 
@@ -394,8 +399,11 @@ public class PlayerAction : MonoBehaviour
         if (grabEnemy == null)
         {
             Debug.Log("Grabbed Object is not Enemy");
+            fsm.ChangeState("Idle");
+            return;
         }
 
+        isGrab = true;
         rigid.velocity = Vector3.zero;
         Vector3 enemyPos = grabEnemy.transform.position;
         transform.position = new Vector3(enemyPos.x, enemyPos.y + grabEnemy.GrabbedYPos, 0);
