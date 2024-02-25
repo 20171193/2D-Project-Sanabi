@@ -4,10 +4,14 @@ using UnityEngine;
 
 public class LayerManager : MonoBehaviour
 {
-    [Header("IsGround Check")]
+    [Header("IsGround")]
     public LayerMask groundLM;
-    [Header("HookGround Check")]
+    [Header("HookGround")]
     public LayerMask hookInteractableLM;
-    [Header("Enemy Check")]
+    [Header("Player Hook")]
+    public LayerMask playerHookLM;
+    [Header("Enemy")]
     public LayerMask enemyLM;
+    [Header("Enemy Bullet")]
+    public LayerMask enemyBulletLM;
 }

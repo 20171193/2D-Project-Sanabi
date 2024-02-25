@@ -207,8 +207,8 @@ LineRenderer:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
-        time: 0.003768921
-        value: 0.1858406
+        time: 0
+        value: 0.12965775
         inSlope: 0
         outSlope: 0
         tangentMode: 0
@@ -265,7 +265,7 @@ GameObject:
   m_Component:
   - component: {fileID: 46000713}
   - component: {fileID: 46000714}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: bottom_renderer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -471,8 +471,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: -523561653
+  m_SortingLayer: 2
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: eb1fe8f10d32ff74e918d9af5de48c4e, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -495,7 +495,7 @@ GameObject:
   m_Component:
   - component: {fileID: 154932492}
   - component: {fileID: 154932493}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: arm_renderer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -579,7 +579,7 @@ GameObject:
   m_Component:
   - component: {fileID: 425764804}
   - component: {fileID: 425764805}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: ArmRenderer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -639,10 +639,10 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: -397043431
+  m_SortingLayer: 1
   m_SortingOrder: 1
-  m_Sprite: {fileID: 21300000, guid: 00e30f3ba3be2e94ba2a59c6b47c5ab1, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 44b61f675672da54db79e298840c70e6, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -731,7 +731,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 519420028}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 2.9, y: 1.1, z: -10}
+  m_LocalPosition: {x: 13.59, y: 1.67, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -781,7 +781,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 737539699}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Arm
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -868,13 +868,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 765606721}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 2.9, y: 1.1, z: -10}
+  m_LocalPosition: {x: 13.59, y: 1.67, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 869633036}
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &869633035
 GameObject:
@@ -1003,7 +1003,7 @@ GameObject:
   - component: {fileID: 955482360}
   - component: {fileID: 955482361}
   - component: {fileID: 955482362}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: HookPos
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1143,8 +1143,6 @@ MonoBehaviour:
   aimRendererOb: {fileID: 1477094885}
   enemyLineMt:
   - {fileID: 2100000, guid: 887cc20b518a3174fa4242551eca7308, type: 2}
-  - {fileID: 2100000, guid: 887cc20b518a3174fa4242551eca7308, type: 2}
-  - {fileID: 2100000, guid: 887cc20b518a3174fa4242551eca7308, type: 2}
   groundLineMt:
   - {fileID: 2100000, guid: 0338845cc8edd89429fd3d53b9a149d9, type: 2}
   - {fileID: 2100000, guid: 80acb1071874db44a956bcaf67d18e76, type: 2}
@@ -1178,15 +1176,16 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1076338516}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 17.24, y: 0.39, z: -0.031016797}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 17.24, y: 0.5, z: -0.031016797}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 145007136}
   - {fileID: 4568733}
+  - {fileID: 1921418970}
   m_Father: {fileID: 0}
-  m_RootOrder: 6
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!95 &1076338518
 Animator:
@@ -1222,7 +1221,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   rigid: {fileID: 1076338521}
   anim: {fileID: 1076338518}
-  prAction: {fileID: 0}
+  playerTr: {fileID: 0}
+  grabbedPos: {x: 0, y: 0, z: 0}
   aimPos: {fileID: 4568733}
   lr: {fileID: 4568734}
   bulletPrefab: {fileID: 1304887359612675104, guid: c060b6abd517df4418fd019ee76b6fcd, type: 3}
@@ -1243,8 +1243,8 @@ CapsuleCollider2D:
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
-  m_Size: {x: 0.5, y: 1}
+  m_Offset: {x: 0.018694878, y: 0.056084037}
+  m_Size: {x: 1.2477894, y: 2.5329673}
   m_Direction: 0
 --- !u!50 &1076338521
 Rigidbody2D:
@@ -1266,7 +1266,7 @@ Rigidbody2D:
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
-  m_Constraints: 6
+  m_Constraints: 4
 --- !u!1 &1105458389
 GameObject:
   m_ObjectHideFlags: 0
@@ -1277,7 +1277,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1105458390}
   - component: {fileID: 1105458391}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: BodyRenderer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1337,10 +1337,10 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: -397043431
+  m_SortingLayer: 1
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 319edd5e28252b544823353b106d33a6, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 5bd6a80a2279e8943a11a08288d9165c, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -1360,7 +1360,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1116306030}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Arm
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1393,7 +1393,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1136606539}
   - component: {fileID: 1136606540}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: VFX
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1507,8 +1507,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: -523561653
+  m_SortingLayer: 2
   m_SortingOrder: 1
   m_Sprite: {fileID: 21300000, guid: 7a04504525fa8f4439e43d05ae5ef855, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -1581,7 +1581,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1410960321
 MonoBehaviour:
@@ -1613,9 +1613,15 @@ MonoBehaviour:
   hookInteractableLM:
     serializedVersion: 2
     m_Bits: 384
+  playerHookLM:
+    serializedVersion: 2
+    m_Bits: 1024
   enemyLM:
     serializedVersion: 2
     m_Bits: 256
+  enemyBulletLM:
+    serializedVersion: 2
+    m_Bits: 2048
 --- !u!1 &1477094885
 GameObject:
   m_ObjectHideFlags: 0
@@ -1626,7 +1632,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1477094886}
   - component: {fileID: 1477094887}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Aim
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3979,7 +3985,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1833431879}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Bottom
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4002,6 +4008,64 @@ Transform:
   m_Father: {fileID: 1136606539}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1921418969
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1921418970}
+  - component: {fileID: 1921418971}
+  m_Layer: 9
+  m_Name: GroundChecker
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1921418970
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1921418969}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1076338517}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!61 &1921418971
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1921418969}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: -0.0762167, y: -1.1157813}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0, y: 0}
+    oldSize: {x: 0, y: 0}
+    newSize: {x: 0, y: 0}
+    adaptiveTilingThreshold: 0
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 1.3128452, y: 0.26028347}
+  m_EdgeRadius: 0
 --- !u!1 &1936035782
 GameObject:
   m_ObjectHideFlags: 0
@@ -4012,7 +4076,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1936035783}
   - component: {fileID: 1936035784}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: GroundChecker
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4120,7 +4184,7 @@ GameObject:
   - component: {fileID: 1942553668}
   - component: {fileID: 1942553671}
   - component: {fileID: 1942553669}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Player_SNB
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -4165,7 +4229,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1942553664}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 2.9, y: 1.1, z: 0}
+  m_LocalPosition: {x: 13.59, y: 1.67, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -4233,6 +4297,7 @@ MonoBehaviour:
   firedHook: {fileID: 0}
   ropeLength: 100
   mousePos: {x: 0, y: 0, z: 0}
+  grabEnemyRigid: {fileID: 0}
 --- !u!50 &1942553670
 Rigidbody2D:
   serializedVersion: 4
@@ -4284,7 +4349,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1999953288}
   - component: {fileID: 1999953289}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: WallChecker
   m_TagString: Untagged
   m_Icon: {fileID: 0}

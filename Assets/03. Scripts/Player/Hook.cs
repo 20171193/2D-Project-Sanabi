@@ -92,8 +92,6 @@ public class Hook : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if(ccdRoutine != null)
-            StopCoroutine(ccdRoutine);
         if(destroyRoutine != null)
             StopCoroutine(destroyRoutine);
 
@@ -118,6 +116,7 @@ public class Hook : MonoBehaviour
     public IEnumerator CCD(float time, Vector3 limitPosition)
     {
         yield return new WaitForSeconds(time);
+        Debug.Log("CCD End");
         if (!isConnected && !isGrabbed)
             transform.position = limitPosition;
         destroyRoutine = StartCoroutine(DestroyRouine());
@@ -132,7 +131,6 @@ public class Hook : MonoBehaviour
 
     private void OnDestroy()
     {
-        Debug.Log("Hook Destroyed");
         // Player Hook Reloading
         OnDestroyHook?.Invoke();
 

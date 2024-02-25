@@ -6,6 +6,7 @@ using UnityEngine;
 public class EnemyTrooper : Enemy
 {
     [Header("Components")]
+    [Space(2)]
     [SerializeField]
     private Transform aimPos;
     public Transform AimPos { get { return aimPos; } }
@@ -19,6 +20,7 @@ public class EnemyTrooper : Enemy
     public GameObject BulletPrefab { get { return bulletPrefab; } }
 
     [Header("Specs")]
+    [Space(2)]
     [SerializeField]
     private float attackCoolTime;
     public float AttackCoolTime { get { return attackCoolTime; } }
@@ -28,6 +30,7 @@ public class EnemyTrooper : Enemy
     public float DetectingTime { get { return detectingTime; } }
 
     [Header("Ballancing")]
+    [Space(2)]
     [SerializeField]
     private Vector3 patrollDestination;
 
@@ -35,10 +38,11 @@ public class EnemyTrooper : Enemy
     private float bulletPower;
 
     //[Header("Ballancing")]
-
     protected override void Awake()
     {
         base.Awake();
+
+        grabbedYPos = 1.5f;
 
         fsm.AddState("Detect", new TrooperDetect(this));
         fsm.AddState("Grabbed", new TrooperGrabbed(this));
@@ -57,9 +61,19 @@ public class EnemyTrooper : Enemy
         Vector3 dist = targetPos - aimPos.position;
         float zRot = Mathf.Atan2(dist.y, dist.x) * Mathf.Rad2Deg;
 
-        GameObject bullet = Instantiate(bulletPrefab, aimPos.position + dist.normalized*2.0f, Quaternion.Euler(0, 0, zRot));
+        GameObject bullet = Instantiate(bulletPrefab, aimPos.position + dist.normalized * 2.0f, Quaternion.Euler(0, 0, zRot));
         Rigidbody2D rigid = bullet.GetComponent<Rigidbody2D>();
         rigid.AddForce(dist.normalized * bulletPower, ForceMode2D.Impulse);
     }
 
+    public override void Grabbed()
+    {
+        fsm.ChangeState("Grabbed");
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (Manager.Layer.playerHookLM.Contain(collision.gameObject.layer))
+            anim.Play("HookHitted");
+    }
 }

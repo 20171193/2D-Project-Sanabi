@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public enum EnemyType
 {
@@ -9,7 +10,7 @@ public enum EnemyType
 }
 
 // Add Enemy common states, and connect transitions from the child classes
-public class Enemy : MonoBehaviour
+public abstract class Enemy : MonoBehaviour
 {
     [Header("Components")]
     [Space(2)]
@@ -19,11 +20,11 @@ public class Enemy : MonoBehaviour
 
     [SerializeField]
     protected Animator anim;
-    public Animator Anim { get { return anim; } }   
+    public Animator Anim { get { return anim; } }
 
     [SerializeField]
-    protected PlayerAction prAction;
-    public PlayerAction PrAction { get { return prAction; } }
+    protected Transform playerTr;
+    public Transform PlayerTr { get { return playerTr; } }
 
     [Header("FSM")]
     [Space(2)]
@@ -31,12 +32,16 @@ public class Enemy : MonoBehaviour
     protected StateMachine<Enemy> fsm;
     public StateMachine<Enemy> FSM { get { return fsm; } }
 
+    [Header("Ballancing")]
+    [Space(2)]
+    [SerializeField]
+    protected float grabbedYPos;
+    public float GrabbedYPos { get { return grabbedYPos; } }
+
     protected virtual void Awake()
     {
         fsm = new StateMachine<Enemy>(this);
-
-        // find Player
-        prAction = GameObject.FindWithTag("Player").GetComponent<PlayerAction>();
+        playerTr = GameObject.FindWithTag("Player").GetComponent<Transform>();    
     }
 
     private void Update()
@@ -51,4 +56,6 @@ public class Enemy : MonoBehaviour
     {
         fsm.LateUpdate();
     }
+
+    public abstract void Grabbed();
 }

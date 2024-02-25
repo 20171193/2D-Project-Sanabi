@@ -8,15 +8,15 @@ TagManager:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Player
   - Water
   - UI
   - Ground
   - RopeInteractable
   - Enemy
-  - 
-  - 
-  - 
+  - EnemyFoot
+  - PlayerHook
+  - EnemyBullet
   - 
   - 
   - 
@@ -40,4 +40,10 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: Player
+    uniqueID: 3897923865
+    locked: 0
+  - name: Enemy
+    uniqueID: 3771405643
     locked: 0

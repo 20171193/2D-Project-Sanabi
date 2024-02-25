@@ -43,13 +43,14 @@ public class TrooperDetect : TrooperBaseState
 
     public void Detecting()
     {
+        targetPos = owner.PlayerTr.position;
+
         AgentRotation();
         AimRotation();
     }
     // Agent rotate to Player
     private void AgentRotation()
     {
-        targetPos = owner.PrAction.transform.position;
         Vector3 agentPos = owner.transform.position;
 
         // Agent Rotation
@@ -61,7 +62,6 @@ public class TrooperDetect : TrooperBaseState
     // Aim rotate to Player
     private void AimRotation()
     {
-        targetPos = owner.PrAction.transform.position;
         Vector3 targetToAim = owner.AimPos.position - targetPos;
         float aimRotZ = Mathf.Atan2(targetToAim.y, targetToAim.x) * Mathf.Rad2Deg;
 
@@ -92,6 +92,10 @@ public class TrooperGrabbed : TrooperBaseState
     public TrooperGrabbed(EnemyTrooper owner)
     {
         this.owner = owner;
+    }
+    public override void Enter()
+    {
+        owner.Anim.Play("Grabbed");
     }
 }
 public class TrooperDie : TrooperBaseState
