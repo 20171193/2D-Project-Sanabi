@@ -171,7 +171,7 @@ public class PlayerRoping : PlayerBaseState
     {
         // Calculate the distance to fired hook and AddForce
         owner.Anim.Play("RopeAction");
-        StartRecoil();
+        //StartRecoil();
     }
 
     public override void FixedUpdate()

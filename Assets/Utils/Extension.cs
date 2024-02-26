@@ -25,4 +25,17 @@ public static class Extension
         Vector3 direction = new Vector3(targetPoint.x - agentPosition.x, targetPoint.y - agentPosition.y, 0).normalized;
         return direction;
     }
+    
+    // convert Vector3 to Vector2 (z = zero) 
+    public static Vector2 ConvertToVector2(this Vector3 origin)
+    {
+        Vector2 ret = new Vector2(origin.x, origin.y);
+        return ret;
+    }
+    // convert Vector2 to Vector3 (z = param)
+    public static Vector3 ConvertToVector3(this Vector2 origin, float zPos)
+    {
+        Vector3 ret = new Vector3(origin.x, origin.y, zPos);
+        return ret;
+    }
 }
