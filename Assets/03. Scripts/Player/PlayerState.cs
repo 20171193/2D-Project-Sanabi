@@ -169,7 +169,9 @@ public class PlayerRoping : PlayerBaseState
 
     public override void Enter()
     {
+        // Calculate the distance to fired hook and AddForce
         owner.Anim.Play("RopeAction");
+        StartRecoil();
     }
 
     public override void FixedUpdate()
@@ -180,9 +182,20 @@ public class PlayerRoping : PlayerBaseState
     public override void Update()
     {
         Rotation();
-        //owner.Anim.SetFloat("RopeMovingPower", Mathf.Abs(owner.Rigid.velocity.magnitude));
     }
 
+    private void StartRecoil()
+    {
+        Vector3 dirX = Vector3.zero;
+        if (owner.transform.position.x <= owner.FiredHook.transform.position.x)
+            dirX = Vector3.right;
+        else
+            dirX = Vector3.left;
+
+        float distX = Mathf.Abs(owner.FiredHook.transform.position.x - owner.transform.position.x);
+        Debug.Log($"StartRecoil : {dirX}, {distX}");
+        owner.Rigid.AddForce(dirX * distX, ForceMode2D.Impulse);
+    }
     private void Rotation()
     {
         // 캐릭터 회전
@@ -191,7 +204,6 @@ public class PlayerRoping : PlayerBaseState
         else if (owner.MoveHzt < 0)
             owner.transform.rotation = Quaternion.Euler(0, -180, 0);
     }
-
     private void RopeMoveMent()
     {
         // 실제 이동
@@ -211,9 +223,15 @@ public class PlayerDash : PlayerBaseState
     }
 
     public override void Enter()
-    { 
+    {
         owner.Anim.Play("Dash");
     }
+
+    //public IEnumerator DashCCD()
+    //{
+    //    //yield return new WaitForSeconds();
+
+    //}
 }
 public class PlayerGrab : PlayerBaseState
 {

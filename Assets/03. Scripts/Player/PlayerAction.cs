@@ -139,6 +139,9 @@ public class PlayerAction : MonoBehaviour
     public Hook FiredHook { get { return firedHook; } }
 
     [SerializeField]
+    private bool isRaycastHit = false;
+
+    [SerializeField]
     private RaycastHit2D hookHitInfo;
 
     [SerializeField]
@@ -268,8 +271,12 @@ public class PlayerAction : MonoBehaviour
         // move cursor
         cursorOb.transform.position = new Vector3(mousePos.x, mousePos.y, 0);
 
+        HookAimSet();
+
         if (!IsJointed)
             RopeRayCast();
+        else
+            hookAim.LineOff();
     }
     // if Raycast hit is not null, linerendering to hit.point
     private void RopeRayCast()
@@ -279,7 +286,7 @@ public class PlayerAction : MonoBehaviour
 
         if (hookHitInfo)
         {
-            HookAimSet();
+            isRaycastHit = true;
 
             // hit is Enemy
             if (Manager.Layer.enemyLM.Contain(hookHitInfo.collider.gameObject.layer))
@@ -289,17 +296,18 @@ public class PlayerAction : MonoBehaviour
                 hookAim.LineOn(LineRenderType.Ground, hookHitInfo.point);
         }
         else
+        {
+            isRaycastHit = false;
             hookAim.LineOff();
+        }
 
     }
     // hookshot to mouse position
     private void OnMouseClick(InputValue value)
     {
-        test.Play();
-
         if (value.isPressed)
         {
-            if (!IsJointed && hookHitInfo)
+            if (!IsJointed && isRaycastHit)
                 HookShoot();
         }
         else
@@ -329,8 +337,13 @@ public class PlayerAction : MonoBehaviour
     #region Hooking
     private void HookAimSet()
     {
-        hookAim.transform.rotation = Quaternion.Euler(0, 0, transform.position.GetAngleToTarget2D(hookHitInfo.point)- 90f);
-        hookAim.transform.position = transform.position + transform.position.GetDirectionToTarget2D(hookHitInfo.point) * 2f;
+        Vector3 dist = mousePos - transform.position;
+        float zRot = Mathf.Atan2(dist.y, dist.x) * Mathf.Rad2Deg;
+        Vector3 aimPos = new Vector3(2f * Mathf.Cos(zRot), 2f * Mathf.Sin(zRot), 0);
+
+        Debug.Log(aimPos);
+        hookAim.transform.rotation = Quaternion.Euler(0, 0, zRot - 90f);
+        hookAim.transform.position = transform.position + hookAim.transform.up*1.7f;
     }
 
     // if hook collide with enemy, Invoke OnGrabbedEnemy
@@ -392,7 +405,6 @@ public class PlayerAction : MonoBehaviour
 
         fsm.ChangeState("Dash");
        
-        rigid.AddForce(Vector3.up * 5f, ForceMode2D.Impulse);
         rigid.AddForce((target.transform.position - transform.position).normalized * 50f, ForceMode2D.Impulse);
         
         // add Player CCD
@@ -414,7 +426,7 @@ public class PlayerAction : MonoBehaviour
 
         rigid.velocity = Vector3.zero;
         Vector3 enemyPos = grabEnemy.transform.position;
-        transform.position = new Vector3(enemyPos.x, enemyPos.y + grabEnemy.GrabbedYPos, 0);
+        transform.position = new Vector3(enemyPos.x, enemyPos.y + GrabEnemy.GrabbedYPos, 0);
 
         fsm.ChangeState("Grab");
         grabEnemy.Grabbed();

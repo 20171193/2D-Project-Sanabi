@@ -42,8 +42,6 @@ public class EnemyTrooper : Enemy
     {
         base.Awake();
 
-        grabbedYPos = 1.5f;
-
         fsm.AddState("Detect", new TrooperDetect(this));
         fsm.AddState("Grabbed", new TrooperGrabbed(this));
         fsm.AddState("Die", new TrooperDie(this));

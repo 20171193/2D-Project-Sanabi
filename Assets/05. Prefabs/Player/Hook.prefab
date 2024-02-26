@@ -177,7 +177,7 @@ DistanceJoint2D:
   m_ConnectedAnchor: {x: 0, y: 0}
   m_AutoConfigureDistance: 0
   m_Distance: 8
-  m_MaxDistanceOnly: 0
+  m_MaxDistanceOnly: 1
 --- !u!95 &2466251688140780575
 Animator:
   serializedVersion: 5
