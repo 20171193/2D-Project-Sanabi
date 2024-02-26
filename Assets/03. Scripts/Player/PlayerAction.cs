@@ -237,10 +237,10 @@ public class PlayerAction : MonoBehaviour
     }
     private void OnJump(InputValue value)
     {
+        if (isJointed || isDash || isGrab) return;
+
         if (isGround)
             Jump();
-        else if (isJointed)
-            RopeJump();
     }
 
     // normal jumpping
@@ -251,13 +251,6 @@ public class PlayerAction : MonoBehaviour
     }
 
     // disjoint hook and rope jumpping
-    private void RopeJump()
-    {
-        firedHook?.DisConnecting();
-        isJointed = false;
-        rigid.AddForce(rigid.velocity.normalized * rigid.velocity.magnitude, ForceMode2D.Impulse);
-        anim.Play("RopeJump");
-    }
     #endregion
 
     #region Mouse / Rope Action
@@ -273,7 +266,7 @@ public class PlayerAction : MonoBehaviour
 
         HookAimSet();
 
-        if (!IsJointed)
+        if (!isJointed && !isGrab && !isDash)
             RopeRayCast();
         else
             hookAim.LineOff();
@@ -312,8 +305,19 @@ public class PlayerAction : MonoBehaviour
         }
         else
         {
-            firedHook?.DisConnecting();
+            isJointed = false;
+            if (firedHook == null) return;
+
+            firedHook.DisConnecting();
+            RopeJump();
         }
+    }
+
+    private void RopeJump()
+    {
+        rigid.AddForce(hookAim.transform.up * 15f, ForceMode2D.Impulse);
+
+        anim.Play("RopeJump");
     }
 
     #endregion
@@ -339,9 +343,7 @@ public class PlayerAction : MonoBehaviour
     {
         Vector3 dist = mousePos - transform.position;
         float zRot = Mathf.Atan2(dist.y, dist.x) * Mathf.Rad2Deg;
-        Vector3 aimPos = new Vector3(2f * Mathf.Cos(zRot), 2f * Mathf.Sin(zRot), 0);
 
-        Debug.Log(aimPos);
         hookAim.transform.rotation = Quaternion.Euler(0, 0, zRot - 90f);
         hookAim.transform.position = transform.position + hookAim.transform.up*1.7f;
     }

@@ -20,6 +20,9 @@ public class Hook : MonoBehaviour
     [SerializeField]
     private LineRenderer lr;
 
+    [SerializeField]
+    private EdgeCollider2D edgeCol;
+
     [Space(3)]
     [Header("Hook Action")]
     [Space(2)]
@@ -60,6 +63,10 @@ public class Hook : MonoBehaviour
 
     private void LineRendering()
     {
+        // Edge Collider Setting
+
+
+
         lr.positionCount = 2;
         lr.SetPosition(0, transform.position);
         lr.SetPosition(1, ownerRigid.position);
@@ -97,8 +104,7 @@ public class Hook : MonoBehaviour
         if(destroyRoutine != null)
             StopCoroutine(destroyRoutine);
 
-        Debug.Log("Connecting");
-
+        Debug.Log($"Hook Trigger : {collision.name}");
         rigid.velocity = Vector3.zero;
 
         if (Manager.Layer.hookInteractableLM.Contain(collision.gameObject.layer))
