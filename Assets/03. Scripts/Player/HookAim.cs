@@ -69,7 +69,8 @@ public class HookAim : MonoBehaviour
     }
     public void LineOff()
     {
-        aimRendererOb.SetActive(false);
+        if (!isLineRendering) return;
+
         lr.positionCount = 0;
         isLineRendering = false;
     }

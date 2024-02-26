@@ -45,6 +45,7 @@ public class Hook : MonoBehaviour
     private void OnEnable()
     {
         lr.positionCount = 0;
+        anim.Play("HookStart");
     }
     private void Start()
     {
@@ -81,6 +82,7 @@ public class Hook : MonoBehaviour
 
         rigid.isKinematic = true;
         rigid.freezeRotation = true;
+
         distJoint.enabled = true;
         distJoint.connectedBody = ownerRigid;
     }
@@ -115,7 +117,8 @@ public class Hook : MonoBehaviour
     // Convex Collision Detection
     public IEnumerator CCD(float time, Vector3 limitPosition)
     {
-        yield return new WaitForSeconds(time);
+        Debug.Log(Mathf.Ceil(time * Time.deltaTime));
+        yield return new WaitForSeconds(time*Time.deltaTime + 0.3f);
         Debug.Log("CCD End");
         if (!isConnected && !isGrabbed)
             transform.position = limitPosition;
