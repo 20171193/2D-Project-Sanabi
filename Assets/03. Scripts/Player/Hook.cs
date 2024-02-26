@@ -20,9 +20,6 @@ public class Hook : MonoBehaviour
     [SerializeField]
     private LineRenderer lr;
 
-    [SerializeField]
-    private EdgeCollider2D edgeCol;
-
     [Space(3)]
     [Header("Hook Action")]
     [Space(2)]
@@ -63,10 +60,6 @@ public class Hook : MonoBehaviour
 
     private void LineRendering()
     {
-        // Edge Collider Setting
-
-
-
         lr.positionCount = 2;
         lr.SetPosition(0, transform.position);
         lr.SetPosition(1, ownerRigid.position);
@@ -123,29 +116,27 @@ public class Hook : MonoBehaviour
     // Convex Collision Detection
     public IEnumerator CCD(float time, Vector3 limitPosition)
     {
-        Debug.Log(Mathf.Ceil(time * Time.deltaTime));
-        yield return new WaitForSeconds(time*Time.deltaTime + 0.3f);
-        Debug.Log("CCD End");
+        yield return new WaitForSeconds(time*Time.deltaTime + 0.1f);
+
         if (!isConnected && !isGrabbed)
+        {
             transform.position = limitPosition;
-        destroyRoutine = StartCoroutine(DestroyRouine());
+            rigid.velocity = Vector2.zero;
+        }
+
+        //destroyRoutine = StartCoroutine(DestroyRouine());
     }
 
-    private IEnumerator DestroyRouine()
-    {
-        yield return new WaitForSeconds(destroyTime);
-        Destroy(gameObject);
-    }
+    //private IEnumerator DestroyRouine()
+    //{
+    //    yield return new WaitForSeconds(destroyTime);
+    //    Destroy(gameObject, destroyTime);
+    //}
 
 
     private void OnDestroy()
     {
         // Player Hook Reloading
         OnDestroyHook?.Invoke();
-
-        if(ccdRoutine != null)
-            StopCoroutine(ccdRoutine);
-        if (destroyRoutine != null)
-            StopCoroutine(destroyRoutine);
     }
 }

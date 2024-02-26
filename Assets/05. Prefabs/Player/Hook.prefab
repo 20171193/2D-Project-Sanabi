@@ -46,7 +46,6 @@ GameObject:
   - component: {fileID: 9204252272020083190}
   - component: {fileID: 2466251688140780575}
   - component: {fileID: -835701505133038319}
-  - component: {fileID: 1219179037032763216}
   - component: {fileID: 504550284057011342}
   m_Layer: 10
   m_Name: Hook
@@ -300,28 +299,6 @@ LineRenderer:
     generateLightingData: 0
   m_UseWorldSpace: 1
   m_Loop: 0
---- !u!68 &1219179037032763216
-EdgeCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5563271056111807986}
-  m_Enabled: 0
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
-  m_EdgeRadius: 0
-  m_Points:
-  - {x: -0.84375, y: 0}
-  - {x: 0.84375, y: 0}
-  m_AdjacentStartPoint: {x: 0, y: 0}
-  m_AdjacentEndPoint: {x: 0, y: 0}
-  m_UseAdjacentStartPoint: 0
-  m_UseAdjacentEndPoint: 0
 --- !u!114 &504550284057011342
 MonoBehaviour:
   m_ObjectHideFlags: 0

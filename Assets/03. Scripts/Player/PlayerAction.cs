@@ -305,11 +305,12 @@ public class PlayerAction : MonoBehaviour
         }
         else
         {
-            isJointed = false;
-            if (firedHook == null) return;
-
-            firedHook.DisConnecting();
-            RopeJump();
+            if (isJointed)
+            {
+                isJointed = false;
+                firedHook?.DisConnecting();
+                RopeJump();
+            }
         }
     }
 
@@ -360,7 +361,7 @@ public class PlayerAction : MonoBehaviour
         FiredHookInitialSetting(firedHook);
 
         // Hook shoot
-        firedHook.Rigid?.AddForce(hookAim.transform.position.GetDirectionToTarget2D(hookHitInfo.point) * hookShootPower, ForceMode2D.Impulse);
+        firedHook.Rigid?.AddForce(hookAim.transform.position.GetDirectionTo2DTarget(hookHitInfo.point) * hookShootPower, ForceMode2D.Impulse);
     }
     private void FiredHookInitialSetting(Hook hook)
     {
@@ -374,7 +375,7 @@ public class PlayerAction : MonoBehaviour
 
         // Convex Collision Detection setting
         // Time = Distance / Velocity
-        hook.ccdRoutine = StartCoroutine(hook.CCD(ropeLength / hookShootPower, new Vector3(hookHitInfo.point.x, hookHitInfo.point.y, 0)));
+        hook.ccdRoutine = hook.StartCoroutine(hook.CCD(ropeLength / hookShootPower, new Vector3(hookHitInfo.point.x, hookHitInfo.point.y, 0)));
 
         // destroy by no collision
         hook.destroyTime = hookShootCoolTime;
