@@ -4,15 +4,29 @@ using UnityEngine;
 
 public class PoolManager : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    private Dictionary<string, ObjectPooler> poolDic = new Dictionary<string, ObjectPooler>();
+
+    public void CreatePool(PooledObject prefab, int size, int capacity)
     {
-        
+        GameObject gameObject = new GameObject();
+        gameObject.name = $"Pool_{prefab.name}";
+
+        ObjectPooler pooler = gameObject.AddComponent<ObjectPooler>();
+        pooler.CreatePool(prefab, size, capacity);
+
+        poolDic.Add(prefab.name, pooler);
     }
 
-    // Update is called once per frame
-    void Update()
+    public void DestroyPool(PooledObject prefab)
     {
-        
+        ObjectPooler pooler = poolDic[prefab.name];
+        Destroy(pooler.gameObject);
+
+        poolDic.Remove(prefab.name);
+    }
+
+    public PooledObject GetPool(PooledObject prefab, Vector3 position, Quaternion rotation)
+    {
+        return poolDic[prefab.name].GetPool(position, rotation);
     }
 }
