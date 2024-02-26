@@ -124,6 +124,7 @@ public class PlayerAction : MonoBehaviour
     [SerializeField]
     private bool isHookShoot = false;
     public bool IsHookShoot { get { return isHookShoot; } }
+
     [SerializeField]
     private bool isDash = false;
     public bool IsDash { get { return isDash; } }
@@ -150,6 +151,9 @@ public class PlayerAction : MonoBehaviour
     [SerializeField]
     private Enemy grabEnemy;
     public Enemy GrabEnemy { get { return grabEnemy; } }
+
+    [SerializeField]
+    private Animation test;
     #endregion
 
     private void Awake()
@@ -291,6 +295,8 @@ public class PlayerAction : MonoBehaviour
     // hookshot to mouse position
     private void OnMouseClick(InputValue value)
     {
+        test.Play();
+
         if (value.isPressed)
         {
             if (!IsJointed && hookHitInfo)
@@ -364,7 +370,6 @@ public class PlayerAction : MonoBehaviour
     {
         isHookShoot = false;
     }
-
     private void HookHitGround()
     {
         StopCoroutine(firedHook.ccdRoutine);
@@ -378,6 +383,7 @@ public class PlayerAction : MonoBehaviour
 
         Dash(enemy);
     }
+
     private void Dash(GameObject target)
     {
         isDash = true;
@@ -395,6 +401,7 @@ public class PlayerAction : MonoBehaviour
     }
     private void Grab(GameObject target)
     {
+        // Check Enemy
         grabEnemy = target.GetComponent<Enemy>();
         if (grabEnemy == null)
         {
@@ -404,6 +411,7 @@ public class PlayerAction : MonoBehaviour
         }
 
         isGrab = true;
+
         rigid.velocity = Vector3.zero;
         Vector3 enemyPos = grabEnemy.transform.position;
         transform.position = new Vector3(enemyPos.x, enemyPos.y + grabEnemy.GrabbedYPos, 0);
