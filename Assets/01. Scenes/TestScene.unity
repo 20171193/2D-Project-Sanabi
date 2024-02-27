@@ -1048,7 +1048,7 @@ GameObject:
   - component: {fileID: 955482361}
   - component: {fileID: 955482362}
   m_Layer: 3
-  m_Name: HookPos
+  m_Name: HookAim
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1593,6 +1593,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 386e1937d80a1834e910756576d39c1e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  OnTestEvent:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &1477094885
 GameObject:
   m_ObjectHideFlags: 0
@@ -1604,7 +1607,7 @@ GameObject:
   - component: {fileID: 1477094886}
   - component: {fileID: 1477094887}
   m_Layer: 3
-  m_Name: Aim
+  m_Name: AimRenderer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4122,7 +4125,10 @@ GameObject:
   - component: {fileID: 1942553665}
   - component: {fileID: 1942553668}
   - component: {fileID: 1942553671}
-  - component: {fileID: 1942553669}
+  - component: {fileID: 1942553675}
+  - component: {fileID: 1942553674}
+  - component: {fileID: 1942553673}
+  - component: {fileID: 1942553672}
   m_Layer: 3
   m_Name: Player_SNB
   m_TagString: Player
@@ -4195,50 +4201,6 @@ CapsuleCollider2D:
   m_Offset: {x: -0.10361928, y: 0.02309227}
   m_Size: {x: 1.1397363, y: 2.391045}
   m_Direction: 0
---- !u!114 &1942553669
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1942553664}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fee423871fc61d34ea1f6a85993a0cdd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  rigid: {fileID: 1942553670}
-  anim: {fileID: 1942553671}
-  mainCamera: {fileID: 519420031}
-  cursorOb: {fileID: 113746422}
-  hookAim: {fileID: 955482362}
-  hookPrefab: {fileID: 504550284057011342, guid: 9c0c4d3285540fc4cb9aa73ead938b19, type: 3}
-  movePower: 25
-  maxMoveSpeed: 8
-  jumpPower: 12
-  flyMovePower: 1
-  ropeMovePower: 1.5
-  ropeAccelerationPower: 5
-  hookShootPower: 50
-  hookShootCoolTime: 2
-  MoveForce_Threshold: 0.1
-  JumpForce_Threshold: 0.01
-  isGround: 0
-  hztBrakePower: 10
-  vtcBrakePower: 0
-  moveHzt: 0
-  moveVtc: 0
-  inputJumpPower: 0
-  isJointed: 0
-  isHookShoot: 0
-  isDash: 0
-  isGrab: 0
-  firedHook: {fileID: 0}
-  isRaycastHit: 0
-  ropeLength: 30
-  mousePos: {x: 0, y: 0, z: 0}
-  grabEnemy: {fileID: 0}
-  test: {fileID: 194435412}
 --- !u!50 &1942553670
 Rigidbody2D:
   serializedVersion: 4
@@ -4280,6 +4242,93 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
+--- !u!114 &1942553672
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1942553664}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bb2a9d3c6d6eafe48b83aaf759c4a9e3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rigid: {fileID: 0}
+  anim: {fileID: 0}
+  cam: {fileID: 0}
+  ropeSkillPower: 5
+--- !u!114 &1942553673
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1942553664}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9c0d98875274f2a48b0b6b6a7fcbfc2c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rigid: {fileID: 0}
+  anim: {fileID: 0}
+  cam: {fileID: 0}
+  cursorOb: {fileID: 113746422}
+  hookAim: {fileID: 955482362}
+  hookPrefab: {fileID: 504550284057011342, guid: 9c0c4d3285540fc4cb9aa73ead938b19, type: 3}
+  hookShootPower: 50
+  hookShootCoolTime: 2
+  ropeLength: 30
+  mousePos: {x: 0, y: 0, z: 0}
+  firedHook: {fileID: 0}
+--- !u!114 &1942553674
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1942553664}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3dfe3aaee7bb7ba49a02d49318a4acad, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rigid: {fileID: 0}
+  anim: {fileID: 0}
+  cam: {fileID: 0}
+  movePower: 30
+  maxMoveSpeed: 12
+  hztBrakePower: 30
+  vtcBrakePower: 30
+  holdingMovePower: 15
+  maxHoldingMoveSpeed: 7
+  holdingHztBrakePower: 15
+  jumpPower: 15
+  flyMovePower: 1
+  ropeMovePower: 5
+  moveHzt: 0
+  moveVtc: 0
+--- !u!114 &1942553675
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1942553664}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 217a0958360d19643a95a8e816b64dfc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rigid: {fileID: 0}
+  anim: {fileID: 0}
+  cam: {fileID: 0}
+  isGround: 0
+  isJointed: 0
+  isDash: 0
+  isGrab: 0
+  isHookShoot: 0
+  isRaycastHit: 0
 --- !u!1 &1999953287
 GameObject:
   m_ObjectHideFlags: 0
