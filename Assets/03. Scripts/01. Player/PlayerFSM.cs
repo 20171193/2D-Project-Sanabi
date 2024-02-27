@@ -56,10 +56,6 @@ public class PlayerFSM : PlayerBase
         {
             return !isGround && !isJointed && rigid.velocity.y > JumpForce_Threshold;
         });
-        fsm.AddTransition("Jump", "Idle", 0f, () =>
-        {
-            return isGround;
-        });
         fsm.AddTransition("Jump", "Fall", 0f, () =>
         {
             return rigid.velocity.y < -JumpForce_Threshold;

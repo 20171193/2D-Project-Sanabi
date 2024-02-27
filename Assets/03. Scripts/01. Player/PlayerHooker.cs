@@ -106,6 +106,8 @@ public class PlayerHooker : PlayerBase
                 firedHook?.DisConnecting();
                 RopeJump();
             }
+            else
+                Destroy(firedHook);
         }
     }
     private void RopeJump()
