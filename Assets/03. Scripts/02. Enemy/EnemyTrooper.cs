@@ -64,6 +64,11 @@ public class EnemyTrooper : Enemy
         rigid.AddForce(dist.normalized * bulletPower, ForceMode2D.Impulse);
     }
 
+    public override void Died()
+    {
+        Destroy(gameObject, 3f);
+        fsm.ChangeState("Die");
+    }
     public override void Grabbed(out float holdingYpoint)
     {
         holdingYpoint = grabbedYPos;

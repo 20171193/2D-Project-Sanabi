@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.Events;
 using static UnityEngine.RuleTile.TilingRuleOutput;
@@ -103,5 +104,10 @@ public class TrooperDie : TrooperBaseState
     public TrooperDie(EnemyTrooper owner)
     {
         this.owner = owner;
+    }
+
+    public override void Enter()
+    {
+        owner.Anim.Play("Die");
     }
 }
