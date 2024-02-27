@@ -176,7 +176,7 @@ DistanceJoint2D:
   m_Anchor: {x: 0, y: 0}
   m_ConnectedAnchor: {x: 0, y: 0}
   m_AutoConfigureDistance: 0
-  m_Distance: 8
+  m_Distance: 12
   m_MaxDistanceOnly: 1
 --- !u!95 &2466251688140780575
 Animator:
@@ -315,7 +315,6 @@ MonoBehaviour:
   distJoint: {fileID: 9204252272020083190}
   anim: {fileID: 2466251688140780575}
   lr: {fileID: -835701505133038319}
-  edgeCol: {fileID: 0}
   ownerRigid: {fileID: 0}
   isConnected: 0
   isGrabbed: 0

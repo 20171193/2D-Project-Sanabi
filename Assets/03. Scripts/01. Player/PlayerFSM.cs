@@ -51,6 +51,7 @@ public class PlayerFSM : PlayerBase
         fsm.AddState("Roping", new PlayerRoping(this));
         fsm.AddState("Dash", new PlayerDash(this));
         fsm.AddState("Grab", new PlayerGrab(this));
+        fsm.AddState("WallSlide", new PlayerWallSlide(this));
 
         fsm.AddAnyState("Jump", () =>
         {
