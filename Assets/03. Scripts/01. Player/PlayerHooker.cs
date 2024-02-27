@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -43,6 +44,8 @@ public class PlayerHooker : PlayerBase
     [SerializeField]
     protected Hook firedHook;
     public Hook FiredHook { get { return firedHook; } }
+
+    private Coroutine hookReloadRoutine;
 
     protected override void Awake()
     {
@@ -92,11 +95,14 @@ public class PlayerHooker : PlayerBase
     }
     // hookshot to mouse position
     private void OnMouseClick(InputValue value)
-    {
+    { 
         if (value.isPressed)
         {
-            if (!playerFSM.IsJointed && playerFSM.IsRaycastHit)
-                HookShoot();
+            if(playerFSM.IsHookShoot) return;
+            if(playerFSM.IsGrab || playerFSM.IsJointed) return;
+            if(!playerFSM.IsRaycastHit) return;
+
+            HookShoot();
         }
         else
         {
@@ -106,14 +112,27 @@ public class PlayerHooker : PlayerBase
                 firedHook?.DisConnecting();
                 RopeJump();
             }
-            else
-                Destroy(firedHook);
+            else if (playerFSM.IsGrab)
+            {
+                playerFSM.IsGrab = false;
+                GrabJump();
+            }
         }
     }
     private void RopeJump()
     {
         rigid.AddForce(hookAim.transform.up * 15f, ForceMode2D.Impulse);
         anim.Play("RopeJump");
+        HookReloading();
+    }
+    private void GrabJump()
+    {
+        rigid.gravityScale = 1;
+
+        grabEnemy.Died();
+        rigid.AddForce(hookAim.transform.up * 15f, ForceMode2D.Impulse);
+        anim.Play("RopeJump");
+        HookReloading();
     }
     #endregion
 
@@ -154,14 +173,14 @@ public class PlayerHooker : PlayerBase
         // Convex Collision Detection setting
         // Time = Distance / Velocity
         hook.ccdRoutine = hook.StartCoroutine(hook.CCD(ropeLength / hookShootPower, new Vector3(hookHitInfo.point.x, hookHitInfo.point.y, 0)));
-
-        // destroy by no collision
-        hook.destroyTime = hookShootCoolTime;
     }
     #endregion
     #region Hooking Action
     private void HookReloading()
     {
+        if (hookReloadRoutine != null)
+            StopCoroutine(hookReloadRoutine);
+
         playerFSM.IsHookShoot = false;
     }
     private void HookHitGround()
@@ -179,4 +198,9 @@ public class PlayerHooker : PlayerBase
     }
     #endregion
 
+    IEnumerator HookReloadRoutine()
+    {
+        yield return new WaitForSeconds(hookShootCoolTime);
+        playerFSM.IsHookShoot = false;
+    }
 }

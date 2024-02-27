@@ -57,5 +57,6 @@ public abstract class Enemy : MonoBehaviour
         fsm.LateUpdate();
     }
 
+    public abstract void Died();
     public abstract void Grabbed(out float holdingYPoint);
 }

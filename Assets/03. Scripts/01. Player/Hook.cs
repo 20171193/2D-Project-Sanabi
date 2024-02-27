@@ -40,7 +40,6 @@ public class Hook : MonoBehaviour
     public float destroyTime;
 
     public Coroutine ccdRoutine;
-    private Coroutine destroyRoutine;
 
     private void OnEnable()
     {
@@ -94,9 +93,6 @@ public class Hook : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if(destroyRoutine != null)
-            StopCoroutine(destroyRoutine);
-
         Debug.Log($"Hook Trigger : {collision.name}");
         rigid.velocity = Vector3.zero;
 
@@ -123,16 +119,7 @@ public class Hook : MonoBehaviour
             transform.position = limitPosition;
             rigid.velocity = Vector2.zero;
         }
-
-        //destroyRoutine = StartCoroutine(DestroyRouine());
     }
-
-    //private IEnumerator DestroyRouine()
-    //{
-    //    yield return new WaitForSeconds(destroyTime);
-    //    Destroy(gameObject, destroyTime);
-    //}
-
 
     private void OnDestroy()
     {

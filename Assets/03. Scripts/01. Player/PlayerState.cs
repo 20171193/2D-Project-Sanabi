@@ -55,7 +55,6 @@ public class PlayerRun : PlayerBaseState
 
         // 실제 이동
         owner.Rigid.AddForce(Vector2.right * mover.MoveHzt * mover.MovePower);
-        Debug.Log(Vector2.right * mover.MoveHzt * mover.MovePower);
         // 이동속도 제한
         owner.Rigid.velocity = new Vector2(Mathf.Clamp(owner.Rigid.velocity.x, -mover.MaxMoveSpeed, mover.MaxMoveSpeed), owner.Rigid.velocity.y);
     }
@@ -89,10 +88,60 @@ public class PlayerRunStop : PlayerBaseState
         // 브레이크 적용
         if (owner.Rigid.velocity.x > PlayerBase.MoveForce_Threshold)
             owner.Rigid.AddForce(Vector2.left * mover.HztBrakePower);
-        else if (owner.Rigid.velocity.x < PlayerBase.MoveForce_Threshold)
+        else if (owner.Rigid.velocity.x < -PlayerBase.MoveForce_Threshold)
             owner.Rigid.AddForce(Vector2.right * mover.HztBrakePower);
     }
 }
+#endregion
+
+#region WallSliding
+public class PlayerWallSlide : PlayerBaseState
+{
+    private PlayerMover mover;
+    public PlayerWallSlide(PlayerFSM owner)
+    {
+        this.owner = owner;
+        mover = owner.PrMover;
+    }
+
+    public override void Enter()
+    {
+        Debug.Log("Enter WallSlide");
+
+        owner.Rigid.gravityScale = 0;
+        owner.Anim.Play("WallSlide");
+    }
+
+    public override void FixedUpdate()
+    {
+        WallMove();
+    }
+    private void WallMove()
+    {
+        owner.Anim.SetFloat("MovePower", Mathf.Abs(mover.MoveVtc));
+
+        if (mover.MoveVtc == 0)
+        {
+            // brake
+            if (owner.Rigid.velocity.y > PlayerBase.MoveForce_Threshold)
+                owner.Rigid.AddForce(Vector2.down * mover.VtcBrakePower);
+            else if (owner.Rigid.velocity.y < -PlayerBase.MoveForce_Threshold)
+                owner.Rigid.AddForce(Vector2.up * mover.VtcBrakePower);
+        }
+        else
+        {
+            owner.Rigid.AddForce(Vector2.up * mover.MoveVtc * mover.MovePower);
+            owner.Rigid.velocity = new Vector2(Mathf.Clamp(owner.Rigid.velocity.y, -mover.MaxMoveSpeed, mover.MaxMoveSpeed), owner.Rigid.velocity.y);
+        }
+    }
+
+    public override void Exit()
+    {
+        owner.Rigid.gravityScale = 1;
+        owner.Anim.SetFloat("MovePower", 0);
+    }
+}
+
 #endregion
 
 #region Jump / Fall
