@@ -73,7 +73,7 @@ public class PlayerHooker : PlayerBase
     private void RopeRayCast()
     {
         Vector2 rayDir = (mousePos - transform.position).normalized;
-        hookHitInfo = Physics2D.Raycast(transform.position, rayDir, ropeLength, Manager.Layer.hookInteractableLM);
+        hookHitInfo = Physics2D.Raycast(transform.position, rayDir, ropeLength, Manager.Layer.playerInteractableLM);
 
         if (hookHitInfo)
         {

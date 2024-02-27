@@ -107,7 +107,6 @@ public class PlayerWallSlide : PlayerBaseState
     public override void Enter()
     {
         Debug.Log("Enter WallSlide");
-
         owner.Rigid.gravityScale = 0;
         owner.Anim.Play("WallSlide");
     }
@@ -130,8 +129,16 @@ public class PlayerWallSlide : PlayerBaseState
         }
         else
         {
-            owner.Rigid.AddForce(Vector2.up * mover.MoveVtc * mover.MovePower);
-            owner.Rigid.velocity = new Vector2(Mathf.Clamp(owner.Rigid.velocity.y, -mover.MaxMoveSpeed, mover.MaxMoveSpeed), owner.Rigid.velocity.y);
+            if (mover.MoveVtc < 0)
+            {
+                owner.Rigid.AddForce(Vector2.up * mover.MoveVtc * mover.MovePower, ForceMode2D.Force);
+                owner.Rigid.velocity = new Vector2(owner.Rigid.velocity.x, Mathf.Clamp(owner.Rigid.velocity.y, -mover.MaxMoveSpeed, mover.MaxMoveSpeed));
+            }
+            else
+            {
+                owner.Rigid.AddForce(Vector2.up * mover.MoveVtc * mover.MovePower/2f, ForceMode2D.Force);
+                owner.Rigid.velocity = new Vector2(owner.Rigid.velocity.x, Mathf.Clamp(owner.Rigid.velocity.y, -mover.MaxMoveSpeed/2f, mover.MaxMoveSpeed/2f));
+            }
         }
     }
 

@@ -13,27 +13,31 @@ public class PlayerFSM : PlayerBase
 
     #region check extra State
     [SerializeField]
-    protected bool isGround;
+    private bool isGround;
     public bool IsGround { get { return isGround; } set { isGround = value; } }
 
     [SerializeField]
-    protected bool isJointed = false;
+    private bool isInWall;
+    public bool IsInWall { get { return isInWall; } set { isInWall = value; } }
+
+    [SerializeField]
+    private bool isJointed = false;
     public bool IsJointed { get { return isJointed; } set { isJointed = value; } }
 
     [SerializeField]
-    protected bool isDash = false;
+    private bool isDash = false;
     public bool IsDash { get { return isDash; } set { isDash = value; } }
 
     [SerializeField]
-    protected bool isGrab = false;
+    private bool isGrab = false;
     public bool IsGrab { get { return isGrab; } set { isGrab = value; } }
 
     [SerializeField]
-    protected bool isHookShoot = false;
+    private bool isHookShoot = false;
     public bool IsHookShoot { get { return isHookShoot; } set { isHookShoot = value; } }
 
     [SerializeField]
-    protected bool isRaycastHit = false;
+    private bool isRaycastHit = false;
     public bool IsRaycastHit { get { return isRaycastHit; }set { isRaycastHit = value; } }
     #endregion
 
@@ -53,9 +57,15 @@ public class PlayerFSM : PlayerBase
         fsm.AddState("Grab", new PlayerGrab(this));
         fsm.AddState("WallSlide", new PlayerWallSlide(this));
 
+        fsm.AddAnyState("WallSlide", () =>
+        {
+            return isInWall;
+        });
+
         fsm.AddAnyState("Jump", () =>
         {
-            return !isGround && !isJointed && rigid.velocity.y > JumpForce_Threshold;
+            return !isInWall && !isGround && !isJointed 
+                    && rigid.velocity.y > JumpForce_Threshold;
         });
         fsm.AddTransition("Jump", "Fall", 0f, () =>
         {
@@ -63,7 +73,8 @@ public class PlayerFSM : PlayerBase
         });
         fsm.AddAnyState("Fall", () =>
         {
-            return !isGround && !isJointed && rigid.velocity.y < -JumpForce_Threshold;
+            return !isInWall && !isGround && !isJointed 
+                    && rigid.velocity.y < -JumpForce_Threshold;
         });
         fsm.AddTransition("Fall", "Idle", 0f, () =>
         {

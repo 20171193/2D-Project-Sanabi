@@ -96,7 +96,7 @@ public class Hook : MonoBehaviour
         Debug.Log($"Hook Trigger : {collision.name}");
         rigid.velocity = Vector3.zero;
 
-        if (Manager.Layer.hookInteractableLM.Contain(collision.gameObject.layer))
+        if (Manager.Layer.playerInteractableLM.Contain(collision.gameObject.layer))
         {
             if (Manager.Layer.enemyLM.Contain(collision.gameObject.layer))
                 Grab(collision.gameObject);

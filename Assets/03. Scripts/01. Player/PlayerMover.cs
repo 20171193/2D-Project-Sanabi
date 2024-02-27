@@ -87,6 +87,14 @@ public class PlayerMover : PlayerBase
 
         if (playerFSM.IsGround)
             Jump();
+        if (playerFSM.IsInWall)
+            WallJump();
+    }
+
+    private void WallJump()
+    {
+        anim.Play("Jump");
+        rigid.velocity = new Vector2(moveHzt * 3f, rigid.velocity.y + jumpPower);
     }
 
     // normal jumpping
@@ -112,6 +120,19 @@ public class PlayerMover : PlayerBase
             // ground check
             playerFSM.IsGround = true;
         }
+
+        if(Manager.Layer.playerInteractableLM.Contain(collision.gameObject.layer))
+        {
+            if (playerFSM.IsGround) return;
+            if (playerFSM.IsJointed)
+            {
+                //playerHooker.FiredHook.DisConnecting();
+                //playerFSM.IsJointed = false;
+            }
+
+            playerFSM.IsInWall = true;
+            playerFSM.ChangeState("WallSlide");
+        }
     }
     private void OnTriggerExit2D(Collider2D collision)
     {
@@ -119,6 +140,13 @@ public class PlayerMover : PlayerBase
         {
             // ground check
             playerFSM.IsGround = false;
+        }
+
+        if (Manager.Layer.playerInteractableLM.Contain(collision.gameObject.layer))
+        {
+            if (playerFSM.IsGround) return;
+
+            playerFSM.IsInWall = false;
         }
     }
 }
