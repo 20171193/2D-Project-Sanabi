@@ -7,7 +7,7 @@ public class LayerManager : MonoBehaviour
     [Header("IsGround")]
     public LayerMask groundLM;
     [Header("HookGround")]
-    public LayerMask hookInteractableLM;
+    public LayerMask playerInteractableLM;
     [Header("Player Hook")]
     public LayerMask playerHookLM;
     [Header("Enemy")]

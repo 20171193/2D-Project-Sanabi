@@ -13,14 +13,14 @@ TagManager:
   - UI
   - Ground
   - RopeInteractable
+  - Wall
+  - 
+  - 
+  - 
   - Enemy
   - EnemyFoot
-  - PlayerHook
   - EnemyBullet
-  - 
-  - 
-  - 
-  - 
+  - PlayerHook
   - 
   - 
   - 
