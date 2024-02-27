@@ -64,8 +64,9 @@ public class EnemyTrooper : Enemy
         rigid.AddForce(dist.normalized * bulletPower, ForceMode2D.Impulse);
     }
 
-    public override void Grabbed()
+    public override void Grabbed(out float holdingYpoint)
     {
+        holdingYpoint = grabbedYPos;
         fsm.ChangeState("Grabbed");
     }
 

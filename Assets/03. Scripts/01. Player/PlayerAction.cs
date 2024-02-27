@@ -25,9 +25,11 @@ public class PlayerAction : MonoBehaviour
     [SerializeField]
     private Camera mainCamera;
 
+    // + mouse controller
     [SerializeField]
     private GameObject cursorOb;
 
+    // + hooker
     [SerializeField]
     private HookAim hookAim;
 
@@ -54,7 +56,6 @@ public class PlayerAction : MonoBehaviour
     [SerializeField]
     private float flyMovePower;
     public float FlyMovePower { get { return flyMovePower; } }
-
     #endregion
 
     #region Rope Movement
@@ -250,7 +251,6 @@ public class PlayerAction : MonoBehaviour
         rigid.velocity = new Vector2(rigid.velocity.x, rigid.velocity.y + jumpPower);
     }
 
-    // disjoint hook and rope jumpping
     #endregion
 
     #region Mouse / Rope Action
@@ -317,7 +317,6 @@ public class PlayerAction : MonoBehaviour
     private void RopeJump()
     {
         rigid.AddForce(hookAim.transform.up * 15f, ForceMode2D.Impulse);
-
         anim.Play("RopeJump");
     }
 
