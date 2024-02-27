@@ -24,19 +24,30 @@ public class PlayerHooker : PlayerBase
     [SerializeField]
     private float hookShootCoolTime;
     public float HookShootCoolTime { get { return hookShootCoolTime; } }
+    
+    [SerializeField]
+    private float ropeLength;  // Raycast distance
+    public float RopeLength { get { return ropeLength; } }
+
+    private RaycastHit2D hookHitInfo;
 
     [Space(3)]
     [Header("Ballancing")]
     [Space(2)]
     [SerializeField]
-    private RaycastHit2D hookHitInfo;
-
-    [SerializeField]
-    private float ropeLength;  // Raycast distance
-    public float RopeLength { get { return ropeLength; } }
-
-    [SerializeField]
     private Vector3 mousePos;
+
+    private Enemy grabEnemy;
+    public Enemy GrabEnemy { get { return grabEnemy; } set { grabEnemy = value; } }
+
+    [SerializeField]
+    protected Hook firedHook;
+    public Hook FiredHook { get { return firedHook; } }
+
+    protected override void Awake()
+    {
+        base.Awake();
+    }
 
     #region Mouse / Rope Action
     // Raycast to mouse position
@@ -45,13 +56,12 @@ public class PlayerHooker : PlayerBase
         // cursorPos is mousePos
         // +Linerendering
         mousePos = cam.ScreenToWorldPoint(Input.mousePosition);
-
         // move cursor
         cursorOb.transform.position = new Vector3(mousePos.x, mousePos.y, 0);
 
         HookAimSet();
 
-        if (!isJointed && !isGrab && !isDash)
+        if (!playerFSM.IsJointed && !playerFSM.IsGrab && !playerFSM.IsDash)
             RopeRayCast();
         else
             hookAim.LineOff();
@@ -64,7 +74,7 @@ public class PlayerHooker : PlayerBase
 
         if (hookHitInfo)
         {
-            isRaycastHit = true;
+            playerFSM.IsRaycastHit = true;
 
             // hit is Enemy
             if (Manager.Layer.enemyLM.Contain(hookHitInfo.collider.gameObject.layer))
@@ -75,7 +85,7 @@ public class PlayerHooker : PlayerBase
         }
         else
         {
-            isRaycastHit = false;
+            playerFSM.IsRaycastHit = false;
             hookAim.LineOff();
         }
 
@@ -85,27 +95,26 @@ public class PlayerHooker : PlayerBase
     {
         if (value.isPressed)
         {
-            if (!IsJointed && isRaycastHit)
+            if (!playerFSM.IsJointed && playerFSM.IsRaycastHit)
                 HookShoot();
         }
         else
         {
-            if (isJointed)
+            if (playerFSM.IsJointed)
             {
-                isJointed = false;
+                playerFSM.IsJointed = false;
                 firedHook?.DisConnecting();
                 RopeJump();
             }
         }
     }
-
     private void RopeJump()
     {
         rigid.AddForce(hookAim.transform.up * 15f, ForceMode2D.Impulse);
         anim.Play("RopeJump");
     }
-
     #endregion
+
     #region Hooking
     private void HookAimSet()
     {
@@ -120,7 +129,7 @@ public class PlayerHooker : PlayerBase
     // else if hook collide with ground, Invoke OnGrabbedGround
     private void HookShoot()
     {
-        isHookShoot = true;
+        playerFSM.IsHookShoot = true;
         hookAim.LineOff();
         anim.Play("RopeShot");
 
@@ -151,20 +160,20 @@ public class PlayerHooker : PlayerBase
     #region Hooking Action
     private void HookReloading()
     {
-        isHookShoot = false;
+        playerFSM.IsHookShoot = false;
     }
     private void HookHitGround()
     {
         StopCoroutine(firedHook.ccdRoutine);
 
-        isJointed = true;
-        fsm.ChangeState("Roping");
+        playerFSM.IsJointed = true;
+        playerFSM.ChangeState("Roping");
     }
     private void HookHitEnemy(GameObject target)
     {
         StopCoroutine(firedHook.ccdRoutine);
 
-        skill.Dash(target);
+        playerSkill.Dash(target);
     }
     #endregion
 

@@ -66,6 +66,11 @@ public class PlayerMover : PlayerBase
     protected float moveVtc;  // Keyboard input - 'W', 'S' *Wall Movement 
     public float MoveVtc { get { return moveVtc; } }
 
+    protected override void Awake()
+    {
+        base.Awake();
+    }
+
     #region Normal Movement
     // Keyboard Acition
     // move horizontally with keyboard "a" key and "d" key
@@ -78,9 +83,9 @@ public class PlayerMover : PlayerBase
     }
     private void OnJump(InputValue value)
     {
-        if (isJointed || isDash || isGrab) return;
+        if (playerFSM.IsJointed || playerFSM.IsDash || playerFSM.IsGrab) return;
 
-        if (isGround)
+        if (playerFSM.IsGround)
             Jump();
     }
 
@@ -95,8 +100,8 @@ public class PlayerMover : PlayerBase
     #region Skills
     private void OnRopeForce(InputValue value)
     {
-        if (isJointed)
-            skill.RopeForce();
+        if (playerFSM.IsJointed)
+            playerSkill.RopeForce();
     }
     #endregion
 
@@ -105,7 +110,15 @@ public class PlayerMover : PlayerBase
         if (Manager.Layer.groundLM.Contain(collision.gameObject.layer))
         {
             // ground check
-            isGround = true;
+            playerFSM.IsGround = true;
+        }
+    }
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if (Manager.Layer.groundLM.Contain(collision.gameObject.layer))
+        {
+            // ground check
+            playerFSM.IsGround = false;
         }
     }
 }

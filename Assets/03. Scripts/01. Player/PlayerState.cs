@@ -5,13 +5,13 @@ using static UnityEngine.RuleTile.TilingRuleOutput;
 
 public class PlayerBaseState : BaseState
 {
-    protected PlayerBase owner;
+    protected PlayerFSM owner;
 }
 
 #region Idle
 public class PlayerIdle : PlayerBaseState
 {
-    public PlayerIdle(PlayerBase owner)
+    public PlayerIdle(PlayerFSM owner)
     {
         this.owner = owner;
     }
@@ -27,14 +27,15 @@ public class PlayerIdle : PlayerBaseState
 public class PlayerRun : PlayerBaseState
 {
     private PlayerMover mover;
-    public PlayerRun(PlayerBase owner)
+    public PlayerRun(PlayerFSM owner)
     {
         this.owner = owner;
-        mover = owner.GetComponent<PlayerMover>();
+        mover = owner.PrMover;
     }
 
     public override void Enter()
     {
+        Debug.Log("Enter Run");
         owner.Anim.Play("Run");
     }
 
@@ -54,7 +55,7 @@ public class PlayerRun : PlayerBaseState
 
         // 실제 이동
         owner.Rigid.AddForce(Vector2.right * mover.MoveHzt * mover.MovePower);
-
+        Debug.Log(Vector2.right * mover.MoveHzt * mover.MovePower);
         // 이동속도 제한
         owner.Rigid.velocity = new Vector2(Mathf.Clamp(owner.Rigid.velocity.x, -mover.MaxMoveSpeed, mover.MaxMoveSpeed), owner.Rigid.velocity.y);
     }
@@ -67,10 +68,10 @@ public class PlayerRun : PlayerBaseState
 public class PlayerRunStop : PlayerBaseState
 {
     private PlayerMover mover;
-    public PlayerRunStop(PlayerBase owner)
+    public PlayerRunStop(PlayerFSM owner)
     {
         this.owner = owner;
-        mover = owner.GetComponent<PlayerMover>();
+        mover = owner.PrMover;
     }
 
     public override void Enter()
@@ -99,10 +100,10 @@ public class PlayerJump : PlayerBaseState
 {
     private PlayerMover mover;
 
-    public PlayerJump(PlayerBase owner)
+    public PlayerJump(PlayerFSM owner)
     {
         this.owner = owner;
-        mover = owner.GetComponent<PlayerMover>();  
+        mover = owner.PrMover;
     }
 
     public override void FixedUpdate()
@@ -132,14 +133,15 @@ public class PlayerFall : PlayerBaseState
 {
     private PlayerMover mover;
 
-    public PlayerFall(PlayerBase owner)
+    public PlayerFall(PlayerFSM owner)
     {
         this.owner = owner;
-        mover = owner.GetComponent<PlayerMover>();
+        mover = owner.PrMover;
     }
 
     public override void Enter()
     {
+        Debug.Log("Fall Enter");
         owner.Anim.Play("Fall");
     }
 
@@ -173,10 +175,10 @@ public class PlayerRoping : PlayerBaseState
 {
     private PlayerMover mover;
 
-    public PlayerRoping(PlayerBase owner)
+    public PlayerRoping(PlayerFSM owner)
     {
         this.owner = owner;
-        mover = owner.GetComponent<PlayerMover>();
+        mover = owner.PrMover;
     }
 
     public override void Enter()
@@ -199,12 +201,12 @@ public class PlayerRoping : PlayerBaseState
     private void StartRecoil()
     {
         Vector3 dirX = Vector3.zero;
-        if (owner.transform.position.x <= owner.FiredHook.transform.position.x)
+        if (owner.transform.position.x <= owner.PrHooker.FiredHook.transform.position.x)
             dirX = Vector3.right;
         else
             dirX = Vector3.left;
 
-        float distX = Mathf.Abs(owner.FiredHook.transform.position.x - owner.transform.position.x);
+        float distX = Mathf.Abs(owner.PrHooker.FiredHook.transform.position.x - owner.transform.position.x);
         Debug.Log($"StartRecoil : {dirX}, {distX}");
         owner.Rigid.AddForce(dirX * distX, ForceMode2D.Impulse);
     }
@@ -229,7 +231,7 @@ public class PlayerRoping : PlayerBaseState
 
 public class PlayerDash : PlayerBaseState
 {
-    public PlayerDash(PlayerBase owner)
+    public PlayerDash(PlayerFSM owner)
     {
         this.owner = owner;
     }
@@ -238,20 +240,17 @@ public class PlayerDash : PlayerBaseState
     {
         owner.Anim.Play("Dash");
     }
-
-    //public IEnumerator DashCCD()
-    //{
-    //    //yield return new WaitForSeconds();
-    //}
 }
 public class PlayerGrab : PlayerBaseState
 {
     private PlayerMover mover;
+    private PlayerHooker hooker;
 
-    public PlayerGrab(PlayerBase owner)
+    public PlayerGrab(PlayerFSM owner)
     {
         this.owner = owner;
-        mover = owner.GetComponent<PlayerMover>();  
+        mover = owner.PrMover;
+        hooker = owner.PrHooker;
     }
 
     public override void Enter()
@@ -268,10 +267,10 @@ public class PlayerGrab : PlayerBaseState
     public override void Update()
     {
         owner.Anim.SetFloat("MovePower", mover.MoveHzt);
-        owner.GrabEnemy.Anim.SetFloat("MovePower", mover.MoveHzt);
+        hooker.GrabEnemy.Anim.SetFloat("MovePower", mover.MoveHzt);
 
         // follow enemy x position
-        owner.transform.position = new Vector3(owner.GrabEnemy.transform.position.x, owner.transform.position.y, owner.transform.position.z);
+        owner.transform.position = new Vector3(hooker.GrabEnemy.transform.position.x, owner.transform.position.y, owner.transform.position.z);
     }
 
 
@@ -285,16 +284,16 @@ public class PlayerGrab : PlayerBaseState
         // Move Braking
         if (mover.MoveHzt == 0)
         {
-            if (owner.GrabEnemy.Rigid.velocity.x > PlayerBase.MoveForce_Threshold)
-                owner.GrabEnemy.Rigid.AddForce(Vector2.left * mover.HoldingHztBrakePower);
-            else if (owner.GrabEnemy.Rigid.velocity.x < PlayerBase.MoveForce_Threshold)
-                owner.GrabEnemy.Rigid.AddForce(Vector2.right * mover.HoldingHztBrakePower);
+            if (hooker.GrabEnemy.Rigid.velocity.x > PlayerBase.MoveForce_Threshold)
+                hooker.GrabEnemy.Rigid.AddForce(Vector2.left * mover.HoldingHztBrakePower);
+            else if (hooker.GrabEnemy.Rigid.velocity.x < PlayerBase.MoveForce_Threshold)
+                hooker.GrabEnemy.Rigid.AddForce(Vector2.right * mover.HoldingHztBrakePower);
         }
         else
         {
             // Controll Grab Enemy
-            owner.GrabEnemy.Rigid.AddForce(Vector2.right * mover.MoveHzt * mover.HoldingMovePower);
-            owner.GrabEnemy.Rigid.velocity = new Vector2(Mathf.Clamp(owner.GrabEnemy.Rigid.velocity.x, -mover.MaxHoldingMoveSpeed, mover.MaxHoldingMoveSpeed), owner.GrabEnemy.Rigid.velocity.y);
+            hooker.GrabEnemy.Rigid.AddForce(Vector2.right * mover.MoveHzt * mover.HoldingMovePower);
+            hooker.GrabEnemy.Rigid.velocity = new Vector2(Mathf.Clamp(hooker.GrabEnemy.Rigid.velocity.x, -mover.MaxHoldingMoveSpeed, mover.MaxHoldingMoveSpeed), hooker.GrabEnemy.Rigid.velocity.y);
         }
     }
 

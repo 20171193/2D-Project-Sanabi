@@ -6,23 +6,28 @@ public class PlayerSkill : PlayerBase
 {
     [Header("Specs")]
     [SerializeField]
-    private float ropeForceSkillPower;
-    public float RopeForceSkillPower { get { return ropeForceSkillPower; } }
+    private float ropeSkillPower;
+    public float RopeSkillPower { get { return ropeSkillPower; } }
+
+    protected override void Awake()
+    {
+        base.Awake();
+    }
 
     public void RopeForce()
     {
         // 강한 반동 적용
         // 잔상 등 이펙트 추가
         Vector2 forceDir = transform.rotation.y == 0 ? Vector2.right : Vector2.left;
-        rigid.AddForce(ropeForceSkillPower * forceDir, ForceMode2D.Impulse);
+        rigid.AddForce(ropeSkillPower * forceDir, ForceMode2D.Impulse);
     }
     public void Dash(GameObject target)
     {
-        isDash = true;
+        playerFSM.IsDash = true;
         rigid.velocity = Vector3.zero;
         rigid.gravityScale = 0;
 
-        fsm.ChangeState("Dash");
+        playerFSM.ChangeState("Dash");
 
         rigid.AddForce((target.transform.position - transform.position).normalized * 50f, ForceMode2D.Impulse);
 
@@ -33,29 +38,29 @@ public class PlayerSkill : PlayerBase
     public void Grab(GameObject target)
     {
         // Check Enemy
-        grabEnemy = target.GetComponent<Enemy>();
-        if (grabEnemy == null)
+        playerHooker.GrabEnemy = target.GetComponent<Enemy>();
+        if (playerHooker.GrabEnemy == null)
         {
             Debug.Log("Grabbed Object is not Enemy");
-            fsm.ChangeState("Idle");
+            playerFSM.ChangeState("Idle");
             return;
         }
-        isGrab = true;
-        fsm.ChangeState("Grab");
+        playerFSM.IsGrab = true;
+        playerFSM.ChangeState("Grab");
 
-        grabEnemy.Grabbed(out float holdedYPos);
+        playerHooker.GrabEnemy.Grabbed(out float holdedYPos);
 
         rigid.velocity = Vector3.zero;
-        Vector3 enemyPos = grabEnemy.transform.position;
+        Vector3 enemyPos = playerHooker.GrabEnemy.transform.position;
         transform.position = new Vector3(enemyPos.x, enemyPos.y + holdedYPos, 0);
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
         // Dash Enemy
-        if (isDash && Manager.Layer.enemyLM.Contain(collision.gameObject.layer))
+        if (playerFSM.IsDash && Manager.Layer.enemyLM.Contain(collision.gameObject.layer))
         {
-            isDash = false;
+            playerFSM.IsDash = false;
             Grab(collision.gameObject);
         }
     }
