@@ -61,7 +61,6 @@ public class PlayerFSM : PlayerBase
         {
             return isInWall;
         });
-
         fsm.AddAnyState("Jump", () =>
         {
             return !isInWall && !isGround && !isJointed 
@@ -76,6 +75,12 @@ public class PlayerFSM : PlayerBase
             return !isInWall && !isGround && !isJointed 
                     && rigid.velocity.y < -JumpForce_Threshold;
         });
+
+        fsm.AddTransition("WallSlide", "Idle", 0f, () =>
+        {
+            return isGround || !isInWall;
+        });
+
         fsm.AddTransition("Fall", "Idle", 0f, () =>
         {
             return isGround;

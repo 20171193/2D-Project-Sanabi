@@ -133,7 +133,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4568733}
   - component: {fileID: 4568734}
-  m_Layer: 8
+  m_Layer: 12
   m_Name: GunPos
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -327,7 +327,7 @@ GameObject:
   m_Component:
   - component: {fileID: 145007136}
   - component: {fileID: 145007137}
-  m_Layer: 8
+  m_Layer: 12
   m_Name: BodyRenderer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1206,7 +1206,7 @@ GameObject:
   - component: {fileID: 1076338521}
   - component: {fileID: 1076338520}
   - component: {fileID: 1076338519}
-  m_Layer: 8
+  m_Layer: 12
   m_Name: Enemy_Trooper
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1405,7 +1405,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1363832730}
   - component: {fileID: 1363832731}
-  m_Layer: 8
+  m_Layer: 12
   m_Name: GunRenderer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1569,18 +1569,21 @@ MonoBehaviour:
   groundLM:
     serializedVersion: 2
     m_Bits: 64
-  playerInteractableLM:
-    serializedVersion: 2
-    m_Bits: 384
-  playerHookLM:
-    serializedVersion: 2
-    m_Bits: 1024
-  enemyLM:
+  wallLM:
     serializedVersion: 2
     m_Bits: 256
+  hookInteractableLM:
+    serializedVersion: 2
+    m_Bits: 4352
+  playerHookLM:
+    serializedVersion: 2
+    m_Bits: 33792
+  enemyLM:
+    serializedVersion: 2
+    m_Bits: 4096
   enemyBulletLM:
     serializedVersion: 2
-    m_Bits: 2048
+    m_Bits: 18432
 --- !u!114 &1410960323
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3960,7 +3963,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1921418970}
   - component: {fileID: 1921418971}
-  m_Layer: 9
+  m_Layer: 13
   m_Name: GroundChecker
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4280,6 +4283,7 @@ MonoBehaviour:
   hookShootCoolTime: 2
   ropeLength: 20
   mousePos: {x: 0, y: 0, z: 0}
+  grabEnemy: {fileID: 0}
   firedHook: {fileID: 0}
 --- !u!114 &1942553674
 MonoBehaviour:
@@ -4300,8 +4304,8 @@ MonoBehaviour:
   maxMoveSpeed: 12
   hztBrakePower: 30
   vtcBrakePower: 30
-  holdingMovePower: 10
-  maxHoldingMoveSpeed: 5
+  holdingMovePower: 12
+  maxHoldingMoveSpeed: 7
   holdingHztBrakePower: 15
   jumpPower: 12
   flyMovePower: 1
@@ -4402,7 +4406,7 @@ GameObject:
   - component: {fileID: 2061982348}
   - component: {fileID: 2061982347}
   - component: {fileID: 2061982346}
-  m_Layer: 7
+  m_Layer: 8
   m_Name: PlayerInteractable
   m_TagString: Untagged
   m_Icon: {fileID: 0}

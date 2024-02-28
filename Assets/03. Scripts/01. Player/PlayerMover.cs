@@ -10,6 +10,7 @@ public class PlayerMover : PlayerBase
     [Header("Specs")]
     [Space(2)]
     #region Normal Movement
+    [Header("Ground Move")]
     [SerializeField]
     private float movePower;
     public float MovePower { get { return movePower; } }
@@ -38,6 +39,16 @@ public class PlayerMover : PlayerBase
     private float holdingHztBrakePower;    // horizontal movement brake force
     public float HoldingHztBrakePower { get { return hztBrakePower; } }
 
+    [Header("Wall Move")]
+    [SerializeField]
+    private float climbPower;
+    public float ClimbPower { get { return climbPower; } }
+
+    [SerializeField]
+    private float slidingPower;
+    public float SlidingPower { get { return slidingPower; } }
+
+    [Header("In Air Move")]
     [SerializeField]
     private float jumpPower;
     public float JumpPower { get { return jumpPower; } }
@@ -94,6 +105,8 @@ public class PlayerMover : PlayerBase
     private void WallJump()
     {
         anim.Play("Jump");
+
+        rigid.gravityScale = 1;
         rigid.velocity = new Vector2(moveHzt * 3f, rigid.velocity.y + jumpPower);
     }
 
@@ -118,17 +131,16 @@ public class PlayerMover : PlayerBase
         if (Manager.Layer.groundLM.Contain(collision.gameObject.layer))
         {
             // ground check
+            if (playerFSM.IsInWall) 
+                playerFSM.IsInWall = false;
+
             playerFSM.IsGround = true;
+            return;
         }
 
-        if(Manager.Layer.playerInteractableLM.Contain(collision.gameObject.layer))
+        if(Manager.Layer.wallLM.Contain(collision.gameObject.layer))
         {
-            if (playerFSM.IsGround) return;
-            if (playerFSM.IsJointed)
-            {
-                //playerHooker.FiredHook.DisConnecting();
-                //playerFSM.IsJointed = false;
-            }
+            if (playerFSM.IsGround ) return;
 
             playerFSM.IsInWall = true;
             playerFSM.ChangeState("WallSlide");
@@ -142,10 +154,10 @@ public class PlayerMover : PlayerBase
             playerFSM.IsGround = false;
         }
 
-        if (Manager.Layer.playerInteractableLM.Contain(collision.gameObject.layer))
+        if (Manager.Layer.wallLM.Contain(collision.gameObject.layer))
         {
-            if (playerFSM.IsGround) return;
-
+            WallJump();
+            //if (playerFSM.IsGround) return;
             playerFSM.IsInWall = false;
         }
     }

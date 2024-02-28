@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8862156951299739900}
-  m_Layer: 10
+  m_Layer: 15
   m_Name: HookingPos
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -47,7 +47,7 @@ GameObject:
   - component: {fileID: 2466251688140780575}
   - component: {fileID: -835701505133038319}
   - component: {fileID: 504550284057011342}
-  m_Layer: 10
+  m_Layer: 15
   m_Name: Hook
   m_TagString: Untagged
   m_Icon: {fileID: 0}

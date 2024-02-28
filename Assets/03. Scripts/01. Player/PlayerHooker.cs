@@ -38,6 +38,7 @@ public class PlayerHooker : PlayerBase
     [SerializeField]
     private Vector3 mousePos;
 
+    [SerializeField]
     private Enemy grabEnemy;
     public Enemy GrabEnemy { get { return grabEnemy; } set { grabEnemy = value; } }
 
@@ -73,7 +74,7 @@ public class PlayerHooker : PlayerBase
     private void RopeRayCast()
     {
         Vector2 rayDir = (mousePos - transform.position).normalized;
-        hookHitInfo = Physics2D.Raycast(transform.position, rayDir, ropeLength, Manager.Layer.playerInteractableLM);
+        hookHitInfo = Physics2D.Raycast(transform.position, rayDir, ropeLength, Manager.Layer.hookInteractableLM);
 
         if (hookHitInfo)
         {
@@ -117,6 +118,8 @@ public class PlayerHooker : PlayerBase
                 playerFSM.IsGrab = false;
                 GrabJump();
             }
+            else
+                Destroy(firedHook);
         }
     }
     private void RopeJump()
