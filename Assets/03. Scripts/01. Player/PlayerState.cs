@@ -218,7 +218,6 @@ public class PlayerFall : PlayerBaseState
 
     public override void Enter()
     {
-        Debug.Log("Fall Enter");
         owner.Anim.Play("Fall");
     }
 
