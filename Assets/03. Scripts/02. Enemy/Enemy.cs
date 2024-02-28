@@ -5,8 +5,8 @@ using UnityEngine.Events;
 
 public enum EnemyType
 {
-    Common,
-    Activable
+    Shooter,
+    Boss
 }
 
 // Add Enemy common states, and connect transitions from the child classes
@@ -41,7 +41,7 @@ public abstract class Enemy : MonoBehaviour
     protected virtual void Awake()
     {
         fsm = new StateMachine<Enemy>(this);
-        playerTr = GameObject.FindWithTag("Player").GetComponent<Transform>();    
+        playerTr = GameObject.FindWithTag("Player").GetComponent<Transform>();
     }
 
     private void Update()
