@@ -35,6 +35,8 @@ public class PlayerRun : PlayerBaseState
 
     public override void Enter()
     {
+        owner.Rigid.velocity = Vector3.zero;
+
         Debug.Log("Enter Run");
         owner.Anim.Play("Run");
     }
@@ -108,38 +110,57 @@ public class PlayerWallSlide : PlayerBaseState
     {
         Debug.Log("Enter WallSlide");
         owner.Rigid.gravityScale = 0;
+        owner.Rigid.velocity = Vector2.zero;
+
         owner.Anim.Play("WallSlide");
     }
-
-    public override void FixedUpdate()
+    public override void Update()
     {
         WallMove();
     }
+    public override void FixedUpdate()
+    {
+        
+    }
     private void WallMove()
     {
-        owner.Anim.SetFloat("MovePower", Mathf.Abs(mover.MoveVtc));
+        owner.Anim.SetFloat("MovePower", mover.MoveVtc);
 
-        if (mover.MoveVtc == 0)
+        if(mover.MoveVtc != 0)
         {
-            // brake
-            if (owner.Rigid.velocity.y > PlayerBase.MoveForce_Threshold)
-                owner.Rigid.AddForce(Vector2.down * mover.VtcBrakePower);
-            else if (owner.Rigid.velocity.y < -PlayerBase.MoveForce_Threshold)
-                owner.Rigid.AddForce(Vector2.up * mover.VtcBrakePower);
-        }
-        else
-        {
-            if (mover.MoveVtc < 0)
+            if(mover.MoveVtc < -PlayerBase.MoveForce_Threshold)
             {
-                owner.Rigid.AddForce(Vector2.up * mover.MoveVtc * mover.MovePower, ForceMode2D.Force);
-                owner.Rigid.velocity = new Vector2(owner.Rigid.velocity.x, Mathf.Clamp(owner.Rigid.velocity.y, -mover.MaxMoveSpeed, mover.MaxMoveSpeed));
+                float moveYPos = Mathf.Lerp(owner.transform.position.y, owner.transform.position.y + mover.SlidingPower * mover.MoveVtc, Time.deltaTime);
+                owner.transform.position = new Vector3(owner.transform.position.x, moveYPos, 0);
             }
-            else
+            else if(mover.MoveVtc > PlayerBase.MoveForce_Threshold)
             {
-                owner.Rigid.AddForce(Vector2.up * mover.MoveVtc * mover.MovePower/2f, ForceMode2D.Force);
-                owner.Rigid.velocity = new Vector2(owner.Rigid.velocity.x, Mathf.Clamp(owner.Rigid.velocity.y, -mover.MaxMoveSpeed/2f, mover.MaxMoveSpeed/2f));
+                float moveYPos = Mathf.Lerp(owner.transform.position.y, owner.transform.position.y + mover.ClimbPower*mover.MoveVtc, Time.deltaTime);
+                owner.transform.position = new Vector3(owner.transform.position.x, moveYPos, 0);
             }
         }
+
+        //if (mover.MoveVtc == 0)
+        //{
+        //    // brake
+        //    if (owner.Rigid.velocity.y > PlayerBase.MoveForce_Threshold)
+        //        owner.Rigid.AddForce(Vector2.down * mover.VtcBrakePower);
+        //    else if (owner.Rigid.velocity.y < -PlayerBase.MoveForce_Threshold)
+        //        owner.Rigid.AddForce(Vector2.up * mover.VtcBrakePower);
+        //}
+        //else
+        //{
+        //    if (mover.MoveVtc < 0)
+        //    {
+        //        owner.Rigid.AddForce(Vector3.up * mover.MoveVtc * mover.MovePower);
+        //        owner.Rigid.velocity = new Vector2(owner.Rigid.velocity.x, Mathf.Clamp(owner.Rigid.velocity.y, -mover.MaxMoveSpeed, mover.MaxMoveSpeed));
+        //    }
+        //    else
+        //    {
+        //        owner.Rigid.AddForce(Vector2.up * mover.MoveVtc * mover.MovePower/2f);
+        //        owner.Rigid.velocity = new Vector2(owner.Rigid.velocity.x, Mathf.Clamp(owner.Rigid.velocity.y, -mover.MaxMoveSpeed/2f, mover.MaxMoveSpeed/2f));
+        //    }
+        //}
     }
 
     public override void Exit()

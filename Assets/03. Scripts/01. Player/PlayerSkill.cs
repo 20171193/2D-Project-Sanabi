@@ -37,8 +37,10 @@ public class PlayerSkill : PlayerBase
     }
     public void Grab(GameObject target)
     {
+        Debug.Log(target);
         // Check Enemy
         playerHooker.GrabEnemy = target.GetComponent<Enemy>();
+
         if (playerHooker.GrabEnemy == null)
         {
             Debug.Log("Grabbed Object is not Enemy");
