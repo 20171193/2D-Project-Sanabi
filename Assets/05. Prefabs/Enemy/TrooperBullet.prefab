@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 8148906611496481845}
   - component: {fileID: 2550091992908980736}
   - component: {fileID: 5900012917345582504}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: TrooperBullet
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -81,7 +81,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3303671528829985774}
   - component: {fileID: 3482185444408841016}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: Renderer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
