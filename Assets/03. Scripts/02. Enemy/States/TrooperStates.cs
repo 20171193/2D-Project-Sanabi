@@ -5,22 +5,17 @@ using UnityEngine;
 using UnityEngine.Events;
 using static UnityEngine.RuleTile.TilingRuleOutput;
 
-public class TrooperBaseState : BaseState
-{
-    protected EnemyTrooper owner;
-}
-public class TrooperDetect : TrooperBaseState
+public class TrooperDetect : EnemyShooterBase
 {
     private Coroutine detectRoutine;
-
     public UnityAction<Vector3> OnShooting;
-
     // Detected Player Position
     private Vector3 targetPos;
 
     private bool isDetect = false;
+    private bool isLineRendering = false;
 
-    public TrooperDetect(EnemyTrooper owner)
+    public TrooperDetect(EnemyShooter owner)
     {
         this.owner = owner;
     }
@@ -34,7 +29,11 @@ public class TrooperDetect : TrooperBaseState
     public override void Update()
     {
         if (isDetect)
-            Detecting();
+            AimSetting();
+        if (isLineRendering)
+            LineRendering();
+        else
+            owner.Lr.positionCount = 0;
     }
 
     public override void Exit()
@@ -42,7 +41,7 @@ public class TrooperDetect : TrooperBaseState
         owner.StopCoroutine(detectRoutine);
     }
 
-    public void Detecting()
+    public void AimSetting()
     {
         targetPos = owner.PlayerTr.position;
 
@@ -74,23 +73,36 @@ public class TrooperDetect : TrooperBaseState
         owner.Lr.SetPosition(0, owner.AimPos.position);
         owner.Lr.SetPosition(1, targetPos);
     }
+    private void LineRendering()
+    {
+        owner.Lr.positionCount = 2;
+        owner.Lr.SetPosition(0, owner.AimPos.position);
+        owner.Lr.SetPosition(1, (targetPos - owner.AimPos.position) * 10f);
+    }
+    private void Shooting()
+    {
+        GameObject bullet = GameObject.Instantiate(owner.BulletPrefab, owner.AimPos.position, owner.AimPos.rotation);
+        Rigidbody2D rigid = bullet.GetComponent<Rigidbody2D>();
+        rigid.AddForce(owner.AimPos.up * owner.BulletPower, ForceMode2D.Impulse);
+    }
 
     IEnumerator DetectRoutine()
     {
         while (true)
         {
-            yield return new WaitForSeconds(owner.DetectingTime);
-            isDetect = false;
-            //yield return new WaitForSeconds(1f);
-            //OnShooting?.Invoke(targetPos);
             yield return new WaitForSeconds(owner.AttackCoolTime);
+            isDetect = false;
+            isLineRendering = true;
+            yield return new WaitForSeconds(owner.AttackDelay);
+            isLineRendering = false;
             isDetect = true;
+            Shooting();
         }
     }
 }
-public class TrooperGrabbed : TrooperBaseState
+public class TrooperGrabbed : EnemyShooterBase
 {
-    public TrooperGrabbed(EnemyTrooper owner)
+    public TrooperGrabbed(EnemyShooter owner)
     {
         this.owner = owner;
     }
@@ -99,9 +111,9 @@ public class TrooperGrabbed : TrooperBaseState
         owner.Anim.Play("Grabbed");
     }
 }
-public class TrooperDie : TrooperBaseState
+public class TrooperDie : EnemyShooterBase
 {
-    public TrooperDie(EnemyTrooper owner)
+    public TrooperDie(EnemyShooter owner)
     {
         this.owner = owner;
     }
