@@ -24,7 +24,6 @@ public class TrooperDetect : EnemyShooterBase
     {
         isDetect = true;
         OnEnableDetect?.Invoke();
-        Debug.Log(detectRoutine);
     }
 
     public override void Update()
@@ -44,10 +43,8 @@ public class TrooperDetect : EnemyShooterBase
         {
             yield return new WaitForSeconds(owner.AttackCoolTime);
             isDetect = false;
-            Debug.Log("Tropper aiming");
-            owner.Aiming(in targetPos);
+            owner.LrAnim.Play("Aiming");
             yield return new WaitForSeconds(owner.AttackDelay);
-            Debug.Log("Tropper shooting");
             owner.Shooting();
             yield return new WaitForSeconds(1.5f);
             isDetect = true;

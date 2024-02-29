@@ -26,8 +26,13 @@ public class Trooper : EnemyShooter
 
     public override void Detecting(out Vector3 targetPos)
     {
-        lr.positionCount = 2;
         targetPos = playerTr.transform.position;
+
+        lrAnim.Play("DetectAim");
+
+        lr.positionCount = 2;
+        lr.SetPosition(0, muzzlePos.position);
+        lr.SetPosition(1, (targetPos - muzzlePos.position).normalized * 100f);
 
         // Agent Rotation
         if (transform.position.x > targetPos.x)
@@ -38,11 +43,6 @@ public class Trooper : EnemyShooter
         // Aim Rotation
         Vector3 dir = (targetPos - aimPos.position).normalized;
         aimPos.right = dir;
-    }
-
-    public override void Aiming(in Vector3 targetPos)
-    {
-        base.Aiming(targetPos);
     }
 
     public override void Shooting()
@@ -61,6 +61,7 @@ public class Trooper : EnemyShooter
     }
     public override void Grabbed(out float holdingYpoint)
     {
+        lr.positionCount = 0;
         holdingYpoint = grabbedYPos;
         fsm.ChangeState("Grabbed");
     }

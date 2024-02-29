@@ -10,7 +10,7 @@ public enum EnemyType
 }
 
 // Add Enemy common states, and connect transitions from the child classes
-public abstract class Enemy : MonoBehaviour
+public abstract class Enemy : PooledObject
 {
     [Header("Components")]
     [Space(2)]
