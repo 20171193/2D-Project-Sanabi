@@ -10,7 +10,7 @@ public class PooledObject : MonoBehaviour
     [SerializeField]
     protected float releaseTime;
 
-    private ObjectPooler pooler;
+    protected ObjectPooler pooler;
     public ObjectPooler Pooler { get { return pooler; } set { pooler = value; } }
 
     protected virtual void OnEnable()
@@ -19,7 +19,7 @@ public class PooledObject : MonoBehaviour
             StartCoroutine(ReleaseRoutine());
     }
 
-    private void Release()
+    protected void Release()
     {
         if(!pooler)
         {
