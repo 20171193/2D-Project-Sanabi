@@ -15,7 +15,12 @@ public class Turret : EnemyShooter
         boxCol = GetComponent<BoxCollider2D>();
 
         fsm.AddState("PopUp", new TurretPopUp(this));
-        fsm.AddState("Detect", new TurretDetect(this));
+
+        TurretDetect detect = new TurretDetect(this);
+        detect.OnEnableDetect += () => detect.detectRoutine = StartCoroutine(detect.DetectRoutine());
+        detect.OnDisableDetect += () => StopCoroutine(detect.detectRoutine);
+
+        fsm.AddState("Detect", detect);
         fsm.AddState("Grabbed", new TurretGrabbed(this));
         fsm.AddState("Die", new TurretDie(this));
 
@@ -24,23 +29,30 @@ public class Turret : EnemyShooter
 
     public override void Detecting(out Vector3 targetPos)
     {
-        lr.positionCount = 2;
         targetPos = playerTr.transform.position;
+
+        lrAnim.Play("DetectAim");
+
+        lr.positionCount = 2;
+        lr.SetPosition(0, muzzlePos.position);
+        lr.SetPosition(1, (targetPos - muzzlePos.position).normalized * 100f);
+
+        // Agent Rotation
+        if (transform.position.x > targetPos.x)
+            transform.rotation = Quaternion.Euler(0, -180f, 0);
+        else
+            transform.rotation = Quaternion.Euler(0, 0, 0);
 
         // Aim Rotation
         Vector3 dir = (targetPos - aimPos.position).normalized;
         aimPos.up = dir;
     }
 
-    public override void Aiming(in Vector3 targetPos)
-    {
-        base.Aiming(targetPos);
-    }
-
     public override void Shooting()
     {
-        anim.Play("Shooting");
+        anim.Play("Attack");
         lr.positionCount = 0;
+
         EnemyBulletObject bullet = Manager.Pool.GetPool(bulletPrefab, muzzlePos.position, aimPos.rotation) as EnemyBulletObject;
         bullet.transform.up = aimPos.up;
         bullet.Rigid.AddForce(aimPos.up * bulletPower, ForceMode2D.Impulse);
@@ -53,6 +65,7 @@ public class Turret : EnemyShooter
     }
     public override void Grabbed(out float holdingYpoint)
     {
+        lr.positionCount = 0;
         holdingYpoint = grabbedYPos;
         fsm.ChangeState("Grabbed");
     }

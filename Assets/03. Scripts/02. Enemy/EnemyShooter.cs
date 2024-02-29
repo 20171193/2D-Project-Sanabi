@@ -44,13 +44,6 @@ public abstract class EnemyShooter : Enemy
 
     // not use function
     public abstract void Detecting(out Vector3 targetPos);
-
-    public virtual void Aiming(in Vector3 targetPos)
-    {
-        lrAnim.Play("Aiming");
-        lr.SetPosition(0, aimPos.position);
-        lr.SetPosition(1, (targetPos - aimPos.position) * 10f);
-    }
     public abstract void Shooting();
 
     //[Header("Ballancing")]

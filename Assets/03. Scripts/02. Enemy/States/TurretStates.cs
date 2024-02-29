@@ -58,6 +58,7 @@ public class TurretDetect : EnemyShooterBase
     {
         isDetect = true;
         OnEnableDetect?.Invoke();
+        owner.Anim.Play("Detect");
     }
 
     public override void Update()
@@ -77,7 +78,7 @@ public class TurretDetect : EnemyShooterBase
         {
             yield return new WaitForSeconds(owner.AttackCoolTime);
             isDetect = false;
-            owner.Aiming(in targetPos);
+            owner.LrAnim.Play("Aiming");
             yield return new WaitForSeconds(owner.AttackDelay);
             owner.Shooting();
             yield return new WaitForSeconds(1.5f);
