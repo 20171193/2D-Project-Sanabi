@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.InteropServices.WindowsRuntime;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class PlayerFSM : PlayerBase
 {
@@ -39,8 +41,11 @@ public class PlayerFSM : PlayerBase
     [SerializeField]
     private bool isRaycastHit = false;
     public bool IsRaycastHit { get { return isRaycastHit; }set { isRaycastHit = value; } }
-    #endregion
 
+    [SerializeField]
+    private bool beDamaged = false;
+    public bool BeDamaged { get { return beDamaged; } set { beDamaged = value; } }
+    #endregion
 
     protected override void Awake()
     {
@@ -48,6 +53,7 @@ public class PlayerFSM : PlayerBase
 
         fsm = new StateMachine<PlayerBase>(this);
         fsm.AddState("Idle", new PlayerIdle(this));
+        fsm.AddState("Damaged", new PlayerDamaged(this));
         fsm.AddState("Run", new PlayerRun(this));
         fsm.AddState("RunStop", new PlayerRunStop(this));
         fsm.AddState("Fall", new PlayerFall(this));
@@ -57,22 +63,30 @@ public class PlayerFSM : PlayerBase
         fsm.AddState("Grab", new PlayerGrab(this));
         fsm.AddState("WallSlide", new PlayerWallSlide(this));
 
+        fsm.AddAnyState("Damaged", () =>
+        {
+            return beDamaged;
+        });
+
         fsm.AddAnyState("WallSlide", () =>
         {
             return isInWall;
         });
+
         fsm.AddAnyState("Jump", () =>
         {
-            return !isInWall && !isGround && !isJointed 
+            return !beDamaged && !isInWall && !isGround && !isJointed 
                     && rigid.velocity.y > JumpForce_Threshold;
         });
+
         fsm.AddTransition("Jump", "Fall", 0f, () =>
         {
             return rigid.velocity.y < -JumpForce_Threshold;
         });
+
         fsm.AddAnyState("Fall", () =>
         {
-            return !isInWall && !isGround && !isJointed 
+            return !beDamaged && !isInWall && !isGround && !isJointed 
                     && rigid.velocity.y < -JumpForce_Threshold;
         });
 
@@ -124,5 +138,46 @@ public class PlayerFSM : PlayerBase
     private void LateUpdate()
     {
         fsm.LateUpdate();
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (Manager.Layer.enemyBulletLM.Contain(collision.gameObject.layer))
+        {
+            beDamaged = true;
+        }
+
+        if (Manager.Layer.groundLM.Contain(collision.gameObject.layer))
+        {
+            // ground check
+            if (isInWall)
+                isInWall = false;
+
+            isGround = true;
+            return;
+        }
+
+        if (Manager.Layer.wallLM.Contain(collision.gameObject.layer))
+        {
+            if (isGround) return;
+
+            isInWall = true;
+            fsm.ChangeState("WallSlide");
+        }
+    }
+
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if (Manager.Layer.groundLM.Contain(collision.gameObject.layer))
+        {
+            // ground check
+            isGround = false;
+        }
+
+        if (Manager.Layer.wallLM.Contain(collision.gameObject.layer))
+        {
+            //if (isGround) return;
+            isInWall = false;
+        }
     }
 }

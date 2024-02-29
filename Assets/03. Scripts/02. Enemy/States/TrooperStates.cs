@@ -7,13 +7,13 @@ using static UnityEngine.RuleTile.TilingRuleOutput;
 
 public class TrooperDetect : EnemyShooterBase
 {
-    private Coroutine detectRoutine;
-    public UnityAction<Vector3> OnShooting;
+    public Coroutine detectRoutine;
+    public UnityAction OnDisableDetect;
+    public UnityAction OnEnableDetect;
     // Detected Player Position
     private Vector3 targetPos;
 
     private bool isDetect = false;
-    private bool isLineRendering = false;
 
     public TrooperDetect(EnemyShooter owner)
     {
@@ -23,72 +23,29 @@ public class TrooperDetect : EnemyShooterBase
     public override void Enter()
     {
         isDetect = true;
-        detectRoutine = owner.StartCoroutine(DetectRoutine());
+        OnEnableDetect?.Invoke();
     }
 
     public override void Update()
     {
         if (isDetect)
-            AimSetting();
-        if (isLineRendering)
-            LineRendering();
-        else
-            owner.Lr.positionCount = 0;
+            owner.Detecting(out targetPos);
     }
 
     public override void Exit()
     {
-        owner.StopCoroutine(detectRoutine);
+        OnDisableDetect?.Invoke();
     }
 
-    public void AimSetting()
-    {
-        targetPos = owner.PlayerTr.position;
-
-        AgentRotation();
-        AimRotation();
-    }
-    // Agent rotate to Player
-    private void AgentRotation()
-    {
-        Vector3 agentPos = owner.transform.position;
-
-        // Agent Rotation
-        if (agentPos.x > targetPos.x)
-            owner.transform.rotation = Quaternion.Euler(0, -180f, 0);
-        else
-            owner.transform.rotation = Quaternion.Euler(0, 0, 0);
-    }
-    // Aim rotate to Player
-    private void AimRotation()
-    {
-        Vector3 dir = (targetPos - owner.AimPos.position).normalized;
-        owner.AimPos.right = dir;
-    }
-    private void LineRendering()
-    {
-        owner.Lr.positionCount = 2;
-        owner.Lr.SetPosition(0, owner.AimPos.position);
-        owner.Lr.SetPosition(1, (targetPos - owner.AimPos.position) * 10f);
-    }
-    private void Shooting()
-    {
-        GameObject bullet = GameObject.Instantiate(owner.BulletPrefab, owner.AimPos.position, owner.AimPos.rotation);
-        Rigidbody2D rigid = bullet.GetComponent<Rigidbody2D>();
-        rigid.AddForce(owner.AimPos.up * owner.BulletPower, ForceMode2D.Impulse);
-    }
-
-    IEnumerator DetectRoutine()
+    public IEnumerator DetectRoutine()
     {
         while (true)
         {
             yield return new WaitForSeconds(owner.AttackCoolTime);
             isDetect = false;
-            isLineRendering = true;
+            owner.Aiming(in targetPos);
             yield return new WaitForSeconds(owner.AttackDelay);
-            isLineRendering = false;
-            owner.Anim.Play("Shooting");
-            Shooting();
+            owner.Shooting();
             yield return new WaitForSeconds(1.5f);
             isDetect = true;
             owner.Anim.Play("Detect");

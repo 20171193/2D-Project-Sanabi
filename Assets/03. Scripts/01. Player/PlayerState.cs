@@ -380,3 +380,30 @@ public class PlayerGrab : PlayerBaseState
 
 }
 #endregion
+
+public class PlayerDamaged : PlayerBaseState
+{
+    private Coroutine damagedRoutine;
+
+    public PlayerDamaged(PlayerFSM owner)
+    {
+        this.owner = owner;
+    }
+
+    public override void Enter()
+    {
+        owner.Anim.Play("Damaged");
+        damagedRoutine = owner.StartCoroutine(DamagedRoutine());
+    }
+    public override void Exit()
+    {
+        if(damagedRoutine != null)
+            owner.StopCoroutine(damagedRoutine);
+    }
+
+    IEnumerator DamagedRoutine()
+    {
+        yield return new WaitForSeconds(1f);
+        owner.BeDamaged = false;
+    }
+}

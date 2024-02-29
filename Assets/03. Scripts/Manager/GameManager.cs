@@ -7,6 +7,6 @@ public class GameManager : MonoBehaviour
     private void OnEnable()
     {
         // Cursor Setting
-        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
     }
 }

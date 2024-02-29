@@ -203,7 +203,8 @@ MonoBehaviour:
   aimPos: {fileID: 4579649951459642765}
   muzzlePos: {fileID: 2345264449347983108}
   lr: {fileID: 4579649951459642766}
-  bulletPrefab: {fileID: 0}
+  lrAnim: {fileID: 1446665078118694360}
+  bulletPrefab: {fileID: 2290681106682195430, guid: c060b6abd517df4418fd019ee76b6fcd, type: 3}
   attackCoolTime: 5
   attackDelay: 2
   bulletPower: 5
@@ -385,6 +386,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4579649951459642765}
   - component: {fileID: 4579649951459642766}
+  - component: {fileID: 1446665078118694360}
   m_Layer: 12
   m_Name: GunPos
   m_TagString: Untagged
@@ -429,7 +431,7 @@ LineRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 0}
+  - {fileID: 2100000, guid: 0fcb6a686ab352d41b22108080595119, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -450,9 +452,7 @@ LineRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Positions:
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 1}
+  m_Positions: []
   m_Parameters:
     serializedVersion: 3
     widthMultiplier: 1
@@ -461,7 +461,7 @@ LineRenderer:
       m_Curve:
       - serializedVersion: 3
         time: 0
-        value: 0.12965775
+        value: 0.18420029
         inSlope: 0
         outSlope: 0
         tangentMode: 0
@@ -508,3 +508,23 @@ LineRenderer:
     generateLightingData: 0
   m_UseWorldSpace: 1
   m_Loop: 0
+--- !u!95 &1446665078118694360
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4579649951459642764}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 67e47a75043e9ae46b19df8ef77e0a13, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0

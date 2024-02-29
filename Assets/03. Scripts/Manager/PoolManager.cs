@@ -8,6 +8,8 @@ public class PoolManager : MonoBehaviour
 
     public void CreatePool(PooledObject prefab, int size, int capacity)
     {
+        Debug.Log(prefab.name);
+
         GameObject gameObject = new GameObject();
         gameObject.name = $"Pool_{prefab.name}";
 

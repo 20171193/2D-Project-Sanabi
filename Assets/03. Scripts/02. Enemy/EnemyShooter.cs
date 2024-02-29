@@ -14,14 +14,17 @@ public abstract class EnemyShooter : Enemy
     protected Transform muzzlePos;
     public Transform MuzzlePos { get { return muzzlePos; } }
 
-
     [SerializeField]
     protected LineRenderer lr;
     public LineRenderer Lr { get { return lr; } }
 
     [SerializeField]
-    protected GameObject bulletPrefab;
-    public GameObject BulletPrefab { get { return bulletPrefab; } }
+    protected Animator lrAnim;
+    public Animator LrAnim { get { return lrAnim; } }
+
+    [SerializeField]
+    protected EnemyBulletObject bulletPrefab;
+    public EnemyBulletObject BulletPrefab { get { return bulletPrefab; } }
 
     [Header("Specs")]
     [Space(2)]
@@ -39,12 +42,26 @@ public abstract class EnemyShooter : Enemy
     protected float bulletPower;
     public float BulletPower { get { return bulletPower; } }
 
+    // not use function
+    public abstract void Detecting(out Vector3 targetPos);
+
+    public virtual void Aiming(in Vector3 targetPos)
+    {
+        lrAnim.Play("Aiming");
+        lr.SetPosition(0, aimPos.position);
+        lr.SetPosition(1, (targetPos - aimPos.position) * 10f);
+    }
+    public virtual void Shooting()
+    {
+        anim.Play("Shooting");
+        lr.positionCount = 0;
+    }
+
     //[Header("Ballancing")]
     protected override void Awake()
     {
         base.Awake();
     }
-
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (Manager.Layer.playerHookLM.Contain(collision.gameObject.layer))

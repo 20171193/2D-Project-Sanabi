@@ -22,6 +22,30 @@ public class Turret : EnemyShooter
         fsm.Init("PopUp");
     }
 
+    public override void Detecting(out Vector3 targetPos)
+    {
+        lr.positionCount = 2;
+        targetPos = playerTr.transform.position;
+
+        // Aim Rotation
+        Vector3 dir = (targetPos - aimPos.position).normalized;
+        aimPos.up = dir;
+    }
+
+    public override void Aiming(in Vector3 targetPos)
+    {
+        base.Aiming(targetPos);
+    }
+
+    public override void Shooting()
+    {
+        base.Shooting();
+        // 3¹ß ½î±â
+
+        EnemyBulletObject bullet = Manager.Pool.GetPool(bulletPrefab, aimPos.position, aimPos.rotation) as EnemyBulletObject;
+        bullet.Rigid.AddForce(aimPos.right * bulletPower, ForceMode2D.Impulse);
+    }
+
     public override void Died()
     {
         Destroy(gameObject, 3f);
