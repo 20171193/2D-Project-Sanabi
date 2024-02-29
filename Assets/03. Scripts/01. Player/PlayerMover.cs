@@ -125,40 +125,4 @@ public class PlayerMover : PlayerBase
             playerSkill.RopeForce();
     }
     #endregion
-
-    private void OnTriggerEnter2D(Collider2D collision)
-    {
-        if (Manager.Layer.groundLM.Contain(collision.gameObject.layer))
-        {
-            // ground check
-            if (playerFSM.IsInWall) 
-                playerFSM.IsInWall = false;
-
-            playerFSM.IsGround = true;
-            return;
-        }
-
-        if(Manager.Layer.wallLM.Contain(collision.gameObject.layer))
-        {
-            if (playerFSM.IsGround ) return;
-
-            playerFSM.IsInWall = true;
-            playerFSM.ChangeState("WallSlide");
-        }
-    }
-    private void OnTriggerExit2D(Collider2D collision)
-    {
-        if (Manager.Layer.groundLM.Contain(collision.gameObject.layer))
-        {
-            // ground check
-            playerFSM.IsGround = false;
-        }
-
-        if (Manager.Layer.wallLM.Contain(collision.gameObject.layer))
-        {
-            WallJump();
-            //if (playerFSM.IsGround) return;
-            playerFSM.IsInWall = false;
-        }
-    }
 }

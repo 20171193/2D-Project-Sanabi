@@ -316,6 +316,7 @@ public class PlayerDash : PlayerBaseState
     {
         owner.Anim.Play("Dash");
     }
+    
 }
 public class PlayerGrab : PlayerBaseState
 {
@@ -331,6 +332,7 @@ public class PlayerGrab : PlayerBaseState
 
     public override void Enter()
     {
+        Time.timeScale = 0.5f;
         owner.Anim.Play("Grab");
     }
 
@@ -339,7 +341,6 @@ public class PlayerGrab : PlayerBaseState
         // Grab Moving
         GrabMove();
     }
-
     public override void Update()
     {
         owner.Anim.SetFloat("MovePower", mover.MoveHzt);
@@ -348,8 +349,6 @@ public class PlayerGrab : PlayerBaseState
         // follow enemy x position
         owner.transform.position = new Vector3(hooker.GrabEnemy.transform.position.x, owner.transform.position.y, owner.transform.position.z);
     }
-
-
     private void GrabMove()
     {
         // In the state of Grab an enemy,
@@ -375,8 +374,37 @@ public class PlayerGrab : PlayerBaseState
 
     public override void Exit()
     {
-        
+        Time.timeScale = 1f;
     }
-
 }
 #endregion
+
+public class PlayerDamaged : PlayerBaseState
+{
+    private Coroutine damagedRoutine;
+
+    public PlayerDamaged(PlayerFSM owner)
+    {
+        this.owner = owner;
+    }
+
+    public override void Enter()
+    {
+        Time.timeScale = 0.5f;
+        owner.Anim.Play("Damaged");
+        damagedRoutine = owner.StartCoroutine(DamagedRoutine());
+    }
+    public override void Exit()
+    {
+        Time.timeScale = 1f;
+
+        if (damagedRoutine != null)
+            owner.StopCoroutine(damagedRoutine);
+    }
+
+    IEnumerator DamagedRoutine()
+    {
+        yield return new WaitForSeconds(0.5f);
+        owner.BeDamaged = false;
+    }
+}

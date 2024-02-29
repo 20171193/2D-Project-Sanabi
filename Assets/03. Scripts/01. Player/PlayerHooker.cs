@@ -19,6 +19,10 @@ public class PlayerHooker : PlayerBase
     [Header("Specs")]
     [Space(2)]
     [SerializeField]
+    private float ropeJumpPower;
+    public float RopeJumpPower { get { return ropeJumpPower; } }
+
+    [SerializeField]
     private float hookShootPower;
     public float HookShootPower { get { return hookShootPower; } }
 
@@ -51,6 +55,7 @@ public class PlayerHooker : PlayerBase
     protected override void Awake()
     {
         base.Awake();
+        Manager.Pool.CreatePool(hookPrefab, 5, 15);
     }
 
     #region Mouse / Rope Action
@@ -99,6 +104,7 @@ public class PlayerHooker : PlayerBase
     { 
         if (value.isPressed)
         {
+            if (playerFSM.BeDamaged) return;
             if(playerFSM.IsHookShoot) return;
             if(playerFSM.IsGrab || playerFSM.IsJointed) return;
             if(!playerFSM.IsRaycastHit) return;
@@ -119,14 +125,17 @@ public class PlayerHooker : PlayerBase
                 GrabJump();
             }
             else
-                Destroy(firedHook);
+            {
+                anim.Play("Idle");
+                firedHook?.DisConnecting();
+            }
         }
     }
+
     private void RopeJump()
     {
-        rigid.AddForce(hookAim.transform.up * 15f, ForceMode2D.Impulse);
+        rigid.AddForce(hookAim.transform.up * ropeJumpPower, ForceMode2D.Impulse);
         anim.Play("RopeJump");
-        HookReloading();
     }
     private void GrabJump()
     {
@@ -135,7 +144,6 @@ public class PlayerHooker : PlayerBase
         grabEnemy.Died();
         rigid.AddForce(hookAim.transform.up * 15f, ForceMode2D.Impulse);
         anim.Play("RopeJump");
-        HookReloading();
     }
     #endregion
 
@@ -153,56 +161,36 @@ public class PlayerHooker : PlayerBase
     // else if hook collide with ground, Invoke OnGrabbedGround
     private void HookShoot()
     {
-        playerFSM.IsHookShoot = true;
+        // reload Routine
+        StartCoroutine(HookReloadRoutine());
+
         hookAim.LineOff();
         anim.Play("RopeShot");
 
-        firedHook = Instantiate(hookPrefab, hookAim.transform.position, hookAim.transform.rotation);
-        FiredHookInitialSetting(firedHook);
-
-        // Hook shoot
-        firedHook.Rigid?.AddForce(hookAim.transform.position.GetDirectionTo2DTarget(hookHitInfo.point) * hookShootPower, ForceMode2D.Impulse);
-    }
-    private void FiredHookInitialSetting(Hook hook)
-    {
-        // assign player rigidbody2D for DistanceJoint2D
-        hook.OwnerRigid = rigid;
-
-        // hook action setting
-        hook.OnDestroyHook += HookReloading;
-        hook.OnHookHitEnemy += HookHitEnemy;
-        hook.OnHookHitGround += HookHitGround;
-
-        // Convex Collision Detection setting
-        // Time = Distance / Velocity
-        hook.ccdRoutine = hook.StartCoroutine(hook.CCD(ropeLength / hookShootPower, new Vector3(hookHitInfo.point.x, hookHitInfo.point.y, 0)));
+        firedHook = Manager.Pool.GetPool(hookPrefab, hookAim.transform.position, hookAim.transform.rotation) as Hook;
+        firedHook.muzzlePos = hookAim.transform.position;
+        firedHook.targetPos = hookHitInfo.point;
     }
     #endregion
     #region Hooking Action
-    private void HookReloading()
+    public void OnHookDisJointed()
     {
-        if (hookReloadRoutine != null)
-            StopCoroutine(hookReloadRoutine);
-
-        playerFSM.IsHookShoot = false;
+        playerFSM.IsJointed = false;
     }
-    private void HookHitGround()
+    public void OnHookHitGround()
     {
-        StopCoroutine(firedHook.ccdRoutine);
-
         playerFSM.IsJointed = true;
         playerFSM.ChangeState("Roping");
     }
-    private void HookHitEnemy(GameObject target)
+    public void OnHookHitEnemy(GameObject target)
     {
-        StopCoroutine(firedHook.ccdRoutine);
-
         playerSkill.Dash(target);
     }
     #endregion
 
     IEnumerator HookReloadRoutine()
     {
+        playerFSM.IsHookShoot = true;
         yield return new WaitForSeconds(hookShootCoolTime);
         playerFSM.IsHookShoot = false;
     }

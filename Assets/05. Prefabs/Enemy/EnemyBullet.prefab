@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 8148906611496481845}
   - component: {fileID: 2550091992908980736}
   - component: {fileID: 5900012917345582504}
-  - component: {fileID: 2290681106682195430}
+  - component: {fileID: -5438544498892420105}
   m_Layer: 14
   m_Name: EnemyBullet
   m_TagString: Untagged
@@ -66,13 +66,13 @@ CapsuleCollider2D:
   m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: -0.011818886, y: 0.5791399}
-  m_Size: {x: 0.3660488, y: 0.8345312}
+  m_Offset: {x: 0.0026564598, y: 0.6804665}
+  m_Size: {x: 0.22129726, y: 0.53055155}
   m_Direction: 0
---- !u!114 &2290681106682195430
+--- !u!114 &-5438544498892420105
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -86,6 +86,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   autoRelease: 1
   releaseTime: 5
+  rigid: {fileID: 2550091992908980736}
+  knockBackPower: 5
 --- !u!1 &2467158873250956745
 GameObject:
   m_ObjectHideFlags: 0

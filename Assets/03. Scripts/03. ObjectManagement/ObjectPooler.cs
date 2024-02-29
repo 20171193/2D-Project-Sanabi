@@ -6,16 +6,16 @@ using UnityEngine;
 public class ObjectPooler : MonoBehaviour
 {
     [SerializeField]
-    private Stack<PooledObject> objectPool;
+    protected Stack<PooledObject> objectPool;
     [SerializeField]
-    private PooledObject prefab;
+    protected PooledObject prefab;
 
     [SerializeField]
-    private int size;
+    protected int size;
     [SerializeField]
-    private int capacity;
+    protected int capacity;
 
-    public void CreatePool(PooledObject prefab, int size, int capacity)
+    public virtual void CreatePool(PooledObject prefab, int size, int capacity)
     {
         this.prefab = prefab;
         this.size = size;
@@ -32,7 +32,7 @@ public class ObjectPooler : MonoBehaviour
             objectPool.Push(instance);
         }
     }
-    public PooledObject GetPool(Vector3 position, Quaternion rotation)
+    public virtual PooledObject GetPool(Vector3 position, Quaternion rotation)
     {
         if(objectPool.Count > 0)
         {
