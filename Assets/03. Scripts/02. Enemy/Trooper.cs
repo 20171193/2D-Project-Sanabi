@@ -17,8 +17,7 @@ public class Trooper : EnemyShooter
         TrooperDetect detect = new TrooperDetect(this);
         detect.OnEnableDetect += () => detect.detectRoutine = StartCoroutine(detect.DetectRoutine());
         detect.OnDisableDetect += () => StopCoroutine(detect.detectRoutine);
-
-        fsm.AddState("Detect", new TrooperDetect(this));
+        fsm.AddState("Detect", detect);
         fsm.AddState("Grabbed", new TrooperGrabbed(this));
         fsm.AddState("Die", new TrooperDie(this));
 
@@ -48,9 +47,10 @@ public class Trooper : EnemyShooter
 
     public override void Shooting()
     {
-        base.Shooting();
-
-        EnemyBulletObject bullet = Manager.Pool.GetPool(bulletPrefab, aimPos.position, aimPos.rotation) as EnemyBulletObject;
+        anim.Play("Attack");
+        lr.positionCount = 0;
+        EnemyBulletObject bullet = Manager.Pool.GetPool(bulletPrefab, muzzlePos.position, aimPos.rotation) as EnemyBulletObject;
+        bullet.transform.up = AimPos.right;
         bullet.Rigid.AddForce(aimPos.right * bulletPower, ForceMode2D.Impulse);
     }
 

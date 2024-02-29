@@ -51,11 +51,7 @@ public abstract class EnemyShooter : Enemy
         lr.SetPosition(0, aimPos.position);
         lr.SetPosition(1, (targetPos - aimPos.position) * 10f);
     }
-    public virtual void Shooting()
-    {
-        anim.Play("Shooting");
-        lr.positionCount = 0;
-    }
+    public abstract void Shooting();
 
     //[Header("Ballancing")]
     protected override void Awake()

@@ -39,11 +39,11 @@ public class Turret : EnemyShooter
 
     public override void Shooting()
     {
-        base.Shooting();
-        // 3¹ß ½î±â
-
-        EnemyBulletObject bullet = Manager.Pool.GetPool(bulletPrefab, aimPos.position, aimPos.rotation) as EnemyBulletObject;
-        bullet.Rigid.AddForce(aimPos.right * bulletPower, ForceMode2D.Impulse);
+        anim.Play("Shooting");
+        lr.positionCount = 0;
+        EnemyBulletObject bullet = Manager.Pool.GetPool(bulletPrefab, muzzlePos.position, aimPos.rotation) as EnemyBulletObject;
+        bullet.transform.up = aimPos.up;
+        bullet.Rigid.AddForce(aimPos.up * bulletPower, ForceMode2D.Impulse);
     }
 
     public override void Died()

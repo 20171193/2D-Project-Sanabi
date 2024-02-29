@@ -1,36 +1,43 @@
 using System.Buffers;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class Hook : MonoBehaviour
+public class Hook : PooledObject
 {
     [Header("Components")]
     [SerializeField]
     private Rigidbody2D rigid;
     public Rigidbody2D Rigid { get { return rigid; } }
-
     [SerializeField]
     private DistanceJoint2D distJoint;
-
     [SerializeField]
     private Animator anim;
-
     [SerializeField]
     private LineRenderer lr;
 
+    // should be set by HookPooler
     [Space(3)]
-    [Header("Hook Action")]
+    [Header("Pooler Setting")]
     [Space(2)]
+    [SerializeField]
     public UnityAction<GameObject> OnHookHitEnemy;
+    [SerializeField]
     public UnityAction OnHookHitGround;
+    [SerializeField]
     public UnityAction OnDestroyHook;
-
-    [Header("Ballancing")]
     [SerializeField]
     private Rigidbody2D ownerRigid;
     public Rigidbody2D OwnerRigid { set { ownerRigid = value; } }
+    [SerializeField]
+    private float trailSpeed;
+    public float TrailSpeed { get { return trailSpeed; } set { trailSpeed = value; } }
+
+    [Header("Ballancing")]
+    public Vector3 muzzlePos;
+    public Vector3 targetPos;
 
     [SerializeField]
     private bool isConnected = false;
@@ -38,40 +45,41 @@ public class Hook : MonoBehaviour
     private bool isGrabbed = false;
 
     public float destroyTime;
+    private Coroutine trailRoutine;
 
-    public Coroutine ccdRoutine;
-
-    private void OnEnable()
+    protected override void OnEnable()
     {
+        base.OnEnable();
+
         lr.positionCount = 0;
         anim.Play("HookStart");
-    }
-    private void Start()
-    {
-
     }
 
     private void Update()
     {
+        Trailing();
+
         if (isConnected)
             LineRendering();
+    }
+    private void Trailing()
+    {
+        trailRoutine = StartCoroutine(TrailRoutine());
     }
 
     private void LineRendering()
     {
         lr.positionCount = 2;
-        lr.SetPosition(0, transform.position);
+        lr.SetPosition(0, targetPos);
         lr.SetPosition(1, ownerRigid.position);
     }
-
     private void Grab(GameObject target)
     {
         isGrabbed = true;
         OnHookHitEnemy?.Invoke(target);
 
-        Destroy(gameObject);
+        Release();
     }
-
     private void Conecting()
     {
         isConnected = true;
@@ -85,19 +93,17 @@ public class Hook : MonoBehaviour
         distJoint.enabled = true;
         distJoint.connectedBody = ownerRigid;
     }
-
     public void DisConnecting()
     {
-        Destroy(gameObject);
+        Release();
     }
-
     private void OnTriggerEnter2D(Collider2D collision)
     {
         Debug.Log($"Hook Trigger : {collision.name}");
         rigid.velocity = Vector3.zero;
-        
-        if(!Manager.Layer.hookInteractableLM.Contain(collision.gameObject.layer))
-            Destroy(gameObject);
+
+        if (!Manager.Layer.hookInteractableLM.Contain(collision.gameObject.layer))
+            Release();
 
         // enemy hook balancing
         if (Manager.Layer.enemyLM.Contain(collision.gameObject.layer))
@@ -111,21 +117,32 @@ public class Hook : MonoBehaviour
             Conecting();
     }
 
-    // Convex Collision Detection
-    public IEnumerator CCD(float time, Vector3 limitPosition)
+    IEnumerator TrailRoutine()
     {
-        yield return new WaitForSeconds(time*Time.deltaTime + 0.1f);
+        float time = Vector3.Distance(muzzlePos, targetPos) / trailSpeed;
+        float rate = 0f;
 
-        if (!isConnected && !isGrabbed)
+        while(rate < 1f)
         {
-            transform.position = limitPosition;
-            rigid.velocity = Vector2.zero;
+            rate += Time.deltaTime / time;
+            transform.position = Vector3.Lerp(muzzlePos, targetPos, rate);
+            yield return null;
         }
+
+        transform.position = targetPos;
+        yield return null;
     }
 
-    private void OnDestroy()
+    private void OnDisable()
     {
         // Player Hook Reloading
         OnDestroyHook?.Invoke();
+        
+        if (trailRoutine != null)
+            StopCoroutine(trailRoutine);
+    }
+    private void OnDestroy()
+    {
+        Debug.Log("Hook Destroyed");
     }
 }

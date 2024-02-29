@@ -67,6 +67,10 @@ public class PlayerFSM : PlayerBase
         {
             return beDamaged;
         });
+        fsm.AddTransition("Damaged", "Idle", 0f, () =>
+        {
+            return !beDamaged;
+        });
 
         fsm.AddAnyState("WallSlide", () =>
         {
@@ -140,11 +144,18 @@ public class PlayerFSM : PlayerBase
         fsm.LateUpdate();
     }
 
+    private void TakeDamage()
+    {
+        beDamaged = true;
+        PrHooker.FiredHook?.DisConnecting();
+    }
+
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (Manager.Layer.enemyBulletLM.Contain(collision.gameObject.layer))
         {
-            beDamaged = true;
+            TakeDamage();
+            return;
         }
 
         if (Manager.Layer.groundLM.Contain(collision.gameObject.layer))
@@ -165,7 +176,6 @@ public class PlayerFSM : PlayerBase
             fsm.ChangeState("WallSlide");
         }
     }
-
     private void OnTriggerExit2D(Collider2D collision)
     {
         if (Manager.Layer.groundLM.Contain(collision.gameObject.layer))

@@ -8,17 +8,19 @@ public class PoolManager : MonoBehaviour
 
     public void CreatePool(PooledObject prefab, int size, int capacity)
     {
-        Debug.Log(prefab.name);
-
         GameObject gameObject = new GameObject();
         gameObject.name = $"Pool_{prefab.name}";
 
-        ObjectPooler pooler = gameObject.AddComponent<ObjectPooler>();
-        pooler.CreatePool(prefab, size, capacity);
+        ObjectPooler pooler;
+        // Player Hook Pooler
+        if (prefab is Hook)
+            pooler = gameObject.AddComponent<HookPooler>();
+        else
+            pooler = gameObject.AddComponent<ObjectPooler>();
 
+        pooler.CreatePool(prefab, size, capacity);
         poolDic.Add(prefab.name, pooler);
     }
-
     public void DestroyPool(PooledObject prefab)
     {
         ObjectPooler pooler = poolDic[prefab.name];
@@ -26,7 +28,6 @@ public class PoolManager : MonoBehaviour
 
         poolDic.Remove(prefab.name);
     }
-
     public PooledObject GetPool(PooledObject prefab, Vector3 position, Quaternion rotation)
     {
         return poolDic[prefab.name].GetPool(position, rotation);
