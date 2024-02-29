@@ -62,16 +62,8 @@ public class TrooperDetect : EnemyShooterBase
     // Aim rotate to Player
     private void AimRotation()
     {
-        Vector3 targetToAim = owner.AimPos.position - targetPos;
-        float aimRotZ = Mathf.Atan2(targetToAim.y, targetToAim.x) * Mathf.Rad2Deg;
-
-        // Aim Rotation
-        owner.AimPos.transform.rotation = Quaternion.Euler(0, 0, aimRotZ);
-
-        // LineRendering
-        owner.Lr.positionCount = 2;
-        owner.Lr.SetPosition(0, owner.AimPos.position);
-        owner.Lr.SetPosition(1, targetPos);
+        Vector3 dir = (targetPos - owner.AimPos.position).normalized;
+        owner.AimPos.right = dir;
     }
     private void LineRendering()
     {
@@ -95,8 +87,11 @@ public class TrooperDetect : EnemyShooterBase
             isLineRendering = true;
             yield return new WaitForSeconds(owner.AttackDelay);
             isLineRendering = false;
-            isDetect = true;
+            owner.Anim.Play("Shooting");
             Shooting();
+            yield return new WaitForSeconds(1.5f);
+            isDetect = true;
+            owner.Anim.Play("Detect");
         }
     }
 }

@@ -85,11 +85,6 @@ public class TurretDetect : EnemyShooterBase
     {
         Vector3 dir = (targetPos - owner.AimPos.position).normalized;
         owner.AimPos.up = dir;
-
-        //if (targetPos.x < owner.Rigid.position.x)
-        //    owner.AimPos.transform.rotation = Quaternion.Euler(0, -180, owner.AimPos.transform.rotation.z);
-        //else
-        //    owner.AimPos.transform.rotation = Quaternion.Euler(0, 0, owner.AimPos.transform.rotation.z);
     }
 
     private void LineRendering()
