@@ -4290,8 +4290,8 @@ MonoBehaviour:
   holdingMovePower: 12
   maxHoldingMoveSpeed: 7
   holdingHztBrakePower: 15
-  climbPower: 0
-  slidingPower: 0
+  climbPower: 3
+  slidingPower: 5
   jumpPower: 12
   flyMovePower: 1
   ropeMovePower: 5

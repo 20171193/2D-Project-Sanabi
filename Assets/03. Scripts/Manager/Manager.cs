@@ -13,11 +13,14 @@ public class Manager : MonoBehaviour
     private CoroutineManager coroutineManager;
     [SerializeField]
     private LayerManager layerManager;
+    [SerializeField]
+    private PoolManager poolManager;
 
-    public static GameManager Game { get { return instance.gameManager; } }
     public static CoroutineManager Coroutine { get { return instance.coroutineManager; } }
     public static LayerManager Layer { get { return instance.layerManager; }} 
-   
+    public static PoolManager Pool { get { return instance.poolManager; } }
+    public static GameManager Game { get { return instance.gameManager; } }
+
 
     private void Awake()
     {

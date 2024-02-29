@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EnemyTrooper : EnemyShooter
+public class Trooper : EnemyShooter
 {
     protected override void Awake()
     {
