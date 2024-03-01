@@ -41,8 +41,6 @@ public class Hook : PooledObject
 
     [SerializeField]
     private bool isConnected = false;
-    [SerializeField]
-    private bool isGrabbed = false;
 
     public float destroyTime;
     private Coroutine trailRoutine;
@@ -75,7 +73,6 @@ public class Hook : PooledObject
     }
     private void Grab(GameObject target)
     {
-        isGrabbed = true;
         OnHookHitEnemy?.Invoke(target);
 
         Release();
