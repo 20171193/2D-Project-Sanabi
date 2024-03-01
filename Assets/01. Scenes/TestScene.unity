@@ -286,6 +286,37 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &256297740
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 256297741}
+  m_Layer: 0
+  m_Name: SpawnPosition
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &256297741
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 256297740}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 2.2, y: 0.5, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 374840770}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &374840769
 GameObject:
   m_ObjectHideFlags: 0
@@ -296,6 +327,7 @@ GameObject:
   m_Component:
   - component: {fileID: 374840770}
   - component: {fileID: 374840771}
+  - component: {fileID: 374840772}
   m_Layer: 0
   m_Name: TrooperSpawner
   m_TagString: Untagged
@@ -316,6 +348,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 489443480}
+  - {fileID: 256297741}
   m_Father: {fileID: 0}
   m_RootOrder: 11
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -339,6 +372,18 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
+--- !u!114 &374840772
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 374840769}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 277a96f9730a27749a30c4218248b1d6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &425764803
 GameObject:
   m_ObjectHideFlags: 0
@@ -7594,11 +7639,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4579649950379484229, guid: 2c5bd10516800e54a9594125697ebe21, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 12.96
+      value: 10.26
       objectReference: {fileID: 0}
     - target: {fileID: 4579649950379484229, guid: 2c5bd10516800e54a9594125697ebe21, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.24
+      value: 0.52
       objectReference: {fileID: 0}
     - target: {fileID: 4579649950379484229, guid: 2c5bd10516800e54a9594125697ebe21, type: 3}
       propertyPath: m_LocalPosition.z
