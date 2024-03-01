@@ -17,11 +17,13 @@ public class Trooper : EnemyShooter
         TrooperDetect detect = new TrooperDetect(this);
         detect.OnEnableDetect += () => detect.detectRoutine = StartCoroutine(detect.DetectRoutine());
         detect.OnDisableDetect += () => StopCoroutine(detect.detectRoutine);
+
         fsm.AddState("Detect", detect);
         fsm.AddState("Grabbed", new TrooperGrabbed(this));
         fsm.AddState("Die", new TrooperDie(this));
 
         fsm.Init("Detect");
+        initState = "Detect";
     }
 
     public override void Detecting(out Vector3 targetPos)
@@ -44,7 +46,6 @@ public class Trooper : EnemyShooter
         Vector3 dir = (targetPos - aimPos.position).normalized;
         aimPos.right = dir;
     }
-
     public override void Shooting()
     {
         anim.Play("Attack");
@@ -53,11 +54,9 @@ public class Trooper : EnemyShooter
         bullet.transform.up = AimPos.right;
         bullet.Rigid.AddForce(aimPos.right * bulletPower, ForceMode2D.Impulse);
     }
-
     public override void Died()
     {
-        Destroy(gameObject, 3f);
-        fsm.ChangeState("Die");
+        base.Died();
     }
     public override void Grabbed(out float holdingYpoint)
     {

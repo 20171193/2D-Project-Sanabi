@@ -7,3 +7,8 @@ public class EnemyShooterBase : BaseState
 {
     protected EnemyShooter owner;
 }
+
+public class EnemyPooled : BaseState
+{
+    // dummy State
+}
