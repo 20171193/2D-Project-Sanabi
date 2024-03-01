@@ -25,6 +25,7 @@ public class Turret : EnemyShooter
         fsm.AddState("Die", new TurretDie(this));
 
         fsm.Init("PopUp");
+        initState = "PopUp";
     }
 
     public override void Detecting(out Vector3 targetPos)
@@ -57,11 +58,9 @@ public class Turret : EnemyShooter
         bullet.transform.up = aimPos.up;
         bullet.Rigid.AddForce(aimPos.up * bulletPower, ForceMode2D.Impulse);
     }
-
     public override void Died()
     {
-        Destroy(gameObject, 3f);
-        fsm.ChangeState("Die");
+        base.Died();
     }
     public override void Grabbed(out float holdingYpoint)
     {

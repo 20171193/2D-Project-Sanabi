@@ -18,7 +18,7 @@ public class GameScene : MonoBehaviour
     private void Start()
     {
         Manager.Pool.CreatePool(enemyBullet, 15, 30);
-        //Manager.Pool.CreatePool(eneTrooperPrefab, 5, 10);
+        Manager.Pool.CreatePool(eneTrooperPrefab, 5, 10);
         //Manager.Pool.CreatePool(eneTurretPrefab, 5, 10);
     }
 }
