@@ -32,6 +32,12 @@ public abstract class Enemy : PooledObject
     protected StateMachine<Enemy> fsm;
     public StateMachine<Enemy> FSM { get { return fsm; } }
 
+    [SerializeField]
+    protected string initState;
+    public string InitState { get { return initState; } }
+
+    public UnityAction OnDie;
+
     [Header("Ballancing")]
     [Space(2)]
     [SerializeField]
@@ -42,6 +48,13 @@ public abstract class Enemy : PooledObject
     {
         fsm = new StateMachine<Enemy>(this);
         playerTr = GameObject.FindWithTag("Player").GetComponent<Transform>();
+
+        fsm.AddState("Pooled", new EnemyPooled());
+    }
+
+    protected override void OnEnable()
+    {
+        fsm.ChangeState(initState);
     }
 
     private void Update()
@@ -57,6 +70,17 @@ public abstract class Enemy : PooledObject
         fsm.LateUpdate();
     }
 
-    public abstract void Died();
+    public virtual void Died()
+    {
+        fsm.ChangeState("Die");
+        StartCoroutine(EnemyReleaseRoutine());
+    }
     public abstract void Grabbed(out float holdingYPoint);
+    IEnumerator EnemyReleaseRoutine()
+    {
+        yield return new WaitForSeconds(releaseTime);
+        Release();
+        OnDie?.Invoke();
+        fsm.Init("Pooled");
+    }
 }

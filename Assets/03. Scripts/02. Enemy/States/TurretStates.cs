@@ -38,7 +38,6 @@ public class TurretPopUp : EnemyShooterBase
         owner.FSM.ChangeState("Detect");
     }
 }
-
 public class TurretDetect : EnemyShooterBase
 {
     public Coroutine detectRoutine;
@@ -87,7 +86,6 @@ public class TurretDetect : EnemyShooterBase
         }
     }
 }
-
 public class TurretGrabbed : EnemyShooterBase
 {
     public TurretGrabbed(EnemyShooter owner)
