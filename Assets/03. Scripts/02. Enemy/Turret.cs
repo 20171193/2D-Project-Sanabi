@@ -64,6 +64,8 @@ public class Turret : EnemyShooter
     }
     public override void Grabbed(out float holdingYpoint)
     {
+        markerAnim.SetBool("IsEnable", false);
+
         lr.positionCount = 0;
         holdingYpoint = grabbedYPos;
         fsm.ChangeState("Grabbed");
