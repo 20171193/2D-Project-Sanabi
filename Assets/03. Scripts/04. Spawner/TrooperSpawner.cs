@@ -35,6 +35,9 @@ public class TrooperSpawner : Spawner
         spawnCount--;
         spawnedTrooper = Manager.Pool.GetPool(trooperPrefab, spawnPos.position, spawnPos.rotation) as Trooper;
         spawnedTrooper.OnDie += OnTrooperDied;
+
+        if (spawnCount < 1)
+            anim.SetBool("IsEnable", false);
     }
 
     public void OnTrooperDied()
@@ -43,8 +46,6 @@ public class TrooperSpawner : Spawner
 
         if (spawnCount > 0)
             anim.SetTrigger("OnSpawn");
-        else
-            anim.SetBool("IsEnable", false);
     }
 
     // Animation Bind
