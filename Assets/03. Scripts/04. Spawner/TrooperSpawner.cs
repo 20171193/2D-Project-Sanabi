@@ -25,11 +25,13 @@ public class TrooperSpawner : Spawner
 
     public void OnEnable()
     {
-        anim.Play("Spawn");
+        anim.SetBool("IsEnable", true);
+        anim.SetTrigger("OnSpawn");
     }
 
     protected override void Spawn()
     {
+        Debug.Log("Spawn!");
         spawnCount--;
         spawnedTrooper = Manager.Pool.GetPool(trooperPrefab, spawnPos.position, spawnPos.rotation) as Trooper;
         spawnedTrooper.OnDie += OnTrooperDied;
@@ -40,16 +42,20 @@ public class TrooperSpawner : Spawner
         spawnedTrooper.OnDie -= OnTrooperDied;
 
         if (spawnCount > 0)
-            anim.Play("Spawn");
+            anim.SetTrigger("OnSpawn");
         else
-            Destroy(gameObject);
+            anim.SetBool("IsEnable", false);
     }
 
     // Animation Bind
     public void OnAnimationSpawn()
     {
+        Debug.Log("Spawn Bind!");
         Spawn();
-        anim.Play("SpawnEnd");
+    }
+    public void OnAnimationDisable()
+    {
+        Destroy(gameObject);
     }
 
     private void OnDisable()

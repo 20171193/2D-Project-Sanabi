@@ -61,10 +61,6 @@ public abstract class Enemy : PooledObject
         fsm.ChangeState(initState);
         markerAnim.SetBool("IsEnable", true);
     }
-    private void OnDisable()
-    {
-        markerAnim.SetBool("IsEnable", false);
-    }
 
     private void Update()
     {

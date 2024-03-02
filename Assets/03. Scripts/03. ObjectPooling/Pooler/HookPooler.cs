@@ -23,7 +23,6 @@ public class HookPooler : ObjectPooler
 
         for (int i = 0; i < size; i++)
         {
-            Debug.Log("Hook Instantiate");
             Hook instance = Instantiate(prefab) as Hook;
 
             instance.gameObject.SetActive(false);
