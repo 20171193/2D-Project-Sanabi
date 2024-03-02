@@ -7565,9 +7565,10 @@ MonoBehaviour:
   hookAim: {fileID: 955482362}
   hookPrefab: {fileID: 504550284057011342, guid: 9c0c4d3285540fc4cb9aa73ead938b19, type: 3}
   ropeJumpPower: 8
-  hookShootPower: 50
+  hookShootPower: 70
   hookShootCoolTime: 0.3
-  ropeLength: 20
+  rayLength: 20
+  maxRopeLength: 12
   mousePos: {x: 0, y: 0, z: 0}
   grabEnemy: {fileID: 0}
   firedHook: {fileID: 0}
