@@ -762,7 +762,7 @@ AnimationClip:
   m_HasMotionFloatCurves: 0
   m_Events:
   - time: 2.6
-    functionName: OnEndSpawnAnimation
+    functionName: OnAnimationSpawn
     data: 
     objectReferenceParameter: {fileID: 0}
     floatParameter: 0
