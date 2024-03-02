@@ -64,6 +64,7 @@ public class HookPooler : ObjectPooler
         // assign player rigidbody2D for DistanceJoint2D
         inst.OwnerRigid = owner.Rigid;
         inst.TrailSpeed = owner.HookShootPower;
+        inst.MaxDistance = owner.MaxRopeLength;
 
         // hook action setting
         inst.OnDestroyHook += owner.OnHookDisJointed;
