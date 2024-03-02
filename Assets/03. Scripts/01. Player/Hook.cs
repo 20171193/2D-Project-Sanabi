@@ -24,16 +24,24 @@ public class Hook : PooledObject
     [Space(2)]
     [SerializeField]
     public UnityAction<GameObject> OnHookHitEnemy;
+
     [SerializeField]
     public UnityAction OnHookHitGround;
+
     [SerializeField]
     public UnityAction OnDestroyHook;
+
     [SerializeField]
     private Rigidbody2D ownerRigid;
     public Rigidbody2D OwnerRigid { set { ownerRigid = value; } }
+
     [SerializeField]
     private float trailSpeed;
     public float TrailSpeed { get { return trailSpeed; } set { trailSpeed = value; } }
+
+    [SerializeField]
+    private float maxDistance;
+    public float MaxDistance { get { return maxDistance; } set { maxDistance = value; } }
 
     [Header("Ballancing")]
     public Vector3 muzzlePos;
@@ -89,6 +97,9 @@ public class Hook : PooledObject
 
         distJoint.enabled = true;
         distJoint.connectedBody = ownerRigid;
+
+        float distance = (ownerRigid.transform.position - transform.position).magnitude;
+        distJoint.distance = distance > maxDistance ? maxDistance : distance;
     }
     public void DisConnecting()
     {

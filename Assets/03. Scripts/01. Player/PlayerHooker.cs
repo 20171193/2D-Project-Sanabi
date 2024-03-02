@@ -31,8 +31,12 @@ public class PlayerHooker : PlayerBase
     public float HookShootCoolTime { get { return hookShootCoolTime; } }
     
     [SerializeField]
-    private float ropeLength;  // Raycast distance
-    public float RopeLength { get { return ropeLength; } }
+    private float rayLength;  // Raycast distance
+    public float RayLength { get { return RayLength; } }
+
+    [SerializeField]
+    private float maxRopeLength;
+    public float MaxRopeLength { get { return maxRopeLength; } }
 
     private RaycastHit2D hookHitInfo;
 
@@ -79,7 +83,7 @@ public class PlayerHooker : PlayerBase
     private void RopeRayCast()
     {
         Vector2 rayDir = (mousePos - transform.position).normalized;
-        hookHitInfo = Physics2D.Raycast(transform.position, rayDir, ropeLength, Manager.Layer.hookInteractableLM);
+        hookHitInfo = Physics2D.Raycast(transform.position, rayDir, rayLength, Manager.Layer.hookInteractableLM);
 
         if (hookHitInfo)
         {
