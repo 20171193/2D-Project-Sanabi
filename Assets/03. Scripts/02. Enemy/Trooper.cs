@@ -50,6 +50,7 @@ public class Trooper : EnemyShooter
     {
         anim.Play("Attack");
         lr.positionCount = 0;
+
         EnemyBulletObject bullet = Manager.Pool.GetPool(bulletPrefab, muzzlePos.position, aimPos.rotation) as EnemyBulletObject;
         bullet.transform.up = AimPos.right;
         bullet.Rigid.AddForce(aimPos.right * bulletPower, ForceMode2D.Impulse);
