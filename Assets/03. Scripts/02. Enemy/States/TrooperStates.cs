@@ -44,6 +44,7 @@ public class TrooperDetect : EnemyShooterBase
             yield return new WaitForSeconds(owner.AttackCoolTime);
             isDetect = false;
             owner.LrAnim.Play("Aiming");
+            owner.MarkerAnim.SetTrigger("IsAttack");
             yield return new WaitForSeconds(owner.AttackDelay);
             owner.Shooting();
             yield return new WaitForSeconds(1.5f);

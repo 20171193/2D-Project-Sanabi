@@ -124,6 +124,7 @@ Transform:
   - {fileID: 4579649951327459632}
   - {fileID: 4579649951459642765}
   - {fileID: 4579649950155029962}
+  - {fileID: 7677421041371700682}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -196,9 +197,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ac09a3c504b9dfc40af2fcdd117b562d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  autoRelease: 0
+  releaseTime: 0
   rigid: {fileID: 4579649950379484233}
   anim: {fileID: 4579649950379484230}
+  markerAnim: {fileID: 3856138505187832183}
   playerTr: {fileID: 0}
+  initState: 
   grabbedYPos: 0.8
   aimPos: {fileID: 4579649951459642765}
   muzzlePos: {fileID: 2345264449347983108}
@@ -528,3 +533,70 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
+--- !u!1001 &3845614644516150777
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 4579649950379484229}
+    m_Modifications:
+    - target: {fileID: 6905693774009925683, guid: caca644f2f82be143a767341862717da, type: 3}
+      propertyPath: m_RootOrder
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 6905693774009925683, guid: caca644f2f82be143a767341862717da, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6905693774009925683, guid: caca644f2f82be143a767341862717da, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 3.28
+      objectReference: {fileID: 0}
+    - target: {fileID: 6905693774009925683, guid: caca644f2f82be143a767341862717da, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6905693774009925683, guid: caca644f2f82be143a767341862717da, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6905693774009925683, guid: caca644f2f82be143a767341862717da, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6905693774009925683, guid: caca644f2f82be143a767341862717da, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6905693774009925683, guid: caca644f2f82be143a767341862717da, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6905693774009925683, guid: caca644f2f82be143a767341862717da, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6905693774009925683, guid: caca644f2f82be143a767341862717da, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6905693774009925683, guid: caca644f2f82be143a767341862717da, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9000267942796842071, guid: caca644f2f82be143a767341862717da, type: 3}
+      propertyPath: m_Name
+      value: Marker
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: caca644f2f82be143a767341862717da, type: 3}
+--- !u!95 &3856138505187832183 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 62381542797864078, guid: caca644f2f82be143a767341862717da, type: 3}
+  m_PrefabInstance: {fileID: 3845614644516150777}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &7677421041371700682 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 6905693774009925683, guid: caca644f2f82be143a767341862717da, type: 3}
+  m_PrefabInstance: {fileID: 3845614644516150777}
+  m_PrefabAsset: {fileID: 0}

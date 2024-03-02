@@ -23,6 +23,10 @@ public abstract class Enemy : PooledObject
     public Animator Anim { get { return anim; } }
 
     [SerializeField]
+    protected Animator markerAnim;
+    public Animator MarkerAnim { get { return markerAnim; } }
+
+    [SerializeField]
     protected Transform playerTr;
     public Transform PlayerTr { get { return playerTr; } }
 
@@ -55,6 +59,11 @@ public abstract class Enemy : PooledObject
     protected override void OnEnable()
     {
         fsm.ChangeState(initState);
+        markerAnim.SetBool("IsEnable", true);
+    }
+    private void OnDisable()
+    {
+        markerAnim.SetBool("IsEnable", false);
     }
 
     private void Update()
