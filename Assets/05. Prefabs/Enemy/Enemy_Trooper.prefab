@@ -198,7 +198,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   autoRelease: 0
-  releaseTime: 0
+  releaseTime: 3
   rigid: {fileID: 4579649950379484233}
   anim: {fileID: 4579649950379484230}
   markerAnim: {fileID: 3856138505187832183}
