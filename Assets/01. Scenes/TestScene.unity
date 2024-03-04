@@ -388,7 +388,7 @@ MonoBehaviour:
   spawnTime: 3
   trooperPrefab: {fileID: 3280106638035128806, guid: 2c5bd10516800e54a9594125697ebe21, type: 3}
   anim: {fileID: 374840771}
-  spawnCount: 1
+  spawnCount: 5
 --- !u!1 &425764803
 GameObject:
   m_ObjectHideFlags: 0
@@ -7587,7 +7587,7 @@ MonoBehaviour:
   rigid: {fileID: 0}
   anim: {fileID: 0}
   cam: {fileID: 0}
-  movePower: 20
+  movePower: 30
   maxMoveSpeed: 12
   hztBrakePower: 30
   vtcBrakePower: 30
