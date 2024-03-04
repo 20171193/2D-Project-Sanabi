@@ -73,7 +73,7 @@ public class Trooper : EnemyShooter, IKnockbackable, IGrabMoveable
 
     public void GrabMove(Rigidbody2D ownerRigid)
     {
-
+        rigid.position = new Vector2(ownerRigid.position.x, rigid.position.y);
     }
 
     public void KnockBack(Vector3 force)

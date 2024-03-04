@@ -10,6 +10,7 @@ public class PlayerSkill : PlayerBase
     public float RopeSkillPower { get { return ropeSkillPower; } }
 
     [Header("Ballaincing")]
+    [SerializeField]
     private float dashPower;
     public float DashPower { get { return dashPower; } }
 
@@ -44,10 +45,12 @@ public class PlayerSkill : PlayerBase
 
         float time = Vector3.Distance(startPos, endPos) / dashPower;
         float rate = 0f;
+
         while(rate < 1f)
         {
             if (rate >= 0.3f)
                 Time.timeScale = 0.5f;
+            Debug.Log($"Trail Rate : {rate}");
             rate += Time.deltaTime / time;
             transform.position = Vector3.Lerp(startPos, endPos, rate);
             yield return null;
