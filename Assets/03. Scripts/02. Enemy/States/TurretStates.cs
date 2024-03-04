@@ -100,12 +100,19 @@ public class TurretGrabbed : EnemyShooterBase
 }
 public class TurretDie : EnemyShooterBase
 {
+    private BoxCollider2D col;
     public TurretDie(EnemyShooter owner)
     {
         this.owner = owner;
+        col= owner.GetComponent<BoxCollider2D>();   
     }
     public override void Enter()
     {
+        col.enabled = false;
         owner.Anim.Play("Die");
+    }
+    public override void Exit()
+    {
+        col.enabled = true;
     }
 }

@@ -21,8 +21,8 @@ TagManager:
   - EnemyFoot
   - EnemyBullet
   - PlayerHook
-  - PlayerChecker
-  - 
+  - PlayerWallChecker
+  - PlayerGroundChecker
   - 
   - 
   - 
@@ -38,6 +38,12 @@ TagManager:
   - 
   - 
   m_SortingLayers:
+  - name: BackGround
+    uniqueID: 1440743243
+    locked: 0
+  - name: BackAnimation
+    uniqueID: 363777219
+    locked: 0
   - name: Default
     uniqueID: 0
     locked: 0

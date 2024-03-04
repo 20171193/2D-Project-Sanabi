@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class Trooper : EnemyShooter
+public class Trooper : EnemyShooter, IKnockbackable, IGrabMoveable
 {
     private CapsuleCollider2D capsuleCol;
     public CapsuleCollider2D CapsuleCol { get { return capsuleCol; } }
@@ -55,16 +55,29 @@ public class Trooper : EnemyShooter
         bullet.transform.up = AimPos.right;
         bullet.Rigid.AddForce(aimPos.right * bulletPower, ForceMode2D.Impulse);
     }
-    public override void Died()
-    {
-        base.Died();
-    }
-    public override void Grabbed(out float holdingYpoint)
+
+
+    public void Grabbed()
     {
         markerAnim.SetBool("IsEnable", false);
 
         lr.positionCount = 0;
-        holdingYpoint = grabbedYPos;
         fsm.ChangeState("Grabbed");
+    }
+    public void GrabEnd()
+    {
+        Died();
+    }
+    public GameObject GetObject() { return this.gameObject; }
+    public Vector3 GetGrabPosition() { return new Vector2(this.transform.position.x, this.transform.position.y + grabbedYPos); }
+
+    public void GrabMove(Rigidbody2D ownerRigid)
+    {
+
+    }
+
+    public void KnockBack(Vector3 force)
+    {
+        rigid.AddForce(force, ForceMode2D.Impulse);
     }
 }

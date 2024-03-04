@@ -23,7 +23,7 @@ public class Hook : PooledObject
     [Header("Pooler Setting")]
     [Space(2)]
     [SerializeField]
-    public UnityAction<GameObject> OnHookHitEnemy;
+    public UnityAction<IGrabable> OnHookHitObject;
 
     [SerializeField]
     public UnityAction OnHookHitGround;
@@ -79,9 +79,9 @@ public class Hook : PooledObject
         lr.SetPosition(0, targetPos);
         lr.SetPosition(1, ownerRigid.position);
     }
-    private void Grab(GameObject target)
+    private void Grab(IGrabable grabed)
     {
-        OnHookHitEnemy?.Invoke(target);
+        OnHookHitObject?.Invoke(grabed);
 
         Release();
     }
@@ -113,10 +113,18 @@ public class Hook : PooledObject
         if (!Manager.Layer.hookInteractableLM.Contain(collision.gameObject.layer))
             Release();
 
-        // enemy hook balancing
+        // object hook balancing
         if (Manager.Layer.enemyLM.Contain(collision.gameObject.layer))
         {
-            Grab(collision.gameObject);
+            // object grab
+            IGrabable grabed = collision.gameObject.GetComponent<IGrabable>();
+            if(grabed == null)
+            {
+                Debug.Log("Invalid grab target");
+                return;
+            }
+            // player grab
+            Grab(grabed);
             return;
         }
 
