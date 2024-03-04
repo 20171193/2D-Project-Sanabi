@@ -21,8 +21,8 @@ TagManager:
   - EnemyFoot
   - EnemyBullet
   - PlayerHook
-  - PlayerChecker
-  - 
+  - PlayerWallChecker
+  - PlayerGroundChecker
   - 
   - 
   - 
