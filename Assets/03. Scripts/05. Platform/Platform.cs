@@ -4,5 +4,10 @@ using UnityEngine;
 
 public class Platform : MonoBehaviour
 {
+    [Header("Components")]
+    [SerializeField]
+    protected LineRenderer lr;
+
+    public virtual void LineRendering() { }
 
 }

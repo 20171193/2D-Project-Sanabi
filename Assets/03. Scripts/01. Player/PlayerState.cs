@@ -322,6 +322,7 @@ public class PlayerGrab : PlayerBaseState
 {
     private PlayerMover mover;
     private PlayerHooker hooker;
+    IGrabMoveable agent;
 
     public PlayerGrab(PlayerFSM owner)
     {
@@ -332,8 +333,8 @@ public class PlayerGrab : PlayerBaseState
 
     public override void Enter()
     {
-        Time.timeScale = 0.5f;
         owner.Anim.Play("Grab");
+        agent = hooker.GrabedObject as IGrabMoveable;
     }
 
     public override void FixedUpdate()
@@ -344,37 +345,26 @@ public class PlayerGrab : PlayerBaseState
     public override void Update()
     {
         owner.Anim.SetFloat("MovePower", mover.MoveHzt);
-        hooker.GrabEnemy.Anim.SetFloat("MovePower", mover.MoveHzt);
-
-        // follow enemy x position
-        owner.transform.position = new Vector3(hooker.GrabEnemy.transform.position.x, owner.transform.position.y, owner.transform.position.z);
     }
     private void GrabMove()
     {
-        // In the state of Grab an enemy,
-        // the movement speed is halved compared to the player run movement speed.
-        // also brake power is halved compared to the player runstop brake speed to.
-
+        if (agent == null) return; 
 
         // Move Braking
         if (mover.MoveHzt == 0)
         {
-            if (hooker.GrabEnemy.Rigid.velocity.x > PlayerBase.MoveForce_Threshold)
-                hooker.GrabEnemy.Rigid.AddForce(Vector2.left * mover.HoldingHztBrakePower);
-            else if (hooker.GrabEnemy.Rigid.velocity.x < PlayerBase.MoveForce_Threshold)
-                hooker.GrabEnemy.Rigid.AddForce(Vector2.right * mover.HoldingHztBrakePower);
+            if (mover.Rigid.velocity.x > PlayerBase.MoveForce_Threshold)
+                mover.Rigid.AddForce(Vector2.left * mover.HoldingHztBrakePower);
+            else if (mover.Rigid.velocity.x < PlayerBase.MoveForce_Threshold)
+                mover.Rigid.AddForce(Vector2.right * mover.HoldingHztBrakePower);
         }
         else
         {
             // Controll Grab Enemy
-            hooker.GrabEnemy.Rigid.AddForce(Vector2.right * mover.MoveHzt * mover.HoldingMovePower);
-            hooker.GrabEnemy.Rigid.velocity = new Vector2(Mathf.Clamp(hooker.GrabEnemy.Rigid.velocity.x, -mover.MaxHoldingMoveSpeed, mover.MaxHoldingMoveSpeed), hooker.GrabEnemy.Rigid.velocity.y);
+            mover.Rigid.AddForce(Vector2.right * mover.MoveHzt * mover.HoldingMovePower);
+            mover.Rigid.velocity = new Vector2(Mathf.Clamp(mover.Rigid.velocity.x, -mover.MaxHoldingMoveSpeed, mover.MaxHoldingMoveSpeed), mover.Rigid.velocity.y);
+            agent.GrabMove(mover.Rigid);
         }
-    }
-
-    public override void Exit()
-    {
-        Time.timeScale = 1f;
     }
 }
 #endregion

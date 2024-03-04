@@ -10,7 +10,7 @@ public enum EnemyType
 }
 
 // Add Enemy common states, and connect transitions from the child classes
-public abstract class Enemy : PooledObject
+public class Enemy : PooledObject
 {
     [Header("Components")]
     [Space(2)]
@@ -75,12 +75,11 @@ public abstract class Enemy : PooledObject
         fsm.LateUpdate();
     }
 
-    public virtual void Died()
+    protected void Died()
     {
         fsm.ChangeState("Die");
         StartCoroutine(EnemyReleaseRoutine());
     }
-    public abstract void Grabbed(out float holdingYPoint);
     IEnumerator EnemyReleaseRoutine()
     {
         yield return new WaitForSeconds(releaseTime);

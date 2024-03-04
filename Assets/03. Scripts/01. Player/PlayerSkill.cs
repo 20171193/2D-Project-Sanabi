@@ -9,6 +9,12 @@ public class PlayerSkill : PlayerBase
     private float ropeSkillPower;
     public float RopeSkillPower { get { return ropeSkillPower; } }
 
+    [Header("Ballaincing")]
+    private float dashPower;
+    public float DashPower { get { return dashPower; } }
+
+    private Coroutine dashCoroutine;
+
     protected override void Awake()
     {
         base.Awake();
@@ -21,49 +27,48 @@ public class PlayerSkill : PlayerBase
         Vector2 forceDir = transform.rotation.y == 0 ? Vector2.right : Vector2.left;
         rigid.AddForce(ropeSkillPower * forceDir, ForceMode2D.Impulse);
     }
-    public void Dash(GameObject target)
+    public void Dash(IGrabable grabed)
     {
         playerFSM.IsDash = true;
         rigid.velocity = Vector3.zero;
         rigid.gravityScale = 0;
 
+        dashCoroutine = StartCoroutine(DashTrailRoutine(grabed));
+
         playerFSM.ChangeState("Dash");
-
-        rigid.AddForce((target.transform.position - transform.position).normalized * 50f, ForceMode2D.Impulse);
-
-        // add Player CCD
-        // if player and enemy not collide,
-        // Dash -> Idle 
     }
-    public void Grab(GameObject target)
+    IEnumerator DashTrailRoutine(IGrabable grabed)
     {
-        Debug.Log(target);
-        // Check Enemy
-        playerHooker.GrabEnemy = target.GetComponent<Enemy>();
+        Vector3 startPos = transform.position;
+        Vector3 endPos = grabed.GetGrabPosition();
 
-        if (playerHooker.GrabEnemy == null)
+        float time = Vector3.Distance(startPos, endPos) / dashPower;
+        float rate = 0f;
+        while(rate < 1f)
         {
-            Debug.Log("Grabbed Object is not Enemy");
-            playerFSM.ChangeState("Idle");
-            return;
+            if (rate >= 0.3f)
+                Time.timeScale = 0.5f;
+            rate += Time.deltaTime / time;
+            transform.position = Vector3.Lerp(startPos, endPos, rate);
+            yield return null;
         }
+
+        transform.position = endPos;
+        Time.timeScale = 1f;
+        Grab(grabed);
+        yield return null;
+    }
+    public void Grab(IGrabable target)
+    {
+        playerFSM.IsDash = false;
+        target.Grabbed();
+
+        // Check Enemy
+        playerHooker.GrabedObject = target;
         playerFSM.IsGrab = true;
+
         playerFSM.ChangeState("Grab");
 
-        playerHooker.GrabEnemy.Grabbed(out float holdedYPos);
-
         rigid.velocity = Vector3.zero;
-        Vector3 enemyPos = playerHooker.GrabEnemy.transform.position;
-        transform.position = new Vector3(enemyPos.x, enemyPos.y + holdedYPos, 0);
-    }
-
-    private void OnTriggerEnter2D(Collider2D collision)
-    {
-        // Dash Enemy
-        if (playerFSM.IsDash && Manager.Layer.enemyLM.Contain(collision.gameObject.layer))
-        {
-            playerFSM.IsDash = false;
-            Grab(collision.gameObject);
-        }
     }
 }

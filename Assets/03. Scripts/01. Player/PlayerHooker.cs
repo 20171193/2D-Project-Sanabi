@@ -47,8 +47,8 @@ public class PlayerHooker : PlayerBase
     private Vector3 mousePos;
 
     [SerializeField]
-    private Enemy grabEnemy;
-    public Enemy GrabEnemy { get { return grabEnemy; } set { grabEnemy = value; } }
+    private IGrabable grabedObject;
+    public IGrabable GrabedObject { get { return grabedObject; } set { grabedObject = value; } }
 
     [SerializeField]
     protected Hook firedHook;
@@ -145,7 +145,8 @@ public class PlayerHooker : PlayerBase
     {
         rigid.gravityScale = 1;
 
-        grabEnemy.Died();
+        grabedObject.GrabEnd();
+
         rigid.AddForce(hookAim.transform.up * 15f, ForceMode2D.Impulse);
         anim.Play("RopeJump");
     }
@@ -186,9 +187,9 @@ public class PlayerHooker : PlayerBase
         playerFSM.IsJointed = true;
         playerFSM.ChangeState("Roping");
     }
-    public void OnHookHitEnemy(GameObject target)
+    public void OnHookHitObject(IGrabable grabed)
     {
-        playerSkill.Dash(target);
+        playerSkill.Dash(grabed);
     }
     #endregion
 

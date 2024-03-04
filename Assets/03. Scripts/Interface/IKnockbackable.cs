@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public interface IDetectable
+public interface IKnockbackable
 {
-    public void Detecting();
+    public void KnockBack(Vector3 force);
 }
