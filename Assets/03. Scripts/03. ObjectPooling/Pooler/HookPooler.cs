@@ -68,7 +68,7 @@ public class HookPooler : ObjectPooler
 
         // hook action setting
         inst.OnDestroyHook += owner.OnHookDisJointed;
-        inst.OnHookHitEnemy += owner.OnHookHitEnemy;
+        inst.OnHookHitObject += owner.OnHookHitObject;
         inst.OnHookHitGround += owner.OnHookHitGround;
     }
 }

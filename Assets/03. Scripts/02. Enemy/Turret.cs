@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEditor.Tilemaps;
 using UnityEngine;
 
-public class Turret : EnemyShooter
+public class Turret : EnemyShooter, IGrabable
 {
     private BoxCollider2D boxCol;
     public BoxCollider2D BoxCol { get { return boxCol; } }
@@ -48,7 +48,6 @@ public class Turret : EnemyShooter
         Vector3 dir = (targetPos - aimPos.position).normalized;
         aimPos.up = dir;
     }
-
     public override void Shooting()
     {
         anim.Play("Attack");
@@ -58,16 +57,18 @@ public class Turret : EnemyShooter
         bullet.transform.up = aimPos.up;
         bullet.Rigid.AddForce(aimPos.up * bulletPower, ForceMode2D.Impulse);
     }
-    public override void Died()
-    {
-        base.Died();
-    }
-    public override void Grabbed(out float holdingYpoint)
+
+    public void Grabbed()
     {
         markerAnim.SetBool("IsEnable", false);
 
         lr.positionCount = 0;
-        holdingYpoint = grabbedYPos;
         fsm.ChangeState("Grabbed");
     }
+    public void GrabEnd()
+    {
+        Died();
+    }
+    public GameObject GetObject() { return this.gameObject; }
+    public Vector3 GetGrabPosition() { return new Vector2(this.transform.position.x, this.transform.position.y + grabbedYPos); }
 }

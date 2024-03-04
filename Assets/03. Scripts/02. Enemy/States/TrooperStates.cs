@@ -1,5 +1,7 @@
+using System.Buffers;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Events;
@@ -66,13 +68,21 @@ public class TrooperGrabbed : EnemyShooterBase
 }
 public class TrooperDie : EnemyShooterBase
 {
+    private CapsuleCollider2D col;
+
     public TrooperDie(EnemyShooter owner)
     {
         this.owner = owner;
+        col = owner.GetComponent<CapsuleCollider2D>();
     }
 
     public override void Enter()
     {
+        col.enabled = false;
         owner.Anim.Play("Die");
+    }
+    public override void Exit()
+    {
+        col.enabled = true;
     }
 }
