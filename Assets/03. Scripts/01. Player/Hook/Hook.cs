@@ -5,7 +5,7 @@ using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class Hook : PooledObject
+public class Hook : MonoBehaviour
 {
     [Header("Components")]
     [SerializeField]
@@ -59,10 +59,8 @@ public class Hook : PooledObject
     public float destroyTime;
     private Coroutine trailRoutine;
 
-    protected override void OnEnable()
+    private void OnEnable()
     {
-        base.OnEnable();
-
         lr.positionCount = 0;
         anim.Play("HookStart");
         trailRoutine = StartCoroutine(TrailRoutine());
@@ -107,34 +105,13 @@ public class Hook : PooledObject
     }
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        //Debug.Log($"Hook Trigger : {collision.name}");
-        //rigid.velocity = Vector3.zero;
-
-        //// object hook
-        //if (Manager.Layer.enemyLM.Contain(collision.gameObject.layer)
-        //    || Manager.Layer.hookingPlatformLM.Contain(collision.gameObject.layer))
-        //{
-        //    // object grab
-        //    IGrabable grabed = collision.gameObject.GetComponent<IGrabable>();
-        //    IKnockbackable knockbacked = collision.gameObject.GetComponent<IKnockbackable>();
-
-        //    if(grabed == null)
-        //    {
-        //        Debug.Log("Invalid grab target");
-        //        return;
-        //    }
-        //    // knock back
-        //    knockbacked?.KnockBack((targetPos - muzzlePos).normalized * knockBackPower);
-        //    // player grab
-        //    Grab(grabed);
-        //    return;
-        //}
-        //// wall hook
-        //else if (Manager.Layer.wallLM.Contain(collision.gameObject.layer))
-        //    Connecting();
-        //// not hook
-        //else
-        //    Release();
+        // Hook Knockback
+        if (Manager.Layer.enemyLM.Contain(collision.gameObject.layer)
+            || Manager.Layer.hookingPlatformLM.Contain(collision.gameObject.layer))
+        {
+            IKnockbackable knockbacked = collision.gameObject.GetComponent<IKnockbackable>();
+            knockbacked?.KnockBack((collision.transform.position - muzzlePos).normalized * knockBackPower);
+        }
     }
 
     IEnumerator TrailRoutine()
@@ -159,6 +136,11 @@ public class Hook : PooledObject
         else
             Grab(hitInfo.collider.gameObject.GetComponent<IGrabable>());
         yield return null;
+    }
+
+    private void Release()
+    {
+        gameObject.SetActive(false);
     }
 
     private void OnDisable()
