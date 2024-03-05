@@ -6,10 +6,14 @@ public class LayerManager : MonoBehaviour
 {
     [Header("IsGround")]
     public LayerMask groundLM;
+    [Header("IsDamageGround")]
+    public LayerMask damageGroundLM;
     [Header("IsWall")]
     public LayerMask wallLM;
     [Header("HookInteractable")]
     public LayerMask hookInteractableLM;
+    [Header("HookingGround")]
+    public LayerMask hookingGroundLM;
     [Header("Hook interactable Platform")]
     public LayerMask hookingPlatformLM;
     [Header("Player Hook")]

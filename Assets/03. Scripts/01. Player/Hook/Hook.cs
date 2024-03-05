@@ -104,6 +104,11 @@ public class Hook : MonoBehaviour
     }
     public void DisConnecting()
     {
+        distJoint.enabled = false;
+        rigid.isKinematic = false;
+        rigid.freezeRotation = false;
+        isConnected = false;
+
         OnDestroyHook?.Invoke();
     }
 
@@ -121,7 +126,7 @@ public class Hook : MonoBehaviour
 
         transform.position = hitInfo.point;
 
-        if (Manager.Layer.wallLM.Contain(hitInfo.collider.gameObject.layer))
+        if (Manager.Layer.hookingGroundLM.Contain(hitInfo.collider.gameObject.layer))
         {
             transform.parent = hitInfo.collider.gameObject.transform;
             Connecting();
