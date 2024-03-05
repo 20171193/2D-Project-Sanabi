@@ -4,9 +4,8 @@ using UnityEngine;
 
 public interface IGrabable
 {
-    public void Grabbed();
+    public void Grabbed(Rigidbody2D ownerRigid);
     public void GrabEnd();
 
     public Vector3 GetGrabPosition();
-    public GameObject GetObject();
 }

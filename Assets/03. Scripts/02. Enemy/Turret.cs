@@ -14,8 +14,9 @@ public class Turret : EnemyShooter, IGrabable
 
         boxCol = GetComponent<BoxCollider2D>();
 
-        fsm.AddState("PopUp", new TurretPopUp(this));
 
+        // FSM Setting
+        fsm.AddState("PopUp", new TurretPopUp(this));
         TurretDetect detect = new TurretDetect(this);
         detect.OnEnableDetect += () => detect.detectRoutine = StartCoroutine(detect.DetectRoutine());
         detect.OnDisableDetect += () => StopCoroutine(detect.detectRoutine);
@@ -58,7 +59,7 @@ public class Turret : EnemyShooter, IGrabable
         bullet.Rigid.AddForce(aimPos.up * bulletPower, ForceMode2D.Impulse);
     }
 
-    public void Grabbed()
+    public void Grabbed(Rigidbody2D ownerRigid)
     {
         markerAnim.SetBool("IsEnable", false);
 

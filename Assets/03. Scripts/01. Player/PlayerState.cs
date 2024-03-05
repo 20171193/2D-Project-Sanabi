@@ -322,7 +322,6 @@ public class PlayerGrab : PlayerBaseState
 {
     private PlayerMover mover;
     private PlayerHooker hooker;
-    IGrabMoveable agent;
 
     public PlayerGrab(PlayerFSM owner)
     {
@@ -334,7 +333,6 @@ public class PlayerGrab : PlayerBaseState
     public override void Enter()
     {
         owner.Anim.Play("Grab");
-        agent = hooker.GrabedObject as IGrabMoveable;
     }
 
     public override void FixedUpdate()
@@ -348,8 +346,6 @@ public class PlayerGrab : PlayerBaseState
     }
     private void GrabMove()
     {
-        if (agent == null) return; 
-
         // Move Braking
         if (mover.MoveHzt == 0)
         {
@@ -360,10 +356,15 @@ public class PlayerGrab : PlayerBaseState
         }
         else
         {
+            // Character Rotation
+            if (mover.MoveHzt > 0)
+                owner.transform.rotation = Quaternion.Euler(0, -180, 0);
+            else if (mover.MoveHzt < 0)
+                owner.transform.rotation = Quaternion.Euler(0, 0, 0);
+
             // Controll Grab Enemy
             mover.Rigid.AddForce(Vector2.right * mover.MoveHzt * mover.HoldingMovePower);
             mover.Rigid.velocity = new Vector2(Mathf.Clamp(mover.Rigid.velocity.x, -mover.MaxHoldingMoveSpeed, mover.MaxHoldingMoveSpeed), mover.Rigid.velocity.y);
-            agent.GrabMove(mover.Rigid);
         }
     }
 }
@@ -381,6 +382,7 @@ public class PlayerDamaged : PlayerBaseState
     public override void Enter()
     {
         Time.timeScale = 0.5f;
+        owner.Rigid.gravityScale = 1f;
         owner.Anim.Play("Damaged");
         damagedRoutine = owner.StartCoroutine(DamagedRoutine());
     }

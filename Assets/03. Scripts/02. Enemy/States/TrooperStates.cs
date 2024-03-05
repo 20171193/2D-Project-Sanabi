@@ -65,6 +65,10 @@ public class TrooperGrabbed : EnemyShooterBase
     {
         owner.Anim.Play("Grabbed");
     }
+    public override void Update()
+    {
+        owner.Anim.SetFloat("MovePower", owner.Rigid.velocity.x);
+    }
 }
 public class TrooperDie : EnemyShooterBase
 {
@@ -78,11 +82,13 @@ public class TrooperDie : EnemyShooterBase
 
     public override void Enter()
     {
+        Debug.Log("Die Enter");
         col.enabled = false;
         owner.Anim.Play("Die");
     }
     public override void Exit()
     {
+        Debug.Log("Die Exit");
         Debug.Log($"{col.gameObject} : col on");
         col.enabled = true;
     }
