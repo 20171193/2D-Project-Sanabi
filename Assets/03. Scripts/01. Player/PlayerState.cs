@@ -273,19 +273,6 @@ public class PlayerRoping : PlayerBaseState
     {
         Rotation();
     }
-
-    private void StartRecoil()
-    {
-        Vector3 dirX = Vector3.zero;
-        if (owner.transform.position.x <= owner.PrHooker.FiredHook.transform.position.x)
-            dirX = Vector3.right;
-        else
-            dirX = Vector3.left;
-
-        float distX = Mathf.Abs(owner.PrHooker.FiredHook.transform.position.x - owner.transform.position.x);
-        Debug.Log($"StartRecoil : {dirX}, {distX}");
-        owner.Rigid.AddForce(dirX * distX, ForceMode2D.Impulse);
-    }
     private void Rotation()
     {
         // 캐릭터 회전
@@ -332,7 +319,6 @@ public class PlayerGrab : PlayerBaseState
 
     public override void Enter()
     {
-        Manager.Camera.SetEventCamera();
         owner.Anim.Play("Grab");
     }
 
@@ -368,11 +354,6 @@ public class PlayerGrab : PlayerBaseState
             mover.Rigid.velocity = new Vector2(Mathf.Clamp(mover.Rigid.velocity.x, -mover.MaxHoldingMoveSpeed, mover.MaxHoldingMoveSpeed), mover.Rigid.velocity.y);
         }
     }
-
-    public override void Exit()
-    {
-        Manager.Camera.SetMainCamera();
-    }
 }
 #endregion
 
@@ -407,7 +388,7 @@ public class PlayerDamaged : PlayerBaseState
 
     IEnumerator DamagedRoutine()
     {
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(0.3f);
         owner.BeDamaged = false;
     }
 }

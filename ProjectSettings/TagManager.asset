@@ -15,8 +15,8 @@ TagManager:
   - HookingPlatform
   - Wall
   - PlayerInvincible
-  - 
-  - 
+  - HookingGround
+  - DamagedGround
   - Enemy
   - EnemyFoot
   - EnemyBullet

@@ -60,10 +60,15 @@ public class PlayerSkill : PlayerBase
         Time.timeScale = 0.5f;
         while(rate < 1f)
         {
+            if (rate >= 0.6f && rate <= 0.7f)
+                Manager.Camera.SetEventCamera();
+
             rate += Time.deltaTime / time;
             transform.position = Vector3.Lerp(startPos, endPos, rate);
             yield return null;
         }
+
+        Manager.Camera.SetMainCamera();
 
         gameObject.layer = LayerMask.NameToLayer("Player");
         transform.position = endPos;

@@ -160,6 +160,13 @@ public class PlayerFSM : PlayerBase
             return;
         }
 
+        if (Manager.Layer.damageGroundLM.Contain(collision.gameObject.layer))
+        {
+            rigid.velocity = Vector3.zero;
+            rigid.AddForce(collision.gameObject.transform.right * 12f + rigid.transform.right * -5f, ForceMode2D.Impulse);
+            TakeDamage();
+        }
+
         if (Manager.Layer.groundLM.Contain(collision.gameObject.layer))
         {
             // ground check

@@ -52,6 +52,10 @@ public class PlayerHooker : PlayerBase
     public IGrabable GrabedObject { get { return grabedObject; } set { grabedObject = value; } }
 
     [SerializeField]
+    protected GameObject hookObject;
+    public GameObject HookObject { get { return hookObject; } }
+
+    [SerializeField]
     protected Hook firedHook;
     public Hook FiredHook { get { return firedHook; } set { firedHook = value; } }
 
@@ -111,7 +115,7 @@ public class PlayerHooker : PlayerBase
                 hookAim.LineOn(hitType, hookHitInfo.point);
             }
             // hit is Interactable Object
-            else if (Manager.Layer.enemyLM.Contain(hookHitInfo.collider.gameObject.layer))
+            else if (Manager.Layer.hookingPlatformLM.Contain(hookHitInfo.collider.gameObject.layer))
             {
                 hitType = LineRenderType.Interactable;
                 hookAim.LineOn(hitType, hookHitInfo.point);
@@ -228,18 +232,18 @@ public class PlayerHooker : PlayerBase
     private void ActiveHook()
     {
         // Transform Setting
-        firedHook.transform.position = hookAim.transform.position;
-        firedHook.transform.rotation = hookAim.transform.rotation;
+        hookObject.transform.position = hookAim.transform.position;
+        hookObject.transform.up = hookAim.transform.up;
 
         // Target Setting
         firedHook.muzzlePos = hookAim.transform.position;
         firedHook.hitInfo = hookHitInfo;
 
-        firedHook.gameObject.SetActive(true);
+        hookObject.SetActive(true);
     }
     private void ReleaseHook()
     {
-        firedHook.gameObject.SetActive(false);
+        hookObject.SetActive(false);
 
         // Transform Initial Setting
         firedHook.transform.position = Vector3.zero;
