@@ -322,6 +322,5 @@ MonoBehaviour:
   maxDistance: 0
   knockBackPower: 15
   muzzlePos: {x: 0, y: 0, z: 0}
-  targetPos: {x: 0, y: 0, z: 0}
   isConnected: 0
   destroyTime: 0
