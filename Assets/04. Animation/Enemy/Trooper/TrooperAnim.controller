@@ -59,7 +59,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: HookHitted
+  m_Name: OnHitted
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions: []
@@ -152,7 +152,7 @@ AnimatorStateMachine:
     m_Position: {x: 260, y: 120, z: 0}
   - serializedVersion: 1
     m_State: {fileID: -1805895164167727087}
-    m_Position: {x: 770, y: 160, z: 0}
+    m_Position: {x: 740, y: 150, z: 0}
   - serializedVersion: 1
     m_State: {fileID: -5497959228569689779}
     m_Position: {x: 240, y: 280, z: 0}
@@ -161,7 +161,7 @@ AnimatorStateMachine:
     m_Position: {x: 480, y: 190, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 5706691064491233763}
-    m_Position: {x: 590, y: 270, z: 0}
+    m_Position: {x: 520, y: 260, z: 0}
   m_ChildStateMachines: []
   m_AnyStateTransitions: []
   m_EntryTransitions: []

@@ -53,7 +53,7 @@ public class SwingHook : Platform, IKnockbackable, IGrabable
         rtvJoint.enabled = false;
         rtvJoint.connectedBody = null;
     }
-
+    public GameObject GetGameObject() { return gameObject; }
     public Vector3 GetGrabPosition()
     {
         return new Vector2(hookTr.position.x, hookTr.position.y + grabbedYPos);

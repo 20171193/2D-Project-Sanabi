@@ -218,6 +218,8 @@ public class PlayerHooker : PlayerBase
     }
     public void OnHookHitObject(IGrabable grabed)
     {
+        DoImpulse();
+
         Debug.Log(grabed);
         playerSkill.Dash(grabed);
     }

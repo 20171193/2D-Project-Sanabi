@@ -146,6 +146,8 @@ public class PlayerFSM : PlayerBase
 
     private void TakeDamage()
     {
+        DoImpulse();
+
         beDamaged = true;
         PrHooker.FiredHook?.DisConnecting();
     }
@@ -186,8 +188,15 @@ public class PlayerFSM : PlayerBase
 
         if (Manager.Layer.wallLM.Contain(collision.gameObject.layer))
         {
-            //if (isGround) return;
             isInWall = false;
+            if (PrMover.MoveVtc > 0)
+            {
+                anim.Play("Jump");
+
+                // Wall Exit to Up Position
+                Vector3 force = transform.up * 12f + transform.right * 5f;
+                rigid.AddForce(force, ForceMode2D.Impulse);
+            }
         }
     }
 }

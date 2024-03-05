@@ -68,7 +68,6 @@ public class Trooper : EnemyShooter, IKnockbackable, IGrabable
     {
         markerAnim.SetBool("IsEnable", false);
 
-        Debug.Log("Grab!");
         // RelativeJoint2D Setting
         rtvJoint.enabled = true;
         rtvJoint.connectedBody = ownerRigid;
@@ -84,11 +83,12 @@ public class Trooper : EnemyShooter, IKnockbackable, IGrabable
 
         Died();
     }
-
+    public GameObject GetGameObject() { return gameObject; }
     public Vector3 GetGrabPosition() { return new Vector2(this.transform.position.x, this.transform.position.y + grabbedYPos); }
 
     public void KnockBack(Vector3 force)
     {
+        anim.Play("OnHitted");
         rigid.AddForce(force, ForceMode2D.Impulse);
     }
 }

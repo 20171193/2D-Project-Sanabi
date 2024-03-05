@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Unity.IO.LowLevel.Unsafe;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
+using Cinemachine;
 
 public class PlayerBase : MonoBehaviour
 {
@@ -39,6 +40,9 @@ public class PlayerBase : MonoBehaviour
     [SerializeField]
     protected Camera cam;
 
+    [SerializeField]
+    protected CinemachineImpulseSource impulseSource;
+
     protected virtual void Awake()
     {
         playerFSM = GetComponent<PlayerFSM>();
@@ -46,8 +50,14 @@ public class PlayerBase : MonoBehaviour
         playerHooker = GetComponent<PlayerHooker>();
         playerSkill= GetComponent<PlayerSkill>();   
 
+        impulseSource = GetComponent<CinemachineImpulseSource>();   
         rigid = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
         cam = Camera.main;
+    }
+
+    protected void DoImpulse()
+    {
+        impulseSource.GenerateImpulse();
     }
 }
