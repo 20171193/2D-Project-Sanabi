@@ -12,8 +12,6 @@ public class PlayerHooker : PlayerBase
     private GameObject cursorOb;
     [SerializeField]
     private HookAim hookAim;
-    [SerializeField]
-    private Hook hookPrefab;
 
     [Space(3)]
     [Header("Specs")]
@@ -52,16 +50,29 @@ public class PlayerHooker : PlayerBase
     public IGrabable GrabedObject { get { return grabedObject; } set { grabedObject = value; } }
 
     [SerializeField]
-    protected Hook firedHook;
-    public Hook FiredHook { get { return firedHook; } }
+    protected Hook hook;
+    public Hook FiredHook { get { return hook; } }
 
     private Coroutine hookReloadRoutine;
 
     protected override void Awake()
     {
         base.Awake();
-        Manager.Pool.CreatePool(hookPrefab, 5, 15);
     }
+
+    private void HookInitialSetting()
+    {
+        // assign player rigidbody2D for DistanceJoint2D
+        hook.OwnerRigid = rigid;
+        hook.TrailSpeed = hookShootPower;
+        hook.MaxDistance = maxRopeLength;
+
+        // hook action setting
+        hook.OnDestroyHook += OnHookDisJointed;
+        hook.OnHookHitObject += OnHookHitObject;
+        hook.OnHookHitGround += OnHookHitGround;
+    }
+
 
     #region Mouse / Rope Action
     // Raycast to mouse position
@@ -133,7 +144,7 @@ public class PlayerHooker : PlayerBase
             if (playerFSM.IsJointed)
             {
                 playerFSM.IsJointed = false;
-                firedHook?.DisConnecting();
+                hook?.DisConnecting();
                 RopeJump();
             }
             else if (playerFSM.IsGrab)
@@ -144,7 +155,7 @@ public class PlayerHooker : PlayerBase
             else
             {
                 anim.Play("Idle");
-                firedHook?.DisConnecting();
+                hook?.DisConnecting();
             }
         }
     }
@@ -185,10 +196,9 @@ public class PlayerHooker : PlayerBase
         hookAim.LineOff();
         anim.Play("RopeShot");
 
-        firedHook = Manager.Pool.GetPool(hookPrefab, hookAim.transform.position, hookAim.transform.rotation) as Hook;
-
-        firedHook.muzzlePos = hookAim.transform.position;
-        firedHook.hitInfo = hookHitInfo;
+        // FiredHook Setting
+        hook.muzzlePos = hookAim.transform.position;
+        hook.hitInfo = hookHitInfo;
     }
     #endregion
     #region Hooking Action

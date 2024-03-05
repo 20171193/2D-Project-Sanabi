@@ -37,7 +37,12 @@ public class PlayerSkill : PlayerBase
         rigid.velocity = Vector3.zero;
         rigid.gravityScale = 0;
 
-        dashCoroutine = StartCoroutine(DashTrailRoutine(grabed));
+        Vector3 grabedPos = grabed.GetGrabPosition();
+
+        if(transform.position.x < grabedPos.x)
+            transform.rotation = Quaternion.Euler(0, 0, 0);
+        else
+            transform.rotation = Quaternion.Euler(0, -180, 0);
 
         playerFSM.ChangeState("Dash");
     }
@@ -52,7 +57,6 @@ public class PlayerSkill : PlayerBase
         Time.timeScale = 0.5f;
         while(rate < 1f)
         {
-            Debug.Log($"Trail Rate : {rate}");
             rate += Time.deltaTime / time;
             transform.position = Vector3.Lerp(startPos, endPos, rate);
             yield return null;
