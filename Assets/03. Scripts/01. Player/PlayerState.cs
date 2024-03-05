@@ -382,6 +382,11 @@ public class PlayerDamaged : PlayerBaseState
     public override void Enter()
     {
         Time.timeScale = 0.5f;
+
+        // init all state
+        owner.PrFSM.IsJointed = false;
+        owner.PrFSM.IsInWall = false;
+
         owner.Rigid.gravityScale = 1f;
         owner.Anim.Play("Damaged");
         damagedRoutine = owner.StartCoroutine(DamagedRoutine());

@@ -1,7 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.InputSystem;
 
 public class PlayerHooker : PlayerBase
@@ -50,27 +52,28 @@ public class PlayerHooker : PlayerBase
     public IGrabable GrabedObject { get { return grabedObject; } set { grabedObject = value; } }
 
     [SerializeField]
-    protected Hook hook;
-    public Hook FiredHook { get { return hook; } }
+    protected Hook firedHook;
+    public Hook FiredHook { get { return firedHook; } set { firedHook = value; } }
 
     private Coroutine hookReloadRoutine;
 
     protected override void Awake()
     {
         base.Awake();
+        HookInitailSetting();
     }
 
-    private void HookInitialSetting()
+    private void HookInitailSetting()
     {
         // assign player rigidbody2D for DistanceJoint2D
-        hook.OwnerRigid = rigid;
-        hook.TrailSpeed = hookShootPower;
-        hook.MaxDistance = maxRopeLength;
+        firedHook.OwnerRigid = rigid;
+        firedHook.TrailSpeed = hookShootPower;
+        firedHook.MaxDistance = maxRopeLength;
 
         // hook action setting
-        hook.OnDestroyHook += OnHookDisJointed;
-        hook.OnHookHitObject += OnHookHitObject;
-        hook.OnHookHitGround += OnHookHitGround;
+        firedHook.OnDestroyHook += OnHookDestroyed;
+        firedHook.OnHookHitObject += OnHookHitObject;
+        firedHook.OnHookHitGround += OnHookHitGround;
     }
 
 
@@ -97,7 +100,7 @@ public class PlayerHooker : PlayerBase
         Vector2 rayDir = (mousePos - transform.position).normalized;
         hookHitInfo = Physics2D.Raycast(transform.position, rayDir, rayLength, Manager.Layer.hookInteractableLM);
 
-        if (hookHitInfo)
+        if (hookHitInfo && !PrFSM.BeDamaged)
         {
             playerFSM.IsRaycastHit = true;
 
@@ -133,8 +136,9 @@ public class PlayerHooker : PlayerBase
         if (value.isPressed)
         {
             if (playerFSM.BeDamaged) return;
-            if(playerFSM.IsHookShoot) return;
-            if(playerFSM.IsGrab || playerFSM.IsJointed) return;
+            if (playerFSM.IsInWall) return;
+            if (playerFSM.IsHookShoot) return;
+            if (playerFSM.IsGrab || playerFSM.IsJointed) return;
             if(!playerFSM.IsRaycastHit) return;
 
             HookShoot();
@@ -144,7 +148,7 @@ public class PlayerHooker : PlayerBase
             if (playerFSM.IsJointed)
             {
                 playerFSM.IsJointed = false;
-                hook?.DisConnecting();
+                firedHook?.DisConnecting();
                 RopeJump();
             }
             else if (playerFSM.IsGrab)
@@ -155,7 +159,7 @@ public class PlayerHooker : PlayerBase
             else
             {
                 anim.Play("Idle");
-                hook?.DisConnecting();
+                firedHook?.DisConnecting();
             }
         }
     }
@@ -190,20 +194,21 @@ public class PlayerHooker : PlayerBase
     // else if hook collide with ground, Invoke OnGrabbedGround
     private void HookShoot()
     {
+        if (playerFSM.IsHookShoot) return;
+
         // reload Routine
         StartCoroutine(HookReloadRoutine());
 
         hookAim.LineOff();
         anim.Play("RopeShot");
 
-        // FiredHook Setting
-        hook.muzzlePos = hookAim.transform.position;
-        hook.hitInfo = hookHitInfo;
+        ActiveHook();
     }
     #endregion
     #region Hooking Action
-    public void OnHookDisJointed()
+    public void OnHookDestroyed()
     {
+        ReleaseHook();
         playerFSM.IsJointed = false;
     }
     public void OnHookHitGround()
@@ -213,9 +218,34 @@ public class PlayerHooker : PlayerBase
     }
     public void OnHookHitObject(IGrabable grabed)
     {
+        Debug.Log(grabed);
         playerSkill.Dash(grabed);
     }
     #endregion
+
+    private void ActiveHook()
+    {
+        // Transform Setting
+        firedHook.transform.position = hookAim.transform.position;
+        firedHook.transform.rotation = hookAim.transform.rotation;
+
+        // Target Setting
+        firedHook.muzzlePos = hookAim.transform.position;
+        firedHook.hitInfo = hookHitInfo;
+
+        firedHook.gameObject.SetActive(true);
+    }
+    private void ReleaseHook()
+    {
+        firedHook.gameObject.SetActive(false);
+
+        // Transform Initial Setting
+        firedHook.transform.position = Vector3.zero;
+        firedHook.transform.rotation = Quaternion.identity;
+
+        // Target Initial Setting
+        firedHook.muzzlePos = Vector3.zero;
+    }
 
     IEnumerator HookReloadRoutine()
     {

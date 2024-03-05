@@ -24,6 +24,9 @@ public class PlayerBase : MonoBehaviour
     protected PlayerSkill playerSkill;
     public PlayerSkill PrSkill { get { return playerSkill; } }
 
+    protected PlayerObjectPool playerObjectPool;
+    public PlayerObjectPool PrObjectPool { get { return playerObjectPool; } }
+
     [Header("Components")]
     [Space(2)]
     [SerializeField]

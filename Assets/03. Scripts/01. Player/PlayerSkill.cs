@@ -45,6 +45,8 @@ public class PlayerSkill : PlayerBase
             transform.rotation = Quaternion.Euler(0, -180, 0);
 
         playerFSM.ChangeState("Dash");
+
+        dashCoroutine = StartCoroutine(DashTrailRoutine(grabed));
     }
     IEnumerator DashTrailRoutine(IGrabable grabed)
     {
@@ -54,6 +56,7 @@ public class PlayerSkill : PlayerBase
         float time = Vector3.Distance(startPos, endPos) / dashPower;
         float rate = 0f;
 
+        gameObject.layer = LayerMask.NameToLayer("PlayerInvincible");
         Time.timeScale = 0.5f;
         while(rate < 1f)
         {
@@ -62,6 +65,7 @@ public class PlayerSkill : PlayerBase
             yield return null;
         }
 
+        gameObject.layer = LayerMask.NameToLayer("Player");
         transform.position = endPos;
         Time.timeScale = 1f;
         Grab(grabed);

@@ -36,7 +36,7 @@ AnimatorController:
   m_Name: SwingHookAnim
   serializedVersion: 5
   m_AnimatorParameters:
-  - m_Name: OnHitted
+  - m_Name: OnGrabbed
     m_Type: 9
     m_DefaultFloat: 0
     m_DefaultInt: 0
@@ -69,7 +69,7 @@ AnimatorStateMachine:
     m_Position: {x: 310, y: 120, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 5406180623623273064}
-  m_Position: {x: 310, y: 220, z: 0}
+    m_Position: {x: 320, y: 30, z: 0}
   m_ChildStateMachines: []
   m_AnyStateTransitions: []
   m_EntryTransitions: []
@@ -89,7 +89,7 @@ AnimatorStateTransition:
   m_Name: 
   m_Conditions:
   - m_ConditionMode: 1
-    m_ConditionEvent: OnHitted
+    m_ConditionEvent: OnGrabbed
     m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: 5406180623623273064}
