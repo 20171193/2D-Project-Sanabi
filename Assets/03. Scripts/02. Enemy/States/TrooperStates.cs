@@ -88,7 +88,6 @@ public class TrooperDie : EnemyShooterBase
     }
     public override void Exit()
     {
-        Debug.Log("Die Exit");
         Debug.Log($"{col.gameObject} : col on");
         col.enabled = true;
     }

@@ -26,8 +26,8 @@ public class PlayerSkill : PlayerBase
 
     public void RopeForce()
     {
-        // °­ÇÑ ¹İµ¿ Àû¿ë
-        // ÀÜ»ó µî ÀÌÆåÆ® Ãß°¡
+        // ê°•í•œ ë°˜ë™ ì ìš©
+        // ì”ìƒ ë“± ì´í™íŠ¸ ì¶”ê°€
         Vector2 forceDir = transform.rotation.y == 0 ? Vector2.right : Vector2.left;
         rigid.AddForce(ropeSkillPower * forceDir, ForceMode2D.Impulse);
     }
