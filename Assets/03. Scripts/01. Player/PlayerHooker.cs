@@ -39,6 +39,7 @@ public class PlayerHooker : PlayerBase
     public float MaxRopeLength { get { return maxRopeLength; } }
 
     private RaycastHit2D hookHitInfo;
+    private LineRenderType hitType;
 
     [Space(3)]
     [Header("Ballancing")]
@@ -91,13 +92,22 @@ public class PlayerHooker : PlayerBase
 
             // hit is Enemy
             if (Manager.Layer.enemyLM.Contain(hookHitInfo.collider.gameObject.layer))
-                hookAim.LineOn(LineRenderType.Enemy, hookHitInfo.point);
+            {
+                hitType = LineRenderType.Enemy;
+                hookAim.LineOn(hitType, hookHitInfo.point);
+            }
             // hit is Interactable Object
             else if (Manager.Layer.enemyLM.Contain(hookHitInfo.collider.gameObject.layer))
-                hookAim.LineOn(LineRenderType.Interactable, hookHitInfo.point);
+            {
+                hitType = LineRenderType.Interactable;
+                hookAim.LineOn(hitType, hookHitInfo.point);
+            }
             // hit is Ground
             else
-                hookAim.LineOn(LineRenderType.Ground, hookHitInfo.point);
+            {
+                hitType = LineRenderType.Ground;
+                hookAim.LineOn(hitType, hookHitInfo.point);
+            }
         }
         else
         {
@@ -176,8 +186,9 @@ public class PlayerHooker : PlayerBase
         anim.Play("RopeShot");
 
         firedHook = Manager.Pool.GetPool(hookPrefab, hookAim.transform.position, hookAim.transform.rotation) as Hook;
+
         firedHook.muzzlePos = hookAim.transform.position;
-        firedHook.targetPos = hookHitInfo.point;
+        firedHook.hitInfo = hookHitInfo;
     }
     #endregion
     #region Hooking Action
