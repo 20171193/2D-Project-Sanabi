@@ -92,6 +92,9 @@ public class PlayerHooker : PlayerBase
             // hit is Enemy
             if (Manager.Layer.enemyLM.Contain(hookHitInfo.collider.gameObject.layer))
                 hookAim.LineOn(LineRenderType.Enemy, hookHitInfo.point);
+            // hit is Interactable Object
+            else if (Manager.Layer.enemyLM.Contain(hookHitInfo.collider.gameObject.layer))
+                hookAim.LineOn(LineRenderType.Interactable, hookHitInfo.point);
             // hit is Ground
             else
                 hookAim.LineOn(LineRenderType.Ground, hookHitInfo.point);

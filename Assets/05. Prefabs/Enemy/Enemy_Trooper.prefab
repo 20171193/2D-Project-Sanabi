@@ -101,6 +101,7 @@ GameObject:
   - component: {fileID: 4579649950379484230}
   - component: {fileID: 4579649950379484233}
   - component: {fileID: 4579649950379484232}
+  - component: {fileID: 5268296696803915169}
   - component: {fileID: 3280106638035128806}
   m_Layer: 12
   m_Name: Enemy_Trooper
@@ -185,6 +186,25 @@ CapsuleCollider2D:
   m_Offset: {x: 0.018694878, y: 0.056084037}
   m_Size: {x: 1.2477894, y: 2.5329673}
   m_Direction: 0
+--- !u!254 &5268296696803915169
+RelativeJoint2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4579649950379484228}
+  m_Enabled: 0
+  serializedVersion: 4
+  m_EnableCollision: 0
+  m_ConnectedRigidBody: {fileID: 0}
+  m_BreakForce: Infinity
+  m_BreakTorque: Infinity
+  m_MaxForce: 10000
+  m_MaxTorque: 10000
+  m_CorrectionScale: 0.3
+  m_AutoConfigureOffset: 0
+  m_LinearOffset: {x: 0, y: 0.8}
+  m_AngularOffset: 0
 --- !u!114 &3280106638035128806
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -204,7 +224,7 @@ MonoBehaviour:
   markerAnim: {fileID: 3856138505187832183}
   playerTr: {fileID: 0}
   initState: 
-  grabbedYPos: 0.8
+  grabbedYPos: 0
   aimPos: {fileID: 4579649951459642765}
   muzzlePos: {fileID: 2345264449347983108}
   lr: {fileID: 4579649951459642766}
@@ -213,6 +233,7 @@ MonoBehaviour:
   attackCoolTime: 5
   attackDelay: 2
   bulletPower: 5
+  rtvJoint: {fileID: 5268296696803915169}
 --- !u!1 &4579649950671754377
 GameObject:
   m_ObjectHideFlags: 0

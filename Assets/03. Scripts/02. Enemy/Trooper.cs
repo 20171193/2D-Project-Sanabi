@@ -3,17 +3,24 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class Trooper : EnemyShooter, IKnockbackable, IGrabMoveable
+public class Trooper : EnemyShooter, IKnockbackable, IGrabable
 {
     private CapsuleCollider2D capsuleCol;
     public CapsuleCollider2D CapsuleCol { get { return capsuleCol; } }
+
+    [Header("Components")]
+    [SerializeField]
+    private RelativeJoint2D rtvJoint;
+    public RelativeJoint2D RTVJoint { get { return rtvJoint; } }
 
     protected override void Awake()
     {
         base.Awake();
 
-        capsuleCol = GetComponent<CapsuleCollider2D>(); 
+        capsuleCol = GetComponent<CapsuleCollider2D>();
+        grabbedYPos = rtvJoint.linearOffset.y;
 
+        // FSM Setting
         TrooperDetect detect = new TrooperDetect(this);
         detect.OnEnableDetect += () => detect.detectRoutine = StartCoroutine(detect.DetectRoutine());
         detect.OnDisableDetect += () => StopCoroutine(detect.detectRoutine);
@@ -57,24 +64,28 @@ public class Trooper : EnemyShooter, IKnockbackable, IGrabMoveable
     }
 
 
-    public void Grabbed()
+    public void Grabbed(Rigidbody2D ownerRigid)
     {
         markerAnim.SetBool("IsEnable", false);
+
+        Debug.Log("Grab!");
+        // RelativeJoint2D Setting
+        rtvJoint.enabled = true;
+        rtvJoint.connectedBody = ownerRigid;
 
         lr.positionCount = 0;
         fsm.ChangeState("Grabbed");
     }
     public void GrabEnd()
     {
+        // RelativeJoint2D Setting
+        rtvJoint.enabled = false;
+        rtvJoint.connectedBody = null;
+
         Died();
     }
-    public GameObject GetObject() { return this.gameObject; }
-    public Vector3 GetGrabPosition() { return new Vector2(this.transform.position.x, this.transform.position.y + grabbedYPos); }
 
-    public void GrabMove(Rigidbody2D ownerRigid)
-    {
-        rigid.position = new Vector2(ownerRigid.position.x, rigid.position.y);
-    }
+    public Vector3 GetGrabPosition() { return new Vector2(this.transform.position.x, this.transform.position.y + grabbedYPos); }
 
     public void KnockBack(Vector3 force)
     {

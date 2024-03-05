@@ -14,6 +14,9 @@ public class PlayerSkill : PlayerBase
     private float dashPower;
     public float DashPower { get { return dashPower; } }
 
+    [SerializeField]
+    private float slowMotionTime;
+
     private Coroutine dashCoroutine;
 
     protected override void Awake()
@@ -46,10 +49,9 @@ public class PlayerSkill : PlayerBase
         float time = Vector3.Distance(startPos, endPos) / dashPower;
         float rate = 0f;
 
+        Time.timeScale = 0.5f;
         while(rate < 1f)
         {
-            if (rate >= 0.3f)
-                Time.timeScale = 0.5f;
             Debug.Log($"Trail Rate : {rate}");
             rate += Time.deltaTime / time;
             transform.position = Vector3.Lerp(startPos, endPos, rate);
@@ -64,14 +66,12 @@ public class PlayerSkill : PlayerBase
     public void Grab(IGrabable target)
     {
         playerFSM.IsDash = false;
-        target.Grabbed();
+        target.Grabbed(rigid);
 
         // Check Enemy
         playerHooker.GrabedObject = target;
         playerFSM.IsGrab = true;
 
         playerFSM.ChangeState("Grab");
-
-        rigid.velocity = Vector3.zero;
     }
 }

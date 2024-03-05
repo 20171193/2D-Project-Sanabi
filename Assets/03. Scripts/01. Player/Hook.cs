@@ -43,6 +43,11 @@ public class Hook : PooledObject
     private float maxDistance;
     public float MaxDistance { get { return maxDistance; } set { maxDistance = value; } }
 
+    [Header("Specs")]
+    [SerializeField]
+    private float knockBackPower;
+    public float KnockBackPower { get { return knockBackPower; }  }
+
     [Header("Ballancing")]
     public Vector3 muzzlePos;
     public Vector3 targetPos;
@@ -59,18 +64,13 @@ public class Hook : PooledObject
 
         lr.positionCount = 0;
         anim.Play("HookStart");
+        trailRoutine = StartCoroutine(TrailRoutine());
     }
 
     private void Update()
     {
-        Trailing();
-
         if (isConnected)
             LineRendering();
-    }
-    private void Trailing()
-    {
-        trailRoutine = StartCoroutine(TrailRoutine());
     }
 
     private void LineRendering()
@@ -82,7 +82,6 @@ public class Hook : PooledObject
     private void Grab(IGrabable grabed)
     {
         OnHookHitObject?.Invoke(grabed);
-
         Release();
     }
     private void Conecting()
@@ -110,29 +109,32 @@ public class Hook : PooledObject
         Debug.Log($"Hook Trigger : {collision.name}");
         rigid.velocity = Vector3.zero;
 
-        if (!Manager.Layer.hookInteractableLM.Contain(collision.gameObject.layer))
-            Release();
-
-        // object hook balancing
-        if (Manager.Layer.enemyLM.Contain(collision.gameObject.layer))
+        // object hook
+        if (Manager.Layer.enemyLM.Contain(collision.gameObject.layer)
+            || Manager.Layer.hookingPlatformLM.Contain(collision.gameObject.layer))
         {
             // object grab
             IGrabable grabed = collision.gameObject.GetComponent<IGrabable>();
+            IKnockbackable knockbacked = collision.gameObject.GetComponent<IKnockbackable>();
+
             if(grabed == null)
             {
                 Debug.Log("Invalid grab target");
                 return;
             }
+            // knock back
+            knockbacked?.KnockBack((targetPos - muzzlePos).normalized * knockBackPower);
             // player grab
             Grab(grabed);
             return;
         }
-
         // wall hook
-        if (Manager.Layer.wallLM.Contain(collision.gameObject.layer))
+        else if (Manager.Layer.wallLM.Contain(collision.gameObject.layer))
             Conecting();
+        // not hook
+        else
+            Release();
     }
-
     IEnumerator TrailRoutine()
     {
         float time = Vector3.Distance(muzzlePos, targetPos) / trailSpeed;
