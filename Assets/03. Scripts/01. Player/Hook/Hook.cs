@@ -24,10 +24,8 @@ public class Hook : MonoBehaviour
     [Space(2)]
     [SerializeField]
     public UnityAction<IGrabable> OnHookHitObject;
-
     [SerializeField]
     public UnityAction OnHookHitGround;
-
     [SerializeField]
     public UnityAction OnDestroyHook;
 
@@ -81,7 +79,8 @@ public class Hook : MonoBehaviour
     private void Grab(IGrabable grabed)
     {
         OnHookHitObject?.Invoke(grabed);
-        Release();
+
+        DisConnecting();
     }
     private void Connecting()
     {
@@ -101,7 +100,7 @@ public class Hook : MonoBehaviour
     }
     public void DisConnecting()
     {
-        Release();
+        OnDestroyHook?.Invoke();
     }
     private void OnTriggerEnter2D(Collider2D collision)
     {
@@ -138,16 +137,8 @@ public class Hook : MonoBehaviour
         yield return null;
     }
 
-    private void Release()
-    {
-        gameObject.SetActive(false);
-    }
-
     private void OnDisable()
     {
-        // Player Hook Reloading
-        OnDestroyHook?.Invoke();
-        
         if (trailRoutine != null)
             StopCoroutine(trailRoutine);
     }

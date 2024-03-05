@@ -5,8 +5,7 @@ using Unity.VisualScripting;
 using UnityEngine.InputSystem;
 
 public class PlayerMover : PlayerBase
-{ 
-
+{
     [Header("Specs")]
     [Space(2)]
     #region Normal Movement
