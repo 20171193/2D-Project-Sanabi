@@ -332,6 +332,7 @@ public class PlayerGrab : PlayerBaseState
 
     public override void Enter()
     {
+        Manager.Camera.SetEventCamera();
         owner.Anim.Play("Grab");
     }
 
@@ -366,6 +367,11 @@ public class PlayerGrab : PlayerBaseState
             mover.Rigid.AddForce(Vector2.right * mover.MoveHzt * mover.HoldingMovePower);
             mover.Rigid.velocity = new Vector2(Mathf.Clamp(mover.Rigid.velocity.x, -mover.MaxHoldingMoveSpeed, mover.MaxHoldingMoveSpeed), mover.Rigid.velocity.y);
         }
+    }
+
+    public override void Exit()
+    {
+        Manager.Camera.SetMainCamera();
     }
 }
 #endregion

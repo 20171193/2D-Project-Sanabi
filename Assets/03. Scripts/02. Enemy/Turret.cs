@@ -70,6 +70,7 @@ public class Turret : EnemyShooter, IGrabable
     {
         Died();
     }
-    public GameObject GetObject() { return this.gameObject; }
+
+    public GameObject GetGameObject() { return gameObject; }
     public Vector3 GetGrabPosition() { return new Vector2(this.transform.position.x, this.transform.position.y + grabbedYPos); }
 }

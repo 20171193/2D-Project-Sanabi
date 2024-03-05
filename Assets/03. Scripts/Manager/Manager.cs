@@ -15,12 +15,14 @@ public class Manager : MonoBehaviour
     private LayerManager layerManager;
     [SerializeField]
     private PoolManager poolManager;
+    [SerializeField]
+    private CameraManager cameraManager;
 
     public static CoroutineManager Coroutine { get { return instance.coroutineManager; } }
     public static LayerManager Layer { get { return instance.layerManager; }} 
     public static PoolManager Pool { get { return instance.poolManager; } }
     public static GameManager Game { get { return instance.gameManager; } }
-
+    public static CameraManager Camera { get { return instance.cameraManager; }}    
 
     private void Awake()
     {

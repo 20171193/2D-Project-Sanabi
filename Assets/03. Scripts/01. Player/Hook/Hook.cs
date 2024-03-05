@@ -80,6 +80,10 @@ public class Hook : MonoBehaviour
     {
         OnHookHitObject?.Invoke(grabed);
 
+        GameObject grabedOb = grabed.GetGameObject();
+        IKnockbackable knockbacked = grabedOb.GetComponent<IKnockbackable>();
+        knockbacked?.KnockBack((grabedOb.transform.position - muzzlePos).normalized * knockBackPower);
+
         DisConnecting();
     }
     private void Connecting()
@@ -101,16 +105,6 @@ public class Hook : MonoBehaviour
     public void DisConnecting()
     {
         OnDestroyHook?.Invoke();
-    }
-    private void OnTriggerEnter2D(Collider2D collision)
-    {
-        // Hook Knockback
-        if (Manager.Layer.enemyLM.Contain(collision.gameObject.layer)
-            || Manager.Layer.hookingPlatformLM.Contain(collision.gameObject.layer))
-        {
-            IKnockbackable knockbacked = collision.gameObject.GetComponent<IKnockbackable>();
-            knockbacked?.KnockBack((collision.transform.position - muzzlePos).normalized * knockBackPower);
-        }
     }
 
     IEnumerator TrailRoutine()
