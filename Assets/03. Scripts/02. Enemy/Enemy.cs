@@ -85,6 +85,6 @@ public class Enemy : PooledObject
         yield return new WaitForSeconds(releaseTime);
         Release();
         OnDie?.Invoke();
-        fsm.Init("Pooled");
+        fsm.ChangeState("Pooled");
     }
 }

@@ -54,6 +54,8 @@ public class ObjectPooler : MonoBehaviour
     }
     public void ReturnPool(PooledObject instance)
     {
+        if (instance == null) return;
+
         if (objectPool.Count < capacity)
         {
             instance.gameObject.SetActive(false);

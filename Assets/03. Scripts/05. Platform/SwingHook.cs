@@ -2,21 +2,27 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SwingHook : Platform, IKnockbackable, IGrabMoveable
+public class SwingHook : Platform, IKnockbackable, IGrabable
 {
     [Header("Components")]
     [SerializeField]
     private Transform jointTr;
     [SerializeField]
     private Transform hookTr;
-
-    [Header("Balancing")]
+    [SerializeField]
+    private RelativeJoint2D rtvJoint;
     [SerializeField]
     private Rigidbody2D rigid;
+    [SerializeField]
+    private Animator anim;
+
+    [Header("Specs")]
+    private float grabbedYPos;
 
     private void OnEnable()
     {
         lr.positionCount = 2;
+        grabbedYPos = rtvJoint.linearOffset.y;
     }
 
     private void Update()
@@ -32,19 +38,24 @@ public class SwingHook : Platform, IKnockbackable, IGrabMoveable
 
     public void KnockBack(Vector3 force)
     {
+        anim.SetTrigger("OnGrabbed");
+        rigid.AddForce(force, ForceMode2D.Impulse);
     }
-    public void Grabbed()
+    public void Grabbed(Rigidbody2D ownerRigid)
     {
+        // RelativeJoint2D Setting
+        rtvJoint.enabled = true;
+        rtvJoint.connectedBody = ownerRigid;
     }
     public void GrabEnd()
     {
-
+        // RelativeJoint2D Setting
+        rtvJoint.enabled = false;
+        rtvJoint.connectedBody = null;
     }
-    public GameObject GetObject() { return this.gameObject; }
-    public Vector3 GetGrabPosition() { return new Vector2(this.transform.position.x, this.transform.position.y); }
-    public void GrabMove(Rigidbody2D ownerRigid)
+
+    public Vector3 GetGrabPosition()
     {
-        rigid.velocity = ownerRigid.velocity;
+        return new Vector2(hookTr.position.x, hookTr.position.y + grabbedYPos);
     }
-
 }

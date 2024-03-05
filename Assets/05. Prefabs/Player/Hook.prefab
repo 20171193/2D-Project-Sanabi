@@ -317,18 +317,10 @@ MonoBehaviour:
   distJoint: {fileID: 9204252272020083190}
   anim: {fileID: 2466251688140780575}
   lr: {fileID: -835701505133038319}
-  OnHookHitEnemy:
-    m_PersistentCalls:
-      m_Calls: []
-  OnHookHitGround:
-    m_PersistentCalls:
-      m_Calls: []
-  OnDestroyHook:
-    m_PersistentCalls:
-      m_Calls: []
-  muzzlePos: {x: 0, y: 0, z: 0}
-  targetPos: {x: 0, y: 0, z: 0}
   ownerRigid: {fileID: 0}
+  trailSpeed: 0
+  maxDistance: 0
+  knockBackPower: 15
+  muzzlePos: {x: 0, y: 0, z: 0}
   isConnected: 0
-  isGrabbed: 0
   destroyTime: 0

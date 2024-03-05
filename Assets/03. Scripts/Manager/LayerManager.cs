@@ -10,6 +10,8 @@ public class LayerManager : MonoBehaviour
     public LayerMask wallLM;
     [Header("HookInteractable")]
     public LayerMask hookInteractableLM;
+    [Header("Hook interactable Platform")]
+    public LayerMask hookingPlatformLM;
     [Header("Player Hook")]
     public LayerMask playerHookLM;
     [Header("Enemy")]

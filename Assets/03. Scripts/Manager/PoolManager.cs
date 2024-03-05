@@ -11,12 +11,7 @@ public class PoolManager : MonoBehaviour
         GameObject gameObject = new GameObject();
         gameObject.name = $"Pool_{prefab.name}";
 
-        ObjectPooler pooler;
-        // Player Hook Pooler
-        if (prefab is Hook)
-            pooler = gameObject.AddComponent<HookPooler>();
-        else
-            pooler = gameObject.AddComponent<ObjectPooler>();
+        ObjectPooler pooler = gameObject.AddComponent<ObjectPooler>();
 
         pooler.CreatePool(prefab, size, capacity);
         poolDic.Add(prefab.name, pooler);

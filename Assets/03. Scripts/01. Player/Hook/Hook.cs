@@ -5,7 +5,7 @@ using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class Hook : PooledObject
+public class Hook : MonoBehaviour
 {
     [Header("Components")]
     [SerializeField]
@@ -43,49 +43,47 @@ public class Hook : PooledObject
     private float maxDistance;
     public float MaxDistance { get { return maxDistance; } set { maxDistance = value; } }
 
+    [Header("Specs")]
+    [SerializeField]
+    private float knockBackPower;
+    public float KnockBackPower { get { return knockBackPower; }  }
+
     [Header("Ballancing")]
     public Vector3 muzzlePos;
-    public Vector3 targetPos;
+    public RaycastHit2D hitInfo;
 
     [SerializeField]
     private bool isConnected = false;
+    private Rigidbody2D connectedRigid;
 
     public float destroyTime;
     private Coroutine trailRoutine;
 
-    protected override void OnEnable()
+    private void OnEnable()
     {
-        base.OnEnable();
-
         lr.positionCount = 0;
         anim.Play("HookStart");
+        trailRoutine = StartCoroutine(TrailRoutine());
     }
 
     private void Update()
     {
-        Trailing();
-
         if (isConnected)
             LineRendering();
-    }
-    private void Trailing()
-    {
-        trailRoutine = StartCoroutine(TrailRoutine());
     }
 
     private void LineRendering()
     {
         lr.positionCount = 2;
-        lr.SetPosition(0, targetPos);
+        lr.SetPosition(0, transform.position);
         lr.SetPosition(1, ownerRigid.position);
     }
     private void Grab(IGrabable grabed)
     {
         OnHookHitObject?.Invoke(grabed);
-
         Release();
     }
-    private void Conecting()
+    private void Connecting()
     {
         isConnected = true;
         OnHookHitGround?.Invoke();
@@ -107,46 +105,42 @@ public class Hook : PooledObject
     }
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        Debug.Log($"Hook Trigger : {collision.name}");
-        rigid.velocity = Vector3.zero;
-
-        if (!Manager.Layer.hookInteractableLM.Contain(collision.gameObject.layer))
-            Release();
-
-        // object hook balancing
-        if (Manager.Layer.enemyLM.Contain(collision.gameObject.layer))
+        // Hook Knockback
+        if (Manager.Layer.enemyLM.Contain(collision.gameObject.layer)
+            || Manager.Layer.hookingPlatformLM.Contain(collision.gameObject.layer))
         {
-            // object grab
-            IGrabable grabed = collision.gameObject.GetComponent<IGrabable>();
-            if(grabed == null)
-            {
-                Debug.Log("Invalid grab target");
-                return;
-            }
-            // player grab
-            Grab(grabed);
-            return;
+            IKnockbackable knockbacked = collision.gameObject.GetComponent<IKnockbackable>();
+            knockbacked?.KnockBack((collision.transform.position - muzzlePos).normalized * knockBackPower);
         }
-
-        // wall hook
-        if (Manager.Layer.wallLM.Contain(collision.gameObject.layer))
-            Conecting();
     }
 
     IEnumerator TrailRoutine()
     {
-        float time = Vector3.Distance(muzzlePos, targetPos) / trailSpeed;
+        float time = Vector3.Distance(muzzlePos, hitInfo.point) / trailSpeed;
         float rate = 0f;
 
         while(rate < 1f)
         {
             rate += Time.deltaTime / time;
-            transform.position = Vector3.Lerp(muzzlePos, targetPos, rate);
+            transform.position = Vector3.Lerp(muzzlePos, hitInfo.point, rate);
             yield return null;
         }
 
-        transform.position = targetPos;
+        transform.position = hitInfo.point;
+
+        if (Manager.Layer.wallLM.Contain(hitInfo.collider.gameObject.layer))
+        {
+            transform.parent = hitInfo.collider.gameObject.transform;
+            Connecting();
+        }
+        else
+            Grab(hitInfo.collider.gameObject.GetComponent<IGrabable>());
         yield return null;
+    }
+
+    private void Release()
+    {
+        gameObject.SetActive(false);
     }
 
     private void OnDisable()

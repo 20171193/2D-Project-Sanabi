@@ -9,5 +9,4 @@ public class Platform : MonoBehaviour
     protected LineRenderer lr;
 
     public virtual void LineRendering() { }
-
 }

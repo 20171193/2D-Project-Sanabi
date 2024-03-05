@@ -14,6 +14,9 @@ public class PlayerSkill : PlayerBase
     private float dashPower;
     public float DashPower { get { return dashPower; } }
 
+    [SerializeField]
+    private float slowMotionTime;
+
     private Coroutine dashCoroutine;
 
     protected override void Awake()
@@ -23,8 +26,8 @@ public class PlayerSkill : PlayerBase
 
     public void RopeForce()
     {
-        // °­ÇÑ ¹İµ¿ Àû¿ë
-        // ÀÜ»ó µî ÀÌÆåÆ® Ãß°¡
+        // ê°•í•œ ë°˜ë™ ì ìš©
+        // ì”ìƒ ë“± ì´í™íŠ¸ ì¶”ê°€
         Vector2 forceDir = transform.rotation.y == 0 ? Vector2.right : Vector2.left;
         rigid.AddForce(ropeSkillPower * forceDir, ForceMode2D.Impulse);
     }
@@ -34,7 +37,12 @@ public class PlayerSkill : PlayerBase
         rigid.velocity = Vector3.zero;
         rigid.gravityScale = 0;
 
-        dashCoroutine = StartCoroutine(DashTrailRoutine(grabed));
+        Vector3 grabedPos = grabed.GetGrabPosition();
+
+        if(transform.position.x < grabedPos.x)
+            transform.rotation = Quaternion.Euler(0, 0, 0);
+        else
+            transform.rotation = Quaternion.Euler(0, -180, 0);
 
         playerFSM.ChangeState("Dash");
     }
@@ -46,11 +54,9 @@ public class PlayerSkill : PlayerBase
         float time = Vector3.Distance(startPos, endPos) / dashPower;
         float rate = 0f;
 
+        Time.timeScale = 0.5f;
         while(rate < 1f)
         {
-            if (rate >= 0.3f)
-                Time.timeScale = 0.5f;
-            Debug.Log($"Trail Rate : {rate}");
             rate += Time.deltaTime / time;
             transform.position = Vector3.Lerp(startPos, endPos, rate);
             yield return null;
@@ -64,14 +70,12 @@ public class PlayerSkill : PlayerBase
     public void Grab(IGrabable target)
     {
         playerFSM.IsDash = false;
-        target.Grabbed();
+        target.Grabbed(rigid);
 
         // Check Enemy
         playerHooker.GrabedObject = target;
         playerFSM.IsGrab = true;
 
         playerFSM.ChangeState("Grab");
-
-        rigid.velocity = Vector3.zero;
     }
 }

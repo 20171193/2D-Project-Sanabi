@@ -79,7 +79,7 @@ public class PlayerFSM : PlayerBase
 
         fsm.AddAnyState("Jump", () =>
         {
-            return !beDamaged && !isInWall && !isGround && !isJointed 
+            return !isGrab && !beDamaged && !isInWall && !isGround && !isJointed 
                     && rigid.velocity.y > JumpForce_Threshold;
         });
 
@@ -90,7 +90,7 @@ public class PlayerFSM : PlayerBase
 
         fsm.AddAnyState("Fall", () =>
         {
-            return !beDamaged && !isInWall && !isGround && !isJointed 
+            return !isGrab && !beDamaged && !isInWall && !isGround && !isJointed 
                     && rigid.velocity.y < -JumpForce_Threshold;
         });
 

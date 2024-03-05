@@ -9,7 +9,8 @@ using UnityEngine.InputSystem;
 public enum LineRenderType
 {
     Ground,
-    Enemy
+    Enemy,
+    Interactable
 }
 
 public class HookAim : MonoBehaviour
@@ -60,6 +61,11 @@ public class HookAim : MonoBehaviour
                 break;
             case LineRenderType.Enemy:
                 lr.materials = groundLineMt;
+                break;
+            case LineRenderType.Interactable:
+                lr.materials = groundLineMt;
+                break;
+            default:
                 break;
         }
 
