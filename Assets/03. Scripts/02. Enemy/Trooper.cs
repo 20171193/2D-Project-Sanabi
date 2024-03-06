@@ -83,6 +83,7 @@ public class Trooper : EnemyShooter, IKnockbackable, IGrabable
 
         Died();
     }
+    public bool IsMoveable() { return true; }
     public GameObject GetGameObject() { return gameObject; }
     public Vector3 GetGrabPosition() { return new Vector2(this.transform.position.x, this.transform.position.y + grabbedYPos); }
 

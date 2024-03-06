@@ -1657,11 +1657,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2223518274302697707, guid: 5da665dc391c2a643a5a76c0312024bd, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 37.12
+      value: 22.74
       objectReference: {fileID: 0}
     - target: {fileID: 2223518274302697707, guid: 5da665dc391c2a643a5a76c0312024bd, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 2.96
+      value: 7.62
       objectReference: {fileID: 0}
     - target: {fileID: 2223518274302697707, guid: 5da665dc391c2a643a5a76c0312024bd, type: 3}
       propertyPath: m_LocalPosition.z
@@ -1712,6 +1712,10 @@ PrefabInstance:
     - target: {fileID: 3882703055074072161, guid: 08f33626d2102fa40825bf83a6bef6bb, type: 3}
       propertyPath: m_Name
       value: WallCollider (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 3882703055074072161, guid: 08f33626d2102fa40825bf83a6bef6bb, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3882703055074072172, guid: 08f33626d2102fa40825bf83a6bef6bb, type: 3}
       propertyPath: m_RootOrder

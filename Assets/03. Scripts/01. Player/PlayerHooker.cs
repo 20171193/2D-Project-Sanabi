@@ -221,11 +221,14 @@ public class PlayerHooker : PlayerBase
     public void OnHookHitGround()
     {
         playerFSM.IsJointed = true;
+
         playerFSM.ChangeState("Roping");
     }
     public void OnHookHitObject(IGrabable grabed)
     {
         DoImpulse();
+
+        PrFSM.IsEnableGrabMove =  grabed.IsMoveable();
 
         Debug.Log(grabed);
         playerSkill.Dash(grabed);

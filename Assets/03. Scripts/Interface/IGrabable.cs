@@ -7,6 +7,8 @@ public interface IGrabable
     public void Grabbed(Rigidbody2D ownerRigid);
     public void GrabEnd();
 
+    public bool IsMoveable();
+
     public GameObject GetGameObject();
     public Vector3 GetGrabPosition();
 }
