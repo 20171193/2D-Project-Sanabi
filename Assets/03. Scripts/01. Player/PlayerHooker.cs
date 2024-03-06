@@ -171,6 +171,7 @@ public class PlayerHooker : PlayerBase
     private void RopeJump()
     {
         rigid.AddForce(hookAim.transform.up * ropeJumpPower, ForceMode2D.Impulse);
+        anim.SetFloat("MovePower", rigid.velocity.magnitude);
         anim.Play("RopeJump");
     }
     private void GrabJump()
@@ -244,7 +245,7 @@ public class PlayerHooker : PlayerBase
     private void ReleaseHook()
     {
         hookObject.SetActive(false);
-
+        hookObject.transform.parent = transform;
         // Transform Initial Setting
         firedHook.transform.position = Vector3.zero;
         firedHook.transform.rotation = Quaternion.identity;

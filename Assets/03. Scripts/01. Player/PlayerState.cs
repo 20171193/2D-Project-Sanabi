@@ -285,6 +285,13 @@ public class PlayerRoping : PlayerBaseState
     {
         // 실제 이동
         owner.Rigid.AddForce(Vector2.right * mover.MoveHzt * mover.RopeMovePower);
+        // 이동속도 제한
+        owner.Rigid.velocity = new Vector2(Mathf.Clamp(owner.Rigid.velocity.x, -owner.PrMover.CurrentMaxRopingPower, owner.PrMover.CurrentMaxRopingPower), owner.Rigid.velocity.y);
+    }
+
+    public override void Exit()
+    {
+        owner.PrMover.CurrentMaxRopingPower = owner.PrMover.MaxRopingPower;
     }
 }
 

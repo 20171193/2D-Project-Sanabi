@@ -62,6 +62,13 @@ public class PlayerMover : PlayerBase
     private float ropeMovePower;
     public float RopeMovePower { get { return ropeMovePower; } }
 
+    [SerializeField]
+    private float currentMaxRopingPower;
+    public float CurrentMaxRopingPower { get { return currentMaxRopingPower; } set { currentMaxRopingPower = value; } }
+
+    [SerializeField]
+    private float maxRopingPower;
+    public float MaxRopingPower { get {  return maxRopingPower; }  }
     #endregion
 
     [Space(3)]

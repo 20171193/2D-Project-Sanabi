@@ -133,6 +133,7 @@ public class Hook : MonoBehaviour
         }
         else
             Grab(hitInfo.collider.gameObject.GetComponent<IGrabable>());
+
         yield return null;
     }
 
