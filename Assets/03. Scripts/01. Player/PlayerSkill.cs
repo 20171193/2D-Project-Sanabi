@@ -26,11 +26,16 @@ public class PlayerSkill : PlayerBase
 
     public void RopeForce()
     {
-        // 강한 반동 적용
-        // 잔상 등 이펙트 추가
-        Vector2 forceDir = transform.rotation.y == 0 ? Vector2.right : Vector2.left;
-        rigid.AddForce(ropeSkillPower * forceDir, ForceMode2D.Impulse);
+        // Shift Key : Rope Skill
+
+        // limit move power + skill power
+        // reset when rope disconnection
+        PrMover.CurrentMaxRopingPower += ropeSkillPower;
+
+        // Add Force in the current direction
+        rigid.AddForce(ropeSkillPower * rigid.velocity.normalized, ForceMode2D.Impulse);
     }
+
     public void Dash(IGrabable grabed)
     {
         playerFSM.IsDash = true;
