@@ -47,6 +47,8 @@ public class Turret : EnemyShooter, IGrabable
     public override void Shooting()
     {
         anim.Play("Attack");
+        shootVFXAnim.SetTrigger("OnShoot");
+
         lr.positionCount = 0;
 
         EnemyBulletObject bullet = Manager.Pool.GetPool(bulletPrefab, muzzlePos.position, aimPos.rotation) as EnemyBulletObject;

@@ -27,7 +27,8 @@ Transform:
   m_LocalPosition: {x: 0, y: 2.1, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 1965152513}
   m_Father: {fileID: 2223518273759519309}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -475,15 +476,87 @@ MonoBehaviour:
   markerAnim: {fileID: 8447421853111842075}
   playerTr: {fileID: 0}
   initState: 
-  grabbedYPos: 1
+  grabbedYPos: 1.2
   aimPos: {fileID: 2223518273759519309}
   muzzlePos: {fileID: 2223518272490406346}
   lr: {fileID: 6988215323349707214}
   lrAnim: {fileID: 5313413971949522312}
+  shootVFXAnim: {fileID: 1965152512}
   bulletPrefab: {fileID: -5438544498892420105, guid: c060b6abd517df4418fd019ee76b6fcd, type: 3}
   attackCoolTime: 5
   attackDelay: 2
   bulletPower: 5
+--- !u!1001 &957577127789104471
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 2223518272490406346}
+    m_Modifications:
+    - target: {fileID: 957577129277609514, guid: eb562cd929f183d4faf66cd8b70eb4cc, type: 3}
+      propertyPath: m_SortingOrder
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 957577129749992534, guid: eb562cd929f183d4faf66cd8b70eb4cc, type: 3}
+      propertyPath: m_RootOrder
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 957577129749992534, guid: eb562cd929f183d4faf66cd8b70eb4cc, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 957577129749992534, guid: eb562cd929f183d4faf66cd8b70eb4cc, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.37
+      objectReference: {fileID: 0}
+    - target: {fileID: 957577129749992534, guid: eb562cd929f183d4faf66cd8b70eb4cc, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 957577129749992534, guid: eb562cd929f183d4faf66cd8b70eb4cc, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 957577129749992534, guid: eb562cd929f183d4faf66cd8b70eb4cc, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 957577129749992534, guid: eb562cd929f183d4faf66cd8b70eb4cc, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 957577129749992534, guid: eb562cd929f183d4faf66cd8b70eb4cc, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 957577129749992534, guid: eb562cd929f183d4faf66cd8b70eb4cc, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 957577129749992534, guid: eb562cd929f183d4faf66cd8b70eb4cc, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 957577129749992534, guid: eb562cd929f183d4faf66cd8b70eb4cc, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 957577129749992873, guid: eb562cd929f183d4faf66cd8b70eb4cc, type: 3}
+      propertyPath: m_Name
+      value: VFX_EnemyShoot
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: eb562cd929f183d4faf66cd8b70eb4cc, type: 3}
+--- !u!95 &1965152512 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 957577129749992535, guid: eb562cd929f183d4faf66cd8b70eb4cc, type: 3}
+  m_PrefabInstance: {fileID: 957577127789104471}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &1965152513 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 957577129749992534, guid: eb562cd929f183d4faf66cd8b70eb4cc, type: 3}
+  m_PrefabInstance: {fileID: 957577127789104471}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &8495718288965998997
 PrefabInstance:
   m_ObjectHideFlags: 0

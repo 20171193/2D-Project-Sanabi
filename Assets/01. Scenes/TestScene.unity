@@ -1021,6 +1021,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9c0c4d3285540fc4cb9aa73ead938b19, type: 3}
+--- !u!4 &825945457 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 2223518272490406346, guid: 5da665dc391c2a643a5a76c0312024bd, type: 3}
+  m_PrefabInstance: {fileID: 1234605236}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &863402133
 GameObject:
   m_ObjectHideFlags: 0
@@ -1338,7 +1343,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 972004277}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -0.69, z: 0}
+  m_LocalPosition: {x: 0, y: -0.53, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1647,6 +1652,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2223518273759519308, guid: 5da665dc391c2a643a5a76c0312024bd, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2223518274302697703, guid: 5da665dc391c2a643a5a76c0312024bd, type: 3}
       propertyPath: m_Name
       value: Enemy_Turret
@@ -1657,11 +1666,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2223518274302697707, guid: 5da665dc391c2a643a5a76c0312024bd, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 22.74
+      value: 36.91
       objectReference: {fileID: 0}
     - target: {fileID: 2223518274302697707, guid: 5da665dc391c2a643a5a76c0312024bd, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 7.62
+      value: 3.01
       objectReference: {fileID: 0}
     - target: {fileID: 2223518274302697707, guid: 5da665dc391c2a643a5a76c0312024bd, type: 3}
       propertyPath: m_LocalPosition.z
@@ -1695,6 +1704,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 90
       objectReference: {fileID: 0}
+    - target: {fileID: 2223518274302697710, guid: 5da665dc391c2a643a5a76c0312024bd, type: 3}
+      propertyPath: shootVFXAnim
+      value: 
+      objectReference: {fileID: 1965152512}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5da665dc391c2a643a5a76c0312024bd, type: 3}
 --- !u!4 &1292032356 stripped
@@ -1715,7 +1728,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3882703055074072161, guid: 08f33626d2102fa40825bf83a6bef6bb, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3882703055074072172, guid: 08f33626d2102fa40825bf83a6bef6bb, type: 3}
       propertyPath: m_RootOrder
@@ -8320,30 +8333,13 @@ GameObject:
   m_Component:
   - component: {fileID: 1965152513}
   - component: {fileID: 1965152512}
-  - component: {fileID: 1965152511}
   m_Layer: 0
   m_Name: VFX_EnemyShoot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
---- !u!114 &1965152511
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1965152510}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b2cdaa4e68561b0459043beb03b14bed, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  size: 0
-  vfxName: 
-  pooler: {fileID: 0}
-  anim: {fileID: 0}
+  m_IsActive: 1
 --- !u!95 &1965152512
 Animator:
   serializedVersion: 5
@@ -8372,13 +8368,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1965152510}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 23.88, y: 6.36, z: -0.009802438}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: 0.1, y: 0.37, z: 0}
+  m_LocalScale: {x: 1.2499996, y: 1.2499996, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1498012540}
-  m_Father: {fileID: 0}
-  m_RootOrder: 16
+  m_Father: {fileID: 825945457}
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2061561956
 GameObject:
