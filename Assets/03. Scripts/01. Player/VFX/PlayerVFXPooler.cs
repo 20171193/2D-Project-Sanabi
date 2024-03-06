@@ -1,62 +1,112 @@
 using System;
+using System.Buffers;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEditorInternal;
 using UnityEngine;
 using UnityEngine.UIElements;
+using static UnityEditor.PlayerSettings;
+using static UnityEngine.UI.Image;
 
 public class PlayerVFXPooler : MonoBehaviour
 {
-    [SerializeField]
-    private Dictionary<string, GameObject> vfxPool;
+    [Serializable]
+    struct VFX
+    {
+        public Stack<GameObject> vfxObjectPool;
+        // return Transform
+        public Transform originTr;
 
+        public VFX(Stack<GameObject> vfxObjectPool, Transform originTr)
+        {
+            this.vfxObjectPool = vfxObjectPool;
+            this.originTr = originTr;
+        }
+    }
+    [Header("Regist VFX Object List")]
     [SerializeField]
-    private Transform vfxTop;
-    [SerializeField]
-    private Dictionary<string, Transform> vfxTranform;
+    private List<GameObject> registVFXList;
+
+    private Dictionary<string, GameObject> prefabDic;
+    private Dictionary<string, VFX> vfxPool;
 
     private void Awake()
     {
-        vfxPool = new Dictionary<string, GameObject>();
-        vfxTranform = new Dictionary<string, Transform>();
+        vfxPool = new Dictionary<string, VFX>();
+        prefabDic = new Dictionary<string, GameObject>();
 
-        // Assign vfx object
+        foreach(GameObject vfxOb in registVFXList)
+        {
+            //   key : name
+            // value : PlayerVFX 
+            prefabDic.Add(vfxOb.name.Replace("VFX_", ""), vfxOb);
+        }
+       
         for (int i = 0; i < transform.childCount; i++)
         {
-            GameObject child = transform.GetChild(i).gameObject;
-            child.GetComponent<PlayerVFX>().Pooler = this;
+            // vfx prefabs parent transform
+            Transform originTr = transform.GetChild(i);
+            // vfx prefabs name
+            string name = originTr.gameObject.name.Replace("POS_", "");
 
-            child.SetActive(false);
-            vfxPool.Add(child.name.Replace("VFX_", ""), child);
-        }
+            // If there is no Transform matching the name of the prefab, it skips.
+            if (!prefabDic.ContainsKey(name)) continue;
 
-        // Assign vfx transform
-        for(int i = 0; i < vfxTop.childCount; i++)
-        {
-            Transform child = transform.GetChild(i);
-            vfxTranform.Add(child.gameObject.name.Replace("VFX_", ""), child);
+            GameObject vfxOb = prefabDic[name];
+            PlayerVFX vfx = vfxOb.GetComponent<PlayerVFX>();
+
+            // vfx object pooling using a stack
+            Stack<GameObject> stack = new Stack<GameObject>(vfx.Size);
+
+            for(int j = 0; j< vfx.Size; j++)
+            {
+                GameObject instance = Instantiate(vfxOb);
+                PlayerVFX vfxInst = instance.GetComponent<PlayerVFX>();
+
+                instance.gameObject.SetActive(false);
+                instance.transform.parent = originTr;
+                vfxInst.VFXName = name;
+                vfxInst.Pooler = this;
+                stack.Push(instance);
+            }
+
+            vfxPool.Add(name, new VFX(stack, originTr));
         }
     }
 
     public void ActiveVFX(string name)
     {
-        GameObject getObject = vfxPool[name];
-        Transform getTransform = vfxTranform[name];
+        if(!vfxPool.ContainsKey(name))
+        {
+            Debug.Log($"{name} pool does not exist");
+            return;
+        }
 
-        getObject.transform.position = getTransform.position;
-        getObject.transform.rotation = getTransform.rotation;
-        getObject.transform.parent = null;
-
-        // reset gameobject
-        if (getObject.activeSelf)
-            getObject.SetActive(false);
-
-        getObject.SetActive(true);
+        // When the visual effect is triggered, change the parent of the transform to null
+        if (vfxPool[name].vfxObjectPool.Count > 0)
+        {
+            GameObject instance = vfxPool[name].vfxObjectPool.Pop();
+            instance.transform.parent = null;
+            instance.transform.position = vfxPool[name].originTr.position;
+            instance.transform.rotation = vfxPool[name].originTr.rotation;
+            instance.gameObject.SetActive(true);
+        }
     }
 
-    public void ReturnPool(GameObject vfx)
+    public void ReturnPool(GameObject getObject)
     {
-        vfx.SetActive(false);
-        vfx.transform.parent = this.transform;
+        // When the effect ends, revert the parent of the transform to its original transform.
+        PlayerVFX getVfx = getObject.GetComponent<PlayerVFX>();
+        if (getVfx == null) return;
+
+        string name = getVfx.VFXName;
+        if (!vfxPool.ContainsKey(name)) return;
+
+        getObject.SetActive(false);
+        getObject.transform.position = vfxPool[name].originTr.position;
+        getObject.transform.rotation = vfxPool[name].originTr.rotation;
+        getObject.transform.parent = vfxPool[name].originTr;
+        vfxPool[name].vfxObjectPool.Push(getObject);
     }
 }

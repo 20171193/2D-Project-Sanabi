@@ -217,6 +217,7 @@ public class PlayerFSM : PlayerBase
                 anim.Play("Jump");
 
                 // Wall Exit to Up Position
+                OnWallJump?.Invoke();
                 rigid.AddForce(transform.up * 8f + transform.right * 3f, ForceMode2D.Impulse);
             }
         }

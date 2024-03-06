@@ -6,5 +6,4 @@ using UnityEngine.Events;
 public class PlayerEventListener : MonoBehaviour
 {
 
-
 }
