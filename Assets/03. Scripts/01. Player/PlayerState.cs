@@ -318,7 +318,8 @@ public class PlayerGrab : PlayerBaseState
     public override void FixedUpdate()
     {
         // Grab Moving
-        GrabMove();
+        if(owner.IsEnableGrabMove)
+            GrabMove();
     }
     public override void Update()
     {
@@ -350,6 +351,7 @@ public class PlayerGrab : PlayerBaseState
 
     public override void Exit()
     {
+        owner.IsEnableGrabMove = false;
         owner.OnGrabEnd?.Invoke();
     }
 }

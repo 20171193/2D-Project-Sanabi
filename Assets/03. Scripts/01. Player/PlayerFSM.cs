@@ -35,6 +35,10 @@ public class PlayerFSM : PlayerBase
     public bool IsGrab { get { return isGrab; } set { isGrab = value; } }
 
     [SerializeField]
+    private bool isEnableGrabMove = false;
+    public bool IsEnableGrabMove { get { return isEnableGrabMove; } set { isEnableGrabMove = value; } }
+
+    [SerializeField]
     private bool isHookShoot = false;
     public bool IsHookShoot { get { return isHookShoot; } set { isHookShoot = value; } }
 
@@ -88,7 +92,8 @@ public class PlayerFSM : PlayerBase
 
         fsm.AddAnyState("WallSlide", () =>
         {
-            return isInWall;
+            return !beDamaged && !isDash && !isGrab 
+                    && isInWall;
         });
 
         fsm.AddAnyState("Jump", () =>
