@@ -4,6 +4,10 @@ using UnityEngine;
 
 public class PlayerSkill : PlayerBase
 {
+    [Header("Component")]
+    [SerializeField]
+    private GameObject ropeForceParticle;
+
     [Header("Specs")]
     [SerializeField]
     private float ropeSkillPower;
@@ -18,6 +22,7 @@ public class PlayerSkill : PlayerBase
     private float slowMotionTime;
 
     private Coroutine dashCoroutine;
+    private Coroutine ropeForceRoutine;
 
     protected override void Awake()
     {
@@ -30,11 +35,22 @@ public class PlayerSkill : PlayerBase
 
         // limit move power + skill power
         // reset when rope disconnection
+        if (ropeForceRoutine != null)
+            StopCoroutine(ropeForceRoutine);
+
+        StartCoroutine(RopeForceRoutine());
         PrMover.CurrentMaxRopingPower += ropeSkillPower;
 
         // Add Force in the current direction
         rigid.AddForce(ropeSkillPower * rigid.velocity.normalized, ForceMode2D.Impulse);
     }
+    IEnumerator RopeForceRoutine()
+    {
+        ropeForceParticle.SetActive(true);
+        yield return new WaitForSeconds(0.5f);
+        ropeForceParticle.SetActive(false);
+    }
+
 
     public void Dash(IGrabable grabed)
     {
