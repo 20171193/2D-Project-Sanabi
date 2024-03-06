@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using static UnityEngine.RuleTile.TilingRuleOutput;
 
@@ -48,6 +49,8 @@ public class PlayerRun : PlayerBaseState
     private void Move()
     {
         owner.Anim.SetFloat("MovePower", Mathf.Abs(mover.MoveHzt));
+
+        owner.OnRun?.Invoke();
 
         // 캐릭터 회전
         if (mover.MoveHzt > 0)
@@ -130,37 +133,19 @@ public class PlayerWallSlide : PlayerBaseState
         {
             if(mover.MoveVtc < -PlayerBase.MoveForce_Threshold)
             {
+                owner.OnWallSliding?.Invoke();
+
                 float moveYPos = Mathf.Lerp(owner.transform.position.y, owner.transform.position.y + mover.SlidingPower * mover.MoveVtc, Time.deltaTime);
                 owner.transform.position = new Vector3(owner.transform.position.x, moveYPos, 0);
             }
             else if(mover.MoveVtc > PlayerBase.MoveForce_Threshold)
             {
+                owner.OnClimb?.Invoke();
+
                 float moveYPos = Mathf.Lerp(owner.transform.position.y, owner.transform.position.y + mover.ClimbPower*mover.MoveVtc, Time.deltaTime);
                 owner.transform.position = new Vector3(owner.transform.position.x, moveYPos, 0);
             }
         }
-
-        //if (mover.MoveVtc == 0)
-        //{
-        //    // brake
-        //    if (owner.Rigid.velocity.y > PlayerBase.MoveForce_Threshold)
-        //        owner.Rigid.AddForce(Vector2.down * mover.VtcBrakePower);
-        //    else if (owner.Rigid.velocity.y < -PlayerBase.MoveForce_Threshold)
-        //        owner.Rigid.AddForce(Vector2.up * mover.VtcBrakePower);
-        //}
-        //else
-        //{
-        //    if (mover.MoveVtc < 0)
-        //    {
-        //        owner.Rigid.AddForce(Vector3.up * mover.MoveVtc * mover.MovePower);
-        //        owner.Rigid.velocity = new Vector2(owner.Rigid.velocity.x, Mathf.Clamp(owner.Rigid.velocity.y, -mover.MaxMoveSpeed, mover.MaxMoveSpeed));
-        //    }
-        //    else
-        //    {
-        //        owner.Rigid.AddForce(Vector2.up * mover.MoveVtc * mover.MovePower/2f);
-        //        owner.Rigid.velocity = new Vector2(owner.Rigid.velocity.x, Mathf.Clamp(owner.Rigid.velocity.y, -mover.MaxMoveSpeed/2f, mover.MaxMoveSpeed/2f));
-        //    }
-        //}
     }
 
     public override void Exit()
@@ -182,7 +167,6 @@ public class PlayerJump : PlayerBaseState
         this.owner = owner;
         mover = owner.PrMover;
     }
-
     public override void FixedUpdate()
     {
         FlyMoveMent();
@@ -308,6 +292,8 @@ public class PlayerDash : PlayerBaseState
 
     public override void Enter()
     {
+        owner.OnDash?.Invoke();
+
         owner.Anim.Play("Dash");
     }
     
@@ -361,6 +347,11 @@ public class PlayerGrab : PlayerBaseState
             mover.Rigid.velocity = new Vector2(Mathf.Clamp(mover.Rigid.velocity.x, -mover.MaxHoldingMoveSpeed, mover.MaxHoldingMoveSpeed), mover.Rigid.velocity.y);
         }
     }
+
+    public override void Exit()
+    {
+        owner.OnGrabEnd?.Invoke();
+    }
 }
 #endregion
 
@@ -375,6 +366,8 @@ public class PlayerDamaged : PlayerBaseState
 
     public override void Enter()
     {
+        owner.OnTakeDamage?.Invoke();
+
         Time.timeScale = 0.5f;
 
         // init all state

@@ -39,12 +39,6 @@ public class Turret : EnemyShooter, IGrabable
         lr.SetPosition(0, muzzlePos.position);
         lr.SetPosition(1, (targetPos - muzzlePos.position).normalized * 100f);
 
-        // Agent Rotation
-        if (transform.position.x > targetPos.x)
-            transform.rotation = Quaternion.Euler(0, -180f, 0);
-        else
-            transform.rotation = Quaternion.Euler(0, 0, 0);
-
         // Aim Rotation
         Vector3 dir = (targetPos - aimPos.position).normalized;
         aimPos.up = dir;

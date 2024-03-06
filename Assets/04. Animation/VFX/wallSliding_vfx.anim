@@ -6,7 +6,7 @@ AnimationClip:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: landing_vfx
+  m_Name: wallSliding_vfx
   serializedVersion: 6
   m_Legacy: 0
   m_Compressed: 0
@@ -39,15 +39,13 @@ AnimationClip:
   m_PPtrCurves:
   - curve:
     - time: 0
-      value: {fileID: 21300000, guid: 467e1e78fc5441742b3990fdfb0cac26, type: 3}
+      value: {fileID: 21300000, guid: 2b405f846a17b614580c7f22de692e4c, type: 3}
     - time: 0.083333336
-      value: {fileID: 21300000, guid: 530aead0dea6f4b4f94e63dadce09a12, type: 3}
+      value: {fileID: 21300000, guid: 265359063889a9d4d95a37011d818f91, type: 3}
     - time: 0.16666667
-      value: {fileID: 21300000, guid: dbb7d2e6e201f5e40bfb5169d45ef42e, type: 3}
+      value: {fileID: 21300000, guid: 3fd668e4169af5a4aa9346c0e992d277, type: 3}
     - time: 0.25
-      value: {fileID: 21300000, guid: f0e9715c55f81cf4288c33a2d66698bd, type: 3}
-    - time: 0.33333334
-      value: {fileID: 21300000, guid: f7e100e6360ba4b40a30bbb309ed473b, type: 3}
+      value: {fileID: 21300000, guid: d23e901f37ba1b34d8fde979f8e85842, type: 3}
     attribute: m_Sprite
     path: Renderer
     classID: 212
@@ -74,17 +72,16 @@ AnimationClip:
       customType: 23
       isPPtrCurve: 1
     pptrCurveMapping:
-    - {fileID: 21300000, guid: 467e1e78fc5441742b3990fdfb0cac26, type: 3}
-    - {fileID: 21300000, guid: 530aead0dea6f4b4f94e63dadce09a12, type: 3}
-    - {fileID: 21300000, guid: dbb7d2e6e201f5e40bfb5169d45ef42e, type: 3}
-    - {fileID: 21300000, guid: f0e9715c55f81cf4288c33a2d66698bd, type: 3}
-    - {fileID: 21300000, guid: f7e100e6360ba4b40a30bbb309ed473b, type: 3}
+    - {fileID: 21300000, guid: 2b405f846a17b614580c7f22de692e4c, type: 3}
+    - {fileID: 21300000, guid: 265359063889a9d4d95a37011d818f91, type: 3}
+    - {fileID: 21300000, guid: 3fd668e4169af5a4aa9346c0e992d277, type: 3}
+    - {fileID: 21300000, guid: d23e901f37ba1b34d8fde979f8e85842, type: 3}
   m_AnimationClipSettings:
     serializedVersion: 2
     m_AdditiveReferencePoseClip: {fileID: 0}
     m_AdditiveReferencePoseTime: 0
     m_StartTime: 0
-    m_StopTime: 0.35000002
+    m_StopTime: 0.26666668
     m_OrientationOffsetY: 0
     m_Level: 0
     m_CycleOffset: 0
@@ -123,7 +120,7 @@ AnimationClip:
   m_HasGenericRootTransform: 0
   m_HasMotionFloatCurves: 0
   m_Events:
-  - time: 0.33333334
+  - time: 0.25
     functionName: Release
     data: 
     objectReferenceParameter: {fileID: 0}
