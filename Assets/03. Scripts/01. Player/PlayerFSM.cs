@@ -47,6 +47,20 @@ public class PlayerFSM : PlayerBase
     public bool BeDamaged { get { return beDamaged; } set { beDamaged = value; } }
     #endregion
 
+    [Space(3)]
+    [Header("Player Action Events")]
+    [Space(2)]
+    public UnityEvent OnRun;            // invoke by state
+    public UnityEvent OnJump;           // invoke by PlayerMover (Jump())
+    public UnityEvent OnWallJump;       // invoke by PlayerMover (WallJump())
+    public UnityEvent OnDash;           // invoke by state
+    public UnityEvent OnGrabEnd;        // invoke by state
+    public UnityEvent OnClimb;          // invoke by state
+    public UnityEvent OnWallSliding;    // invoke by state
+    public UnityEvent OnHookShoot;      // invoke by PlayerHooker (HookShoot)
+    public UnityEvent OnTakeDamage;     // invoke by state
+    public UnityEvent OnLanding;        // invoke by PlayerMover (TriggerEnter2D)
+
     protected override void Awake()
     {
         base.Awake();
@@ -172,6 +186,8 @@ public class PlayerFSM : PlayerBase
             // ground check
             if (isInWall)
                 isInWall = false;
+            else
+                OnLanding?.Invoke();
 
             isGround = true;
             return;

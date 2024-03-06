@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Unity.VisualScripting;
 using UnityEngine.InputSystem;
+using UnityEngine.Events;
 
 public class PlayerMover : PlayerBase
 {
@@ -110,15 +111,19 @@ public class PlayerMover : PlayerBase
 
     private void WallJump()
     {
-        anim.Play("Jump");
+        PrFSM.OnWallJump?.Invoke();
 
         rigid.gravityScale = 1;
+
+        anim.Play("Jump");
         rigid.velocity = new Vector2(moveHzt * 3f, rigid.velocity.y + jumpPower);
     }
 
     // normal jumpping
     private void Jump()
     {
+        PrFSM.OnJump?.Invoke();
+
         anim.Play("Jump");
         rigid.velocity = new Vector2(rigid.velocity.x, rigid.velocity.y + jumpPower);
     }

@@ -201,6 +201,8 @@ public class PlayerHooker : PlayerBase
     {
         if (playerFSM.IsHookShoot) return;
 
+        playerFSM.OnHookShoot?.Invoke();
+
         // reload Routine
         StartCoroutine(HookReloadRoutine());
 
