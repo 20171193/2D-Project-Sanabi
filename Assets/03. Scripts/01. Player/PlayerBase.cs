@@ -25,8 +25,8 @@ public class PlayerBase : MonoBehaviour
     protected PlayerSkill playerSkill;
     public PlayerSkill PrSkill { get { return playerSkill; } }
 
-    protected PlayerObjectPool playerObjectPool;
-    public PlayerObjectPool PrObjectPool { get { return playerObjectPool; } }
+    protected PlayerVFXPooler playerVFXPooler;
+    public PlayerVFXPooler PrVFX { get { return playerVFXPooler; } }
 
     [Header("Components")]
     [Space(2)]
@@ -45,10 +45,12 @@ public class PlayerBase : MonoBehaviour
 
     protected virtual void Awake()
     {
+        // Assign linked class
         playerFSM = GetComponent<PlayerFSM>();
         playerMover = GetComponent<PlayerMover>();
         playerHooker = GetComponent<PlayerHooker>();
-        playerSkill= GetComponent<PlayerSkill>();   
+        playerSkill = GetComponent<PlayerSkill>();
+        playerVFXPooler = GetComponent<PlayerVFXPooler>();
 
         impulseSource = GetComponent<CinemachineImpulseSource>();   
         rigid = GetComponent<Rigidbody2D>();
