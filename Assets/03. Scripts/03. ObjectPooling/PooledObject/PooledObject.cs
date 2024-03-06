@@ -18,7 +18,6 @@ public class PooledObject : MonoBehaviour
         if (autoRelease)
             StartCoroutine(ReleaseRoutine());
     }
-
     protected void Release()
     {
         if(!pooler)
@@ -29,12 +28,9 @@ public class PooledObject : MonoBehaviour
 
         pooler?.ReturnPool(this);
     }
-
-
     protected IEnumerator ReleaseRoutine()
     {
         yield return new WaitForSeconds(releaseTime);
         Release();
     }
-
 }

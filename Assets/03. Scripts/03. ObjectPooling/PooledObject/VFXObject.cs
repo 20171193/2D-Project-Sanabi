@@ -2,10 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class VFXObject : PooledObject
+public class VFXObject : MonoBehaviour
 {
-    protected override void OnEnable()
+    public void Release()
     {
-        base.OnEnable();
+        gameObject.SetActive(false);
     }
 }
