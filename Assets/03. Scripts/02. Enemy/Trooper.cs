@@ -56,6 +56,8 @@ public class Trooper : EnemyShooter, IKnockbackable, IGrabable
     public override void Shooting()
     {
         anim.Play("Attack");
+        shootVFXAnim.Play("Shooting");
+
         lr.positionCount = 0;
 
         EnemyBulletObject bullet = Manager.Pool.GetPool(bulletPrefab, muzzlePos.position, aimPos.rotation) as EnemyBulletObject;

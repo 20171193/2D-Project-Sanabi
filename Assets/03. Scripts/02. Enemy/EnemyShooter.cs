@@ -23,6 +23,10 @@ public abstract class EnemyShooter : Enemy
     public Animator LrAnim { get { return lrAnim; } }
 
     [SerializeField]
+    protected Animator shootVFXAnim;
+    public Animator ShootVFXAnim { get { return shootVFXAnim; } }
+
+    [SerializeField]
     protected EnemyBulletObject bulletPrefab;
     public EnemyBulletObject BulletPrefab { get { return bulletPrefab; } }
 
