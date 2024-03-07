@@ -18,6 +18,8 @@ public class PlayerFSM : PlayerBase
     private bool isGround;
     public bool IsGround { get { return isGround; } set { isGround = value; } }
 
+    private int groundCount;
+
     [SerializeField]
     private bool isInWall;
     public bool IsInWall { get { return isInWall; } set { isInWall = value; } }
@@ -200,7 +202,9 @@ public class PlayerFSM : PlayerBase
             else
                 OnLanding?.Invoke();
 
-            isGround = true;
+            groundCount++;
+            if (groundCount > 0) 
+                isGround = true;
             return;
         }
 
@@ -217,7 +221,9 @@ public class PlayerFSM : PlayerBase
         if (Manager.Layer.groundLM.Contain(collision.gameObject.layer))
         {
             // ground check
-            isGround = false;
+            groundCount--;
+            if (groundCount <= 0)
+                isGround = false;
         }
 
         if (Manager.Layer.wallLM.Contain(collision.gameObject.layer))
