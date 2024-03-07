@@ -23,7 +23,7 @@ TagManager:
   - PlayerHook
   - PlayerWallChecker
   - PlayerGroundChecker
-  - 
+  - InteractableInvoker
   - 
   - 
   - 
