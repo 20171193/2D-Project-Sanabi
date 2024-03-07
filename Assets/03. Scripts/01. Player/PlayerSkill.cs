@@ -40,7 +40,7 @@ public class PlayerSkill : PlayerBase
 
         // 현재 로프 연결 중 로프파워스킬은 한번 만 사용가능.
         // 다음 로프 연결에서 다시 사용가능.
-        isEnableRopeForce = true; // PlayerHooker의 OnHookDestroyed 호출 시 false로 변경
+        isEnableRopeForce = false; // PlayerHooker의 OnHookDestroyed 호출 시 true
 
         // 로프 최대 속도에 로프파워속도만큼 더해 스킬 사용중 최대 속도를 증가시킴
         // 로프 루틴(코루틴) 종료 시 초기화

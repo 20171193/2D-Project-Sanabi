@@ -218,9 +218,14 @@ public class PlayerHooker : PlayerBase
     #region Hooking Action
     public void OnHookDestroyed()
     {
+        // 훅 해제
         ReleaseHook();
 
+        // 로프파워스킬 재 활성화
+        PrSkill.IsEnableRopeForce = true;
+        // 로프액션 종료 이벤트 발생
         PrFSM.OnRopeForceEnd?.Invoke();
+        // 로프 연결상태 해제
         playerFSM.IsJointed = false;
     }
     public void OnHookHitGround()
