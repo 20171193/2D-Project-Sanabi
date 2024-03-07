@@ -75,7 +75,7 @@ public class Enemy : PooledObject
         fsm.LateUpdate();
     }
 
-    protected void Died()
+    protected virtual void Died()
     {
         fsm.ChangeState("Die");
         StartCoroutine(EnemyReleaseRoutine());

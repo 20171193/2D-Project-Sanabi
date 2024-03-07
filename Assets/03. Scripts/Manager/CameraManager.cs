@@ -4,25 +4,59 @@ using UnityEngine;
 using Cinemachine;
 public class CameraManager : MonoBehaviour
 {
+    enum CameraOrder
+    {
+        EventCamera,
+        MainCamera,
+        CurrentCamera
+    }
+
     [SerializeField]
-    private CinemachineVirtualCamera mainChapterCamera;
-    public CinemachineVirtualCamera MCC { get { return mainChapterCamera; } }
+    private CinemachineVirtualCamera mainCamera;
+    public CinemachineVirtualCamera MC { get { return mainCamera; } }
 
     [SerializeField]
     private CinemachineVirtualCamera eventCamera;
     public CinemachineVirtualCamera EC { get { return eventCamera; } }
 
-    private const int FirstPriority = 5;
-    private const int LastPriority = 2;
+    [SerializeField]
+    private CinemachineVirtualCamera currentCamera;
+    public CinemachineVirtualCamera CC { get { return currentCamera; } }
+
+    private void Awake()
+    {
+        eventCamera.Priority = (int)CameraOrder.EventCamera;
+        mainCamera.Priority = (int)CameraOrder.MainCamera;
+    }
+
+    private void InitPriority()
+    {
+        eventCamera.Priority = (int)CameraOrder.EventCamera;
+        mainCamera.Priority = (int)CameraOrder.MainCamera;
+
+        if(currentCamera != null)
+            currentCamera.Priority = (int)CameraOrder.CurrentCamera;
+    }
 
     public void SetMainCamera()
     {
-        eventCamera.Priority = LastPriority;
-        mainChapterCamera.Priority = FirstPriority;
+        InitPriority();
+        currentCamera = mainCamera;
+        currentCamera.Priority = (int)CameraOrder.CurrentCamera;
     }
     public void SetEventCamera()
     {
-        mainChapterCamera.Priority = LastPriority;
-        eventCamera.Priority = FirstPriority;
+        InitPriority();
+        currentCamera = eventCamera;
+        currentCamera.Priority = (int)CameraOrder.CurrentCamera;
     }
+
+    public void SetCutSceneCamera(CinemachineVirtualCamera cutSceneCamera)
+    {
+        InitPriority();
+        currentCamera = cutSceneCamera;
+        currentCamera.Priority = (int)CameraOrder.CurrentCamera;
+    }
+
+
 }

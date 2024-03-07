@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class Trooper : EnemyShooter, IKnockbackable, IGrabable
 {
@@ -12,6 +13,8 @@ public class Trooper : EnemyShooter, IKnockbackable, IGrabable
     [SerializeField]
     private RelativeJoint2D rtvJoint;
     public RelativeJoint2D RTVJoint { get { return rtvJoint; } }
+
+    public UnityAction OnTurretDie;
 
     protected override void Awake()
     {

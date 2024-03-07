@@ -15,10 +15,10 @@ public class GameScene : MonoBehaviour
     private GameChapter curChapter;
     public GameChapter CurChapter { get { return curChapter; }  set { curChapter = value; } }
 
-    private void Start()
+    private void Awake()
     {
         Manager.Pool.CreatePool(enemyBullet, 15, 30);
         Manager.Pool.CreatePool(eneTrooperPrefab, 5, 10);
-        //Manager.Pool.CreatePool(eneTurretPrefab, 5, 10);
+        Manager.Pool.CreatePool(eneTurretPrefab, 10, 15);
     }
 }

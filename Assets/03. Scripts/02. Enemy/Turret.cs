@@ -3,11 +3,14 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEditor.Tilemaps;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class Turret : EnemyShooter, IGrabable
 {
     private BoxCollider2D boxCol;
     public BoxCollider2D BoxCol { get { return boxCol; } }
+
+    public UnityAction<Turret> OnTurretDie;
 
     protected override void Awake()
     {
@@ -56,6 +59,20 @@ public class Turret : EnemyShooter, IGrabable
         bullet.Rigid.AddForce(aimPos.up * bulletPower, ForceMode2D.Impulse);
     }
 
+    protected override void Died()
+    {
+        fsm.ChangeState("Die");
+        StartCoroutine(TurretReleaseRoutine());
+    }
+    IEnumerator TurretReleaseRoutine()
+    {
+        yield return new WaitForSeconds(releaseTime);
+        Release();
+        OnTurretDie?.Invoke(this);
+        fsm.ChangeState("Pooled");
+    }
+
+    #region IGrabable Interface override
     public void Grabbed(Rigidbody2D ownerRigid)
     {
         markerAnim.SetBool("IsEnable", false);
@@ -67,7 +84,6 @@ public class Turret : EnemyShooter, IGrabable
     {
         Died();
     }
-
     public bool IsMoveable() { return false; }
     public GameObject GetGameObject() { return gameObject; }
     public Vector3 GetGrabPosition() 
@@ -77,4 +93,5 @@ public class Turret : EnemyShooter, IGrabable
 
         return new Vector2(returnPos.x, returnPos.y); 
     }
+    #endregion
 }
