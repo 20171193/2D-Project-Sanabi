@@ -219,6 +219,8 @@ public class PlayerHooker : PlayerBase
     public void OnHookDestroyed()
     {
         ReleaseHook();
+
+        PrFSM.OnRopeForceEnd?.Invoke();
         playerFSM.IsJointed = false;
     }
     public void OnHookHitGround()

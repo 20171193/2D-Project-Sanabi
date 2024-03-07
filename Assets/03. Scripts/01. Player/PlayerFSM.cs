@@ -58,6 +58,8 @@ public class PlayerFSM : PlayerBase
     public UnityEvent OnJump;           // invoke by PlayerMover (Jump())
     public UnityEvent OnWallJump;       // invoke by PlayerMover (WallJump())
     public UnityEvent OnDash;           // invoke by state
+    public UnityEvent OnRopeForceStart; // invoke by PlayerSkill (RopeForce())
+    public UnityEvent OnRopeForceEnd;   // invoke by PlayerHooker (OnHookDestroyed())
     public UnityEvent OnGrabEnd;        // invoke by state
     public UnityEvent OnClimb;          // invoke by state
     public UnityEvent OnWallSliding;    // invoke by state

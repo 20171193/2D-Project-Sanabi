@@ -66,6 +66,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b2cdaa4e68561b0459043beb03b14bed, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  size: 1
+  vfxName: 
+  pooler: {fileID: 0}
   anim: {fileID: 6603964766094412560}
 --- !u!1 &6603964766212973703
 GameObject:

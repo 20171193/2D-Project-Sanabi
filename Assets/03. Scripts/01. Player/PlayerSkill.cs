@@ -47,6 +47,7 @@ public class PlayerSkill : PlayerBase
         else
             ropeForceParticle.GetComponent<ParticleSystemRenderer>().flip = new Vector3(1, 0, 0);
 
+        PrFSM.OnRopeForceStart?.Invoke();
         PrMover.CurrentMaxRopingPower += ropeSkillPower;
         // Add force in the direction player looking at.
         //Vector2 dir = new Vector2(transform.right.x, rigid.velocity.normalized.y);
