@@ -16,11 +16,19 @@ public class TurretSpawner : Spawner
     [Header("Specs")]
     [Space(2)]
     [SerializeField]
-    private int spawnBatchCount;    // 한번에 생성할 몬스터의 개수
+    private int enabledSpawnCount;    // 한번에 생성할 터렛 개수
     [SerializeField]
-    private int maxSpawnCount;      // 최대 몬스터 개수
+    private int maxSpawnCount;      // 최대 터렛 개수
     [SerializeField]
     private float spawnDelay;
+
+    [Space(3)]
+    [Header("Ballancing")]
+    [Space(2)]
+    [SerializeField]
+    private int spawnedCount;       // 생성한 터렛 개수
+    [SerializeField]
+    private int destroyedCount;     // 파괴된 터렛 개수
 
     private Coroutine spawnDelayRoutine;
 
@@ -33,14 +41,16 @@ public class TurretSpawner : Spawner
 
     public override void EnableSpawner()
     {
-        for(int i =0; i<spawnBatchCount; i++)
-        {
+        int cnt = enabledSpawnCount <= maxSpawnCount ? enabledSpawnCount : maxSpawnCount;
+
+        for (int i =0; i< cnt; i++)
             Spawn();
-        }
+        
     }
     public override void DestroySpawner()
     {
         base.DestroySpawner();
+        Debug.Log("Destroy Turret Spawner");
     }
 
     public override void Spawn()
@@ -54,15 +64,19 @@ public class TurretSpawner : Spawner
         Turret spawned = Manager.Pool.GetPool(turretPrefab, spawnTr[idx].position, spawnTr[idx].rotation) as Turret;
         spawned.transform.parent = spawnTr[idx];    // 랜덤으로 뽑은 위치의 transform을 부모로 할당
                                                     // 랜덤 위치를 뽑을 때 사용 : 자식이 없는 transform을 비어있는 위치로 확인
+        spawnedCount++;
         maxSpawnCount--;
         spawned.OnTurretDie += OnTurretDied;
     }
     public void OnTurretDied(Turret turret)
     {
-        if (maxSpawnCount <= 0) return;
-
+        destroyedCount++;
         turret.OnTurretDie -= OnTurretDied;
-        spawnDelayRoutine = StartCoroutine(SpawnDelayRoutine());
+
+        if (spawnedCount == destroyedCount && maxSpawnCount < 1)
+            DestroySpawner();
+        else 
+            spawnDelayRoutine = StartCoroutine(SpawnDelayRoutine());
     }
     private int GetRandIndex()
     {
@@ -81,8 +95,6 @@ public class TurretSpawner : Spawner
         // 랜덤 인덱스 리턴
         return Random.Range(0, indexList.Count);
     }
-
-
     IEnumerator SpawnDelayRoutine()
     {
         yield return new WaitForSeconds(spawnDelay);

@@ -24,6 +24,7 @@ public class GameChapter : MonoBehaviour
     [Space(2)]
     [SerializeField]
     private Spawner[] spawnerArray;
+    [SerializeField]
     private int destroyedSpawnerCount;
 
     public UnityAction OnDestroySpawner;
@@ -46,18 +47,22 @@ public class GameChapter : MonoBehaviour
     {
         destroyedSpawnerCount--;
 
-        // 모든 Spawner가 파괴된 경우 다음 챕터로 이동
+        // 모든 Spawner가 파괴된 경우 문 열기
         if (destroyedSpawnerCount < 1)
-            ExitChapter();
+            doorAnim.SetBool("IsEnable", false);
     }
 
     public void EnterChapter()
     {
         // 챕터 입장 시 Spawner 활성화
         foreach (Spawner spawner in spawnerArray)
+        {
+            spawner.gameObject.SetActive(true);
             spawner.EnableSpawner();
-    }
+        }
 
+        doorAnim.SetBool("IsEnable", true);
+    }
     public void ExitChapter()
     {
         // 애니메이션 출력
