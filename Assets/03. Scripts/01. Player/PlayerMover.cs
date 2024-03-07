@@ -116,7 +116,7 @@ public class PlayerMover : PlayerBase
         rigid.gravityScale = 1;
 
         anim.Play("Jump");
-        rigid.velocity = new Vector2(moveHzt * 3f, rigid.velocity.y + jumpPower);
+        rigid.velocity = new Vector2(-transform.right.x * 3f, rigid.velocity.y + jumpPower);
     }
 
     // normal jumpping

@@ -89,7 +89,11 @@ public class PlayerFSM : PlayerBase
         {
             return !beDamaged;
         });
-
+        fsm.AddAnyState("Roping", () =>
+        {
+            return !beDamaged
+                    && isJointed;
+        });
         fsm.AddAnyState("WallSlide", () =>
         {
             return !beDamaged && !isDash && !isGrab 
@@ -217,6 +221,8 @@ public class PlayerFSM : PlayerBase
         if (Manager.Layer.wallLM.Contain(collision.gameObject.layer))
         {
             isInWall = false;
+            PrHooker.FiredHook?.DisConnecting();
+
             if (PrMover.MoveVtc > 0)
             {
                 anim.Play("Jump");

@@ -162,7 +162,10 @@ public class PlayerHooker : PlayerBase
             }
             else
             {
-                anim.Play("Idle");
+                if (PrFSM.FSM.CurState == "WallSlide")
+                    anim.Play("WallSlide");
+                else
+                    anim.Play("Idle");
                 firedHook?.DisConnecting();
             }
         }
@@ -204,7 +207,7 @@ public class PlayerHooker : PlayerBase
         playerFSM.OnHookShoot?.Invoke();
 
         // reload Routine
-        StartCoroutine(HookReloadRoutine());
+        hookReloadRoutine = StartCoroutine(HookReloadRoutine());
 
         hookAim.LineOff();
         anim.Play("RopeShot");

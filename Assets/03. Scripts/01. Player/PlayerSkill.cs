@@ -1,12 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class PlayerSkill : PlayerBase
 {
     [Header("Component")]
     [SerializeField]
-    private GameObject ropeForceParticle;
+    private ParticleSystem ropeForceParticle;
 
     [Header("Specs")]
     [SerializeField]
@@ -38,17 +39,25 @@ public class PlayerSkill : PlayerBase
         if (ropeForceRoutine != null)
             StopCoroutine(ropeForceRoutine);
 
-        StartCoroutine(RopeForceRoutine());
-        PrMover.CurrentMaxRopingPower += ropeSkillPower;
+        ropeForceRoutine = StartCoroutine(RopeForceRoutine());
 
-        // Add Force in the current direction
-        rigid.AddForce(ropeSkillPower * rigid.velocity.normalized, ForceMode2D.Impulse);
+        // particle renderer flip
+        if (transform.rotation.y == 0)
+            ropeForceParticle.GetComponent<ParticleSystemRenderer>().flip = new Vector3(0, 0, 0);
+        else
+            ropeForceParticle.GetComponent<ParticleSystemRenderer>().flip = new Vector3(1, 0, 0);
+
+        PrMover.CurrentMaxRopingPower += ropeSkillPower;
+        // Add force in the direction player looking at.
+        //Vector2 dir = new Vector2(transform.right.x, rigid.velocity.normalized.y);
+        rigid.AddForce(ropeSkillPower * transform.right, ForceMode2D.Impulse);
     }
     IEnumerator RopeForceRoutine()
     {
-        ropeForceParticle.SetActive(true);
+
+        ropeForceParticle.Play();
         yield return new WaitForSeconds(0.5f);
-        ropeForceParticle.SetActive(false);
+        ropeForceParticle.Stop();
     }
 
 

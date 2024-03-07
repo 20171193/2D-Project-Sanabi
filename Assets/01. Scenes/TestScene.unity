@@ -436,6 +436,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Enemy_Turret
       objectReference: {fileID: 0}
+    - target: {fileID: 2223518274302697703, guid: 5da665dc391c2a643a5a76c0312024bd, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2223518274302697707, guid: 5da665dc391c2a643a5a76c0312024bd, type: 3}
       propertyPath: m_RootOrder
       value: 2
@@ -605,7 +609,7 @@ ParticleSystem:
   emitterVelocityMode: 1
   looping: 1
   prewarm: 0
-  playOnAwake: 1
+  playOnAwake: 0
   useUnscaledTime: 0
   autoRandomSeed: 0
   startDelay:
@@ -6594,6 +6598,10 @@ PrefabInstance:
     - target: {fileID: 2223518274302697703, guid: 5da665dc391c2a643a5a76c0312024bd, type: 3}
       propertyPath: m_Name
       value: Enemy_Turret (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 2223518274302697703, guid: 5da665dc391c2a643a5a76c0312024bd, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2223518274302697707, guid: 5da665dc391c2a643a5a76c0312024bd, type: 3}
       propertyPath: m_RootOrder
@@ -16299,7 +16307,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3613274757858538233, guid: 981addc9dac7aa84482522c267c44c21, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3613274757858538234, guid: 981addc9dac7aa84482522c267c44c21, type: 3}
       propertyPath: m_RootOrder
@@ -16652,6 +16660,10 @@ PrefabInstance:
       value: -0.29
       objectReference: {fileID: 0}
     - target: {fileID: 8338325328590322908, guid: e983d07af2f1f474cb1ddca9ebe5b6da, type: 3}
+      propertyPath: m_FlipX
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8338325328590322908, guid: e983d07af2f1f474cb1ddca9ebe5b6da, type: 3}
       propertyPath: m_Sprite
       value: 
       objectReference: {fileID: 21300000, guid: cc54a36c71e80c646bb609247b0b03ec, type: 3}
@@ -16946,7 +16958,7 @@ PrefabInstance:
     - target: {fileID: 8338325329431907395, guid: e983d07af2f1f474cb1ddca9ebe5b6da, type: 3}
       propertyPath: ropeForceParticle
       value: 
-      objectReference: {fileID: 488339192}
+      objectReference: {fileID: 488339195}
     - target: {fileID: 8338325329431907400, guid: e983d07af2f1f474cb1ddca9ebe5b6da, type: 3}
       propertyPath: m_RootOrder
       value: 5
@@ -16994,6 +17006,10 @@ PrefabInstance:
     - target: {fileID: 8338325329431907403, guid: e983d07af2f1f474cb1ddca9ebe5b6da, type: 3}
       propertyPath: m_Name
       value: Player_SNB
+      objectReference: {fileID: 0}
+    - target: {fileID: 8338325329431907405, guid: e983d07af2f1f474cb1ddca9ebe5b6da, type: 3}
+      propertyPath: m_GravityScale
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8338325329437444045, guid: e983d07af2f1f474cb1ddca9ebe5b6da, type: 3}
       propertyPath: m_Layer
