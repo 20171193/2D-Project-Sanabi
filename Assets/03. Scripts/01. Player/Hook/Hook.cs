@@ -17,6 +17,9 @@ public class Hook : MonoBehaviour
     private Animator anim;
     [SerializeField]
     private LineRenderer lr;
+    [SerializeField]
+    private GameObject hookHittedVFX;
+
 
     // should be set by HookPooler
     [Space(3)]
@@ -56,6 +59,7 @@ public class Hook : MonoBehaviour
 
     public float destroyTime;
     private Coroutine trailRoutine;
+    private Coroutine hookHittedRoutine;
 
     private void OnEnable()
     {
@@ -78,6 +82,8 @@ public class Hook : MonoBehaviour
     }
     private void Grab(IGrabable grabed)
     {
+        hookHittedRoutine = StartCoroutine(HookHittedRoutine());
+
         OnHookHitObject?.Invoke(grabed);
 
         GameObject grabedOb = grabed.GetGameObject();
@@ -88,6 +94,8 @@ public class Hook : MonoBehaviour
     }
     private void Connecting()
     {
+        hookHittedRoutine = StartCoroutine(HookHittedRoutine());
+
         isConnected = true;
         OnHookHitGround?.Invoke();
 
@@ -135,6 +143,15 @@ public class Hook : MonoBehaviour
             Grab(hitInfo.collider.gameObject.GetComponent<IGrabable>());
 
         yield return null;
+    }
+    IEnumerator HookHittedRoutine()
+    {
+        hookHittedVFX.transform.parent = null;
+        hookHittedVFX.transform.position = transform.position;
+        hookHittedVFX.SetActive(true);
+        yield return new WaitForSeconds(0.3f);
+        hookHittedVFX.SetActive(false);
+        hookHittedVFX.transform.parent = ownerRigid.transform;
     }
 
     private void OnDisable()
