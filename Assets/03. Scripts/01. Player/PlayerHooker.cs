@@ -231,12 +231,12 @@ public class PlayerHooker : PlayerBase
     public void OnHookHitGround()
     {
         playerFSM.IsJointed = true;
-
         playerFSM.ChangeState("Roping");
     }
     public void OnHookHitObject(IGrabable grabed)
     {
-        DoImpulse();
+        // 카메라 흔들림 효과 적용
+        DoImpulse();    
 
         PrFSM.IsEnableGrabMove =  grabed.IsMoveable();
 
@@ -244,7 +244,6 @@ public class PlayerHooker : PlayerBase
         playerSkill.Dash(grabed);
     }
     #endregion
-
     private void ActiveHook()
     {
         // Transform Setting
