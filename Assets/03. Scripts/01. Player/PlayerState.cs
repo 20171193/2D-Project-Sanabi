@@ -38,7 +38,6 @@ public class PlayerRun : PlayerBaseState
     {
         owner.Rigid.velocity = Vector3.zero;
 
-        Debug.Log("Enter Run");
         owner.Anim.Play("Run");
     }
 

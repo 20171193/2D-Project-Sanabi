@@ -8,6 +8,8 @@ public class TrooperSpawner : Spawner
     [Space(2)]
     [SerializeField]
     private Trooper trooperPrefab;
+    [SerializeField]
+    protected Transform spawnPos;
 
     [SerializeField]
     private Animator anim;
@@ -23,13 +25,17 @@ public class TrooperSpawner : Spawner
     [Space(2)]
     private Trooper spawnedTrooper;
 
-    public void OnEnable()
+    public override void EnableSpawner()
     {
         anim.SetBool("IsEnable", true);
         anim.SetTrigger("OnSpawn");
     }
+    public override void DestroySpawner()
+    {
+        base.DestroySpawner();
+    }
 
-    protected override void Spawn()
+    public override void Spawn()
     {
         Debug.Log("Spawn!");
         spawnCount--;
@@ -57,9 +63,5 @@ public class TrooperSpawner : Spawner
     public void OnAnimationDisable()
     {
         Destroy(gameObject);
-    }
-
-    private void OnDisable()
-    {
     }
 }
