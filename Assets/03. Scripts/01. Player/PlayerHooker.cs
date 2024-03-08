@@ -14,6 +14,7 @@ public class PlayerHooker : PlayerBase
     private GameObject cursorOb;
     [SerializeField]
     private HookAim hookAim;
+    public HookAim Aim { get { return hookAim; } }
 
     [Space(3)]
     [Header("Specs")]
@@ -29,7 +30,7 @@ public class PlayerHooker : PlayerBase
     [SerializeField]
     private float hookShootCoolTime;
     public float HookShootCoolTime { get { return hookShootCoolTime; } }
-    
+
     [SerializeField]
     private float rayLength;  // Raycast distance
     public float RayLength { get { return RayLength; } }
@@ -46,6 +47,7 @@ public class PlayerHooker : PlayerBase
     [Space(2)]
     [SerializeField]
     private Vector3 mousePos;
+    public Vector3 MousePos { get { return mousePos; } }
 
     [SerializeField]
     private IGrabable grabedObject;
@@ -93,7 +95,7 @@ public class PlayerHooker : PlayerBase
 
         HookAimSet();
 
-        if (!playerFSM.IsJointed && !playerFSM.IsGrab && !playerFSM.IsDash)
+        if (!PrFSM.IsInWall && !PrFSM.IsJointed && !PrFSM.IsGrab && !PrFSM.IsDash)
             RopeRayCast();
         else
             hookAim.LineOff();
@@ -104,46 +106,44 @@ public class PlayerHooker : PlayerBase
         Vector2 rayDir = (mousePos - transform.position).normalized;
         hookHitInfo = Physics2D.Raycast(transform.position, rayDir, rayLength, Manager.Layer.hookInteractableLM);
 
-        if (hookHitInfo && !PrFSM.BeDamaged)
-        {
-            playerFSM.IsRaycastHit = true;
-
-            // hit is Enemy
-            if (Manager.Layer.enemyLM.Contain(hookHitInfo.collider.gameObject.layer))
-            {
-                hitType = LineRenderType.Enemy;
-                hookAim.LineOn(hitType, hookHitInfo.point);
-            }
-            // hit is Interactable Object
-            else if (Manager.Layer.hookingPlatformLM.Contain(hookHitInfo.collider.gameObject.layer))
-            {
-                hitType = LineRenderType.Interactable;
-                hookAim.LineOn(hitType, hookHitInfo.point);
-            }
-            // hit is Ground
-            else
-            {
-                hitType = LineRenderType.Ground;
-                hookAim.LineOn(hitType, hookHitInfo.point);
-            }
-        }
-        else
+        if (!hookHitInfo || PrFSM.BeDamaged || Manager.Layer.rayBlockObjectLM.Contain(hookHitInfo.collider.gameObject.layer))
         {
             playerFSM.IsRaycastHit = false;
             hookAim.LineOff();
+            return;
         }
 
+        playerFSM.IsRaycastHit = true;
+
+        // hit is Enemy
+        if (Manager.Layer.enemyLM.Contain(hookHitInfo.collider.gameObject.layer))
+        {
+            hitType = LineRenderType.Enemy;
+            hookAim.LineOn(hitType, hookHitInfo.point);
+        }
+        // hit is Interactable Object
+        else if (Manager.Layer.hookingPlatformLM.Contain(hookHitInfo.collider.gameObject.layer))
+        {
+            hitType = LineRenderType.Interactable;
+            hookAim.LineOn(hitType, hookHitInfo.point);
+        }
+        // hit is Ground
+        else
+        {
+            hitType = LineRenderType.Ground;
+            hookAim.LineOn(hitType, hookHitInfo.point);
+        }
     }
     // hookshot to mouse position
     private void OnMouseClick(InputValue value)
-    { 
+    {
         if (value.isPressed)
         {
             if (playerFSM.BeDamaged) return;
             if (playerFSM.IsInWall) return;
             if (playerFSM.IsHookShoot) return;
             if (playerFSM.IsGrab || playerFSM.IsJointed) return;
-            if(!playerFSM.IsRaycastHit) return;
+            if (!playerFSM.IsRaycastHit) return;
 
             HookShoot();
         }
@@ -236,9 +236,9 @@ public class PlayerHooker : PlayerBase
     public void OnHookHitObject(IGrabable grabed)
     {
         // 카메라 흔들림 효과 적용
-        DoImpulse();    
+        DoImpulse();
 
-        PrFSM.IsEnableGrabMove =  grabed.IsMoveable();
+        PrFSM.IsEnableGrabMove = grabed.IsMoveable();
 
         Debug.Log(grabed);
         playerSkill.Dash(grabed);

@@ -56,6 +56,12 @@ public class PlayerMover : PlayerBase
     [SerializeField]
     private float flyMovePower;
     public float FlyMovePower { get { return flyMovePower; } }
+
+    [Header("Be Damaged")]
+    [SerializeField]
+    private float hittedJumpPower;
+    public float HittedJumpPower { get { return hittedJumpPower; } }
+
     #endregion
 
     #region Rope Movement
@@ -101,31 +107,57 @@ public class PlayerMover : PlayerBase
     }
     private void OnJump(InputValue value)
     {
-        if (playerFSM.IsJointed || playerFSM.IsDash || playerFSM.IsGrab) return;
+        if (PrFSM.BeDamaged)
+        {
+            HitJump();
+            return;
+        }
+        if (PrFSM.IsJointed || PrFSM.IsDash || PrFSM.IsGrab) return;
 
-        if (playerFSM.IsGround)
-            Jump();
-        if (playerFSM.IsInWall)
+        if (PrFSM.IsInWall)
             WallJump();
+        if (PrFSM.IsGround)
+            Jump();
     }
 
-    private void WallJump()
-    {
-        PrFSM.OnWallJump?.Invoke();
-
-        rigid.gravityScale = 1;
-
-        anim.Play("Jump");
-        rigid.velocity = new Vector2(-transform.right.x * 3f, rigid.velocity.y + jumpPower);
-    }
-
-    // normal jumpping
+    // 기본 점프
     private void Jump()
     {
         PrFSM.OnJump?.Invoke();
 
         anim.Play("Jump");
         rigid.velocity = new Vector2(rigid.velocity.x, rigid.velocity.y + jumpPower);
+    }
+
+    // 벽 점프
+    private void WallJump()
+    {
+        PrFSM.OnWallJump?.Invoke();
+
+        rigid.gravityScale = 1;
+
+        PrFSM.IsInWall = false;
+        PrFSM.ChangeState("Jump");
+        anim.Play("Jump");
+
+        rigid.velocity = Vector2.zero;
+        rigid.velocity = new Vector2(-transform.right.x * 3f, jumpPower);
+    }
+
+    // 히트상태 점프
+    private void HitJump()
+    {
+        PrFSM.BeDamaged = false;
+        PrFSM.ChangeState("Jump");
+
+        PrFSM.OnHitJump?.Invoke();
+        anim.Play("Jump");
+
+        rigid.velocity = Vector2.zero;
+
+        Vector2 dir = (PrHooker.Aim.transform.position - transform.position).normalized;
+        rigid.AddForce(dir * hittedJumpPower, ForceMode2D.Impulse);
+
     }
     #endregion
 
