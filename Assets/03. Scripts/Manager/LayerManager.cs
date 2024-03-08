@@ -22,4 +22,6 @@ public class LayerManager : MonoBehaviour
     public LayerMask enemyLM;
     [Header("Enemy Bullet")]
     public LayerMask enemyBulletLM;
+    [Header("RacastBlock")]
+    public LayerMask rayBlockObjectLM;
 }

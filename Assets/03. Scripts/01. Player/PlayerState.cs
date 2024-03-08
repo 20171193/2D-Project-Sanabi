@@ -358,8 +358,6 @@ public class PlayerGrab : PlayerBaseState
 
 public class PlayerDamaged : PlayerBaseState
 {
-    private Coroutine damagedRoutine;
-
     public PlayerDamaged(PlayerFSM owner)
     {
         this.owner = owner;
@@ -377,19 +375,9 @@ public class PlayerDamaged : PlayerBaseState
 
         owner.Rigid.gravityScale = 1f;
         owner.Anim.Play("Damaged");
-        damagedRoutine = owner.StartCoroutine(DamagedRoutine());
     }
     public override void Exit()
     {
         Time.timeScale = 1f;
-
-        if (damagedRoutine != null)
-            owner.StopCoroutine(damagedRoutine);
-    }
-
-    IEnumerator DamagedRoutine()
-    {
-        yield return new WaitForSeconds(0.3f);
-        owner.BeDamaged = false;
     }
 }

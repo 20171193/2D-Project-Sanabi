@@ -59,6 +59,7 @@ public class PlayerFSM : PlayerBase
     public UnityEvent OnRun;            // invoke by state
     public UnityEvent OnJump;           // invoke by PlayerMover (Jump())
     public UnityEvent OnWallJump;       // invoke by PlayerMover (WallJump())
+    public UnityEvent OnHitJump;        // invoke by PlayerMover (HitJump())
     public UnityEvent OnDash;           // invoke by state
     public UnityEvent OnRopeForceStart; // invoke by PlayerSkill (RopeForce())
     public UnityEvent OnRopeForceEnd;   // invoke by PlayerHooker (OnHookDestroyed())
@@ -68,6 +69,8 @@ public class PlayerFSM : PlayerBase
     public UnityEvent OnHookShoot;      // invoke by PlayerHooker (HookShoot)
     public UnityEvent OnTakeDamage;     // invoke by state
     public UnityEvent OnLanding;        // invoke by PlayerMover (TriggerEnter2D)
+
+    private Coroutine takeDamageRoutine;
 
     protected override void Awake()
     {
@@ -84,7 +87,7 @@ public class PlayerFSM : PlayerBase
         fsm.AddState("Dash", new PlayerDash(this));
         fsm.AddState("Grab", new PlayerGrab(this));
         fsm.AddState("WallSlide", new PlayerWallSlide(this));
-
+        
         fsm.AddAnyState("Damaged", () =>
         {
             return beDamaged;
@@ -175,25 +178,32 @@ public class PlayerFSM : PlayerBase
     {
         DoImpulse();
 
+        takeDamageRoutine = StartCoroutine(TakeDamageRoutine());
+
         beDamaged = true;
         PrHooker.FiredHook?.DisConnecting();
     }
 
+    IEnumerator TakeDamageRoutine()
+    {
+        // 무적상태로 변경
+        gameObject.layer = LayerMask.NameToLayer("PlayerInvincible");
+        // 카메라 글리치 이펙트
+        Camera.main.GetComponent<GlitchEffect>().enabled = true;
+        yield return new WaitForSeconds(0.3f);
+        beDamaged = false;
+        Camera.main.GetComponent<GlitchEffect>().enabled = false;
+        yield return new WaitForSeconds(0.2f);
+        gameObject.layer = LayerMask.NameToLayer("Player");
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        fsm.ChangeState(fsm.CurState);
+    }
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (Manager.Layer.enemyBulletLM.Contain(collision.gameObject.layer))
-        {
-            TakeDamage();
-            return;
-        }
-
-        if (Manager.Layer.damageGroundLM.Contain(collision.gameObject.layer))
-        {
-            rigid.velocity = Vector3.zero;
-            rigid.AddForce(collision.gameObject.transform.right * 12f + rigid.transform.right * -5f, ForceMode2D.Impulse);
-            TakeDamage();
-        }
-
+        // Ground Check
         if (Manager.Layer.groundLM.Contain(collision.gameObject.layer))
         {
             // ground check
@@ -203,11 +213,23 @@ public class PlayerFSM : PlayerBase
                 OnLanding?.Invoke();
 
             groundCount++;
-            if (groundCount > 0) 
+            if (groundCount > 0)
                 isGround = true;
             return;
         }
+        if (Manager.Layer.enemyBulletLM.Contain(collision.gameObject.layer))
+        {
+            TakeDamage();
+            return;
+        }
+        if (Manager.Layer.damageGroundLM.Contain(collision.gameObject.layer))
+        {
+            isInWall = false;
 
+            rigid.velocity = Vector3.zero;
+            rigid.AddForce(collision.gameObject.transform.right * 12f + rigid.transform.right * -5f, ForceMode2D.Impulse);
+            TakeDamage();
+        }
         if (Manager.Layer.wallLM.Contain(collision.gameObject.layer))
         {
             if (isGround) return;
