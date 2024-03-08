@@ -26,7 +26,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2477913487189770423}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 11.31, y: 0.21, z: -10}
+  m_LocalPosition: {x: 62.6, y: 13.2, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -110,6 +110,7 @@ GameObject:
   - component: {fileID: 2477913487414431127}
   - component: {fileID: 2477913487414431121}
   - component: {fileID: 2477913487414431120}
+  - component: {fileID: 910244137}
   m_Layer: 0
   m_Name: Manager
   m_TagString: Untagged
@@ -198,7 +199,7 @@ MonoBehaviour:
     m_Bits: 256
   hookInteractableLM:
     serializedVersion: 2
-    m_Bits: 5248
+    m_Bits: 5312
   hookingGroundLM:
     serializedVersion: 2
     m_Bits: 1024
@@ -214,6 +215,9 @@ MonoBehaviour:
   enemyBulletLM:
     serializedVersion: 2
     m_Bits: 16384
+  rayBlockObjectLM:
+    serializedVersion: 2
+    m_Bits: 64
 --- !u!114 &2477913487414431121
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -241,6 +245,23 @@ MonoBehaviour:
   mainCamera: {fileID: 2477913487805201687}
   eventCamera: {fileID: 2477913487189770417}
   currentCamera: {fileID: 0}
+--- !u!114 &910244137
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2477913487414431208}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 386e1937d80a1834e910756576d39c1e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  OnTestEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  startPos: {x: 0, y: 0, z: 0}
+  topCollider: {fileID: 0}
 --- !u!1 &2477913487805201684
 GameObject:
   m_ObjectHideFlags: 0
@@ -267,7 +288,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2477913487805201684}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 11.31, y: 4.21, z: -10}
+  m_LocalPosition: {x: 62.6, y: 17.2, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -297,7 +318,7 @@ MonoBehaviour:
   m_Follow: {fileID: 0}
   m_Lens:
     FieldOfView: 60
-    OrthographicSize: 8.5
+    OrthographicSize: 12
     NearClipPlane: 0.3
     FarClipPlane: 1000
     Dutch: 0
