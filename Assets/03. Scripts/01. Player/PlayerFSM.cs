@@ -181,6 +181,21 @@ public class PlayerFSM : PlayerBase
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
+        // Ground Check
+        if (Manager.Layer.groundLM.Contain(collision.gameObject.layer))
+        {
+            // ground check
+            if (isInWall)
+                isInWall = false;
+            else
+                OnLanding?.Invoke();
+
+            groundCount++;
+            if (groundCount > 0)
+                isGround = true;
+            return;
+        }
+
         if (Manager.Layer.enemyBulletLM.Contain(collision.gameObject.layer))
         {
             TakeDamage();
@@ -192,20 +207,6 @@ public class PlayerFSM : PlayerBase
             rigid.velocity = Vector3.zero;
             rigid.AddForce(collision.gameObject.transform.right * 12f + rigid.transform.right * -5f, ForceMode2D.Impulse);
             TakeDamage();
-        }
-
-        if (Manager.Layer.groundLM.Contain(collision.gameObject.layer))
-        {
-            // ground check
-            if (isInWall)
-                isInWall = false;
-            else
-                OnLanding?.Invoke();
-
-            groundCount++;
-            if (groundCount > 0) 
-                isGround = true;
-            return;
         }
 
         if (Manager.Layer.wallLM.Contain(collision.gameObject.layer))
