@@ -42,8 +42,6 @@ public class TrooperSpawner : Spawner
         spawnCount--;
         spawnedTrooper = Manager.Pool.GetPool(trooperPrefab, spawnPos.position, spawnPos.rotation) as Trooper;
         spawnedTrooper.OnDie += OnTrooperDied;
-
-
     }
 
     public void OnTrooperDied()
@@ -64,6 +62,7 @@ public class TrooperSpawner : Spawner
     }
     public void OnAnimationDisable()
     {
+        Debug.Log("Trooper Spawner Destroy");
         DestroySpawner();
     }
 }
