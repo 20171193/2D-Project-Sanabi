@@ -5004,6 +5004,7 @@ Transform:
   - {fileID: 971538338}
   - {fileID: 1078315831}
   - {fileID: 205860558}
+  - {fileID: 1710569049}
   m_Father: {fileID: 8338325329431907400}
   m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -5027,6 +5028,7 @@ MonoBehaviour:
   - {fileID: 5076382351437488658, guid: 550009f2e2ba5874ba571fec021187c5, type: 3}
   - {fileID: 4271609171617093658, guid: 720899d7ddaab6f4e97444cc5ecbefa1, type: 3}
   - {fileID: 2942910295362132287, guid: b9a278bb37da567448013563d3ead39d, type: 3}
+  - {fileID: 3424840797142559190, guid: d46d245b9d8894340bbb235577c54457, type: 3}
 --- !u!1 &1455019933
 GameObject:
   m_ObjectHideFlags: 0
@@ -5089,6 +5091,37 @@ Transform:
   - {fileID: 488339193}
   m_Father: {fileID: 8338325329431907400}
   m_RootOrder: 8
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1710569048
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1710569049}
+  m_Layer: 3
+  m_Name: POS_PlayerHitJump
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1710569049
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1710569048}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: -1.13, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1156661053}
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1801574156
 GameObject:
@@ -5789,6 +5822,21 @@ MonoBehaviour:
           m_StringArgument: PlayerWallJump
           m_BoolArgument: 0
         m_CallState: 2
+  OnHitJump:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1156661054}
+        m_TargetAssemblyTypeName: PlayerVFXPooler, Assembly-CSharp
+        m_MethodName: ActiveVFX
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: PlayerHitJump
+          m_BoolArgument: 0
+        m_CallState: 2
   OnDash:
     m_PersistentCalls:
       m_Calls: []
@@ -5914,10 +5962,11 @@ MonoBehaviour:
   climbPower: 3
   slidingPower: 5
   jumpPower: 12
-  flyMovePower: 3
+  flyMovePower: 1
+  hittedJumpPower: 15
   ropeMovePower: 3
   currentMaxRopingPower: 15
-  maxRopingPower: 15
+  maxRopingPower: 30
   moveHzt: 0
   moveVtc: 0
 --- !u!114 &8338325329431907394
@@ -6386,6 +6435,10 @@ PrefabInstance:
     - target: {fileID: 5563271056111807986, guid: 9c0c4d3285540fc4cb9aa73ead938b19, type: 3}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9204252272020083190, guid: 9c0c4d3285540fc4cb9aa73ead938b19, type: 3}
+      propertyPath: m_EnableCollision
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9c0c4d3285540fc4cb9aa73ead938b19, type: 3}
