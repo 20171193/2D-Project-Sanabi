@@ -26,7 +26,7 @@ public class Mover : Platform
         endPos = transform.position + endPos;
 
         lr.positionCount = 2;
-        lr.SetPosition(0, startPos);
+        lr.SetPosition(0, new Vector3(startPos.x, startPos.y-1f, 0));
         lr.SetPosition(1, endPos);
     }
 
