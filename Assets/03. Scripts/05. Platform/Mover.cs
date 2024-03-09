@@ -5,18 +5,17 @@ using UnityEngine;
 public class Mover : Platform
 {
     [Header("Components")]
-    [Space(2)]
     [SerializeField]
-    private Animator anim;
+    protected LineRenderer lr;
 
     [Space(3)]
     [Header("Specs")]
     [Space(2)]
-    private Vector3 startPos;
+    protected Vector3 startPos;
     [SerializeField]
-    private Vector3 endPos;
+    protected Vector3 endPos;
     [SerializeField]
-    private float moveSpeed;
+    protected float moveSpeed;
 
     private Coroutine trailRoutine;
 
@@ -24,10 +23,14 @@ public class Mover : Platform
     {
         startPos = transform.position;
         endPos = transform.position + endPos;
+    }
 
+    public virtual void LineRendering()
+    {
         lr.positionCount = 2;
-        lr.SetPosition(0, new Vector3(startPos.x, startPos.y-1f, 0));
-        lr.SetPosition(1, endPos);
+
+        lr.SetPosition(0, new Vector3(startPos.x, startPos.y - 1f, 0));
+        lr.SetPosition(1, new Vector3(endPos.x, endPos.y-1f, 0));
     }
 
     private void Trail(bool isReturn)
