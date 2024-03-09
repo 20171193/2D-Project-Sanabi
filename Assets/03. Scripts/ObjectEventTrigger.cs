@@ -12,27 +12,51 @@ public class ObjectEventTrigger : MonoBehaviour
     [SerializeField]
     private bool playOnce;
 
+    [Header("Camera Action")]
+    [SerializeField]
+    private bool isCameraAciton;
     [SerializeField]
     private CinemachineVirtualCamera eventCamera;
     [SerializeField]
     private float cameraActionTime;
     private Coroutine cameraActionRoutine;
+    private PlayerInput prInput;    // 플레이어 입력제어
+
 
     public UnityEvent OnEnterTrigger;
     public UnityEvent OnExitTrigger;
 
-    public void OnCameraAction()
+    private void OnEnable()
     {
-        GameObject.FindWithTag("Player").GetComponent<PlayerInput>().enabled s= false;
+        prInput = GameObject.FindWithTag("Player").GetComponent<PlayerInput>();
     }
 
-    
+    public void OnCameraAction()
+    {
+        cameraActionRoutine = StartCoroutine(CameraActionRoutine());
+    }
+    IEnumerator CameraActionRoutine()
+    {
+        // 플레이어 입력 제어
+        prInput.enabled = false;
+        // 이벤트 카메라로 변경
+        Manager.Camera.SetCutSceneCamera(eventCamera);
+
+        yield return new WaitForSeconds(cameraActionTime);
+        
+        // 원상 복구
+        prInput.enabled = true;
+        Manager.Camera.SetMainCamera();
+    }
+
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if(targetLM.Contain(collision.gameObject.layer))
         {
             OnEnterTrigger?.Invoke();
+            if (isCameraAciton && enabled == true)
+                OnCameraAction();
         }
     }
     private void OnTriggerExit2D(Collider2D collision)
