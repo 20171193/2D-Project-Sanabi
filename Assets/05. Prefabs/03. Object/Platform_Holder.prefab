@@ -99,7 +99,7 @@ GameObject:
   - component: {fileID: 6565530166782158332}
   - component: {fileID: 6565530166782158335}
   m_Layer: 6
-  m_Name: Platform_Mover
+  m_Name: Platform_Holder
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
