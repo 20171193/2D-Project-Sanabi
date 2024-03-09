@@ -5,8 +5,7 @@ using UnityEngine;
 public class Platform : MonoBehaviour
 {
     [Header("Components")]
+    [Space(2)]
     [SerializeField]
-    protected LineRenderer lr;
-
-    public virtual void LineRendering() { }
+    protected Animator anim;
 }

@@ -162,10 +162,8 @@ public class PlayerHooker : PlayerBase
             }
             else
             {
-                if (PrFSM.FSM.CurState == "WallSlide")
-                    anim.Play("WallSlide");
-                else
-                    anim.Play("Idle");
+                PrFSM.FSM.ChangeState(PrFSM.FSM.CurState);
+
                 firedHook?.DisConnecting();
             }
         }

@@ -13,14 +13,16 @@ public class SwingHook : Platform, IKnockbackable, IGrabable
     private RelativeJoint2D rtvJoint;
     [SerializeField]
     private Rigidbody2D rigid;
+
     [SerializeField]
-    private Animator anim;
+    private LineRenderer lr;
 
     [Header("Specs")]
     private float grabbedYPos;
 
     private void OnEnable()
     {
+        // ∂Û¿Œ∑ª¥ı∏µ (»≈ ∑Œ«¡)
         lr.positionCount = 2;
         grabbedYPos = rtvJoint.linearOffset.y;
     }
@@ -30,7 +32,7 @@ public class SwingHook : Platform, IKnockbackable, IGrabable
         LineRendering();
     }
 
-    public override void LineRendering()
+    public void LineRendering()
     {
         lr.SetPosition(0, jointTr.position);
         lr.SetPosition(1, hookTr.position);
