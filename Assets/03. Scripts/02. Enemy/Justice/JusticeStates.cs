@@ -7,7 +7,7 @@ public class JusticeBaseState : BaseState
 
 }
 
-public class Move : JusticeBaseState
+public class Track : JusticeBaseState
 {
 
 }
@@ -17,4 +17,8 @@ public class Attack : JusticeBaseState
 
 }
 
+public class Groggy : JusticeBaseState
+{
+
+}
 
