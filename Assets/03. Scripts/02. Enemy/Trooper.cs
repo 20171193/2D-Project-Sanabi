@@ -46,13 +46,13 @@ public class Trooper : EnemyShooter, IKnockbackable, IGrabable
         lr.SetPosition(0, muzzlePos.position);
         lr.SetPosition(1, (targetPos - muzzlePos.position).normalized * 100f);
 
-        // Agent Rotation
+        // 몸체 회전
         if (transform.position.x > targetPos.x)
             transform.rotation = Quaternion.Euler(0, -180f, 0);
         else
             transform.rotation = Quaternion.Euler(0, 0, 0);
 
-        // Aim Rotation
+        // 조준점 회전
         Vector3 dir = (targetPos - aimPos.position).normalized;
         aimPos.right = dir;
     }
