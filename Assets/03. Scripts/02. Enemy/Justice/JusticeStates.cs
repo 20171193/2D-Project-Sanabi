@@ -102,6 +102,7 @@ public class Charge : JusticeBaseState
 
     private void AimRotation()
     {
+
     }
 
     public override void Exit()
