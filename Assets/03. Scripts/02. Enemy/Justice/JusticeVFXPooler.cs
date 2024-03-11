@@ -24,7 +24,7 @@ public class JusticeVFXPooler : MonoBehaviour
         {
             JusticeVFX vfx = ob.GetComponent<JusticeVFX>();
             if (vfx == null) continue;
-            string name = ob.name.Replace("VFX_", "");
+            string name = ob.name.Replace("VFX_Justice", "");
             nameDic.Add(name, ob);
 
             Stack<GameObject> stack = new Stack<GameObject>();

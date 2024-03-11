@@ -28,11 +28,6 @@ public class WeaknessController : MonoBehaviour
     [SerializeField]
     private bool isActive = false;
 
-    // 유한상태머신
-    private StateMachine<WeaknessController> fsm;
-    public StateMachine<WeaknessController> FSM { get { return fsm; } }
-
-
     private void Start()
     {
         // 약점 오브젝트 초기위치 지정
