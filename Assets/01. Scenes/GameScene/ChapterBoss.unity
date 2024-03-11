@@ -243,6 +243,7 @@ GameObject:
   m_Component:
   - component: {fileID: 394296788}
   - component: {fileID: 394296789}
+  - component: {fileID: 394296790}
   m_Layer: 0
   m_Name: Weakness1
   m_TagString: Untagged
@@ -279,6 +280,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   justiceTr: {fileID: 1889262067}
+  anim: {fileID: 492102263}
+  capCol: {fileID: 394296790}
+--- !u!70 &394296790
+CapsuleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 394296787}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: -0.019019842, y: -0.006248951}
+  m_Size: {x: 1.4867723, y: 1.7492242}
+  m_Direction: 0
 --- !u!1 &448754520
 GameObject:
   m_ObjectHideFlags: 0
@@ -289,6 +308,7 @@ GameObject:
   m_Component:
   - component: {fileID: 448754521}
   - component: {fileID: 448754522}
+  - component: {fileID: 448754523}
   m_Layer: 0
   m_Name: Weakness2
   m_TagString: Untagged
@@ -325,6 +345,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   justiceTr: {fileID: 1889262067}
+  anim: {fileID: 876024026}
+  capCol: {fileID: 448754523}
+--- !u!70 &448754523
+CapsuleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 448754520}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0.009702921}
+  m_Size: {x: 1.4314842, y: 1.722573}
+  m_Direction: 0
 --- !u!1 &465378859
 GameObject:
   m_ObjectHideFlags: 0
@@ -372,13 +410,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 04491042b208426499a3521574b773a4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  justiceTr: {fileID: 1889262067}
+  owner: {fileID: 1889262068}
   weaknesses:
   - {fileID: 394296789}
   - {fileID: 448754522}
   - {fileID: 1800155728}
   rotSpeed: 30
-  isActive: 0
+  isSpawnIdle: 1
+  weaknessCount: 0
+  activeRoutineTime: 5
 --- !u!1 &492102261
 GameObject:
   m_ObjectHideFlags: 0
@@ -1710,6 +1750,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1800155727}
   - component: {fileID: 1800155728}
+  - component: {fileID: 1800155729}
   m_Layer: 0
   m_Name: Weakness3
   m_TagString: Untagged
@@ -1746,6 +1787,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   justiceTr: {fileID: 1889262067}
+  anim: {fileID: 1159220886}
+  capCol: {fileID: 1800155729}
+--- !u!70 &1800155729
+CapsuleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1800155726}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0.0097029805, y: 0.009702921}
+  m_Size: {x: 1.5673255, y: 1.703167}
+  m_Direction: 0
 --- !u!1 &1889262066
 GameObject:
   m_ObjectHideFlags: 0
