@@ -45,6 +45,7 @@ public class BattleMode : JusticeBaseState
     }
     public override void Exit()
     {
+
         if (battleModeTimer != null)
             owner.StopCoroutine(battleModeTimer);
     }
@@ -71,6 +72,11 @@ public class Track : JusticeBaseState
 
     public override void Enter()
     {
+        // 약점 표시
+        if (owner.WeaknessController.IsDisAppear)
+            owner.WeaknessController.AppearAll();
+
+
         Debug.Log("Justice Tracking");
         owner.Anim.Play("Moving");
         trackingRoutine = owner.StartCoroutine(TrackingRoutine());
@@ -130,6 +136,9 @@ public class Teleport : JusticeBaseState
 
     public override void Enter()
     {
+        if (!owner.WeaknessController.IsDisAppear)
+            owner.WeaknessController.AppearAll();
+
         Debug.Log("Justice Teleport");
 
         owner.Anim.Play("TeleportStart");

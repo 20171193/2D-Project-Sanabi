@@ -21,6 +21,10 @@ public class Justice : MonoBehaviour
     public Animator Anim { get { return anim; } }
 
     [SerializeField]
+    private WeaknessController weaknessController;
+    public WeaknessController WeaknessController { get { return weaknessController; } }
+
+    [SerializeField]
     private JusticeVFXPooler agentVFXPool;
     public JusticeVFXPooler AgentVFXPool { get { return agentVFXPool; } }
     [SerializeField]
