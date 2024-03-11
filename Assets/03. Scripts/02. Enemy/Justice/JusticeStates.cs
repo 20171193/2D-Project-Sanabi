@@ -137,7 +137,7 @@ public class Teleport : JusticeBaseState
     public override void Enter()
     {
         if (!owner.WeaknessController.IsDisAppear)
-            owner.WeaknessController.AppearAll();
+            owner.WeaknessController.DisAppearAll();
 
         Debug.Log("Justice Teleport");
 
