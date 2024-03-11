@@ -66,6 +66,7 @@ public class PlayerHooker : PlayerBase
     protected override void Awake()
     {
         base.Awake();
+        cursorOb = Instantiate(cursorOb);
         HookInitailSetting();
     }
 
