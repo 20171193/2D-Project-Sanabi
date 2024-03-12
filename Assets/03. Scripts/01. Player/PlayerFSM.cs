@@ -206,6 +206,9 @@ public class PlayerFSM : PlayerBase
         // Ground Check
         if (Manager.Layer.groundLM.Contain(collision.gameObject.layer))
         {
+            // 마찰력을 줄이기 위한 소프트 랜딩
+            rigid.velocity = new Vector2(rigid.velocity.x, -0.01f);
+
             // ground check
             if (isInWall)
                 isInWall = false;
@@ -217,6 +220,7 @@ public class PlayerFSM : PlayerBase
                 isGround = true;
             return;
         }
+
         if (Manager.Layer.enemyBulletLM.Contain(collision.gameObject.layer) ||
             (Manager.Layer.bossAttackLM.Contain(collision.gameObject.layer)))
         {

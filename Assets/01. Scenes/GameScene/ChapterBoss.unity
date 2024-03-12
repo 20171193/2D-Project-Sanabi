@@ -10839,6 +10839,22 @@ PrefabInstance:
       propertyPath: m_GravityScale
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 8338325329437444035, guid: e983d07af2f1f474cb1ddca9ebe5b6da, type: 3}
+      propertyPath: m_Size.x
+      value: 1.2153358
+      objectReference: {fileID: 0}
+    - target: {fileID: 8338325329437444035, guid: e983d07af2f1f474cb1ddca9ebe5b6da, type: 3}
+      propertyPath: m_Size.y
+      value: 0.5831835
+      objectReference: {fileID: 0}
+    - target: {fileID: 8338325329437444035, guid: e983d07af2f1f474cb1ddca9ebe5b6da, type: 3}
+      propertyPath: m_Offset.x
+      value: -0.029363632
+      objectReference: {fileID: 0}
+    - target: {fileID: 8338325329437444035, guid: e983d07af2f1f474cb1ddca9ebe5b6da, type: 3}
+      propertyPath: m_Offset.y
+      value: -1.3013171
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e983d07af2f1f474cb1ddca9ebe5b6da, type: 3}
 --- !u!4 &1942967576 stripped
