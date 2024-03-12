@@ -6,7 +6,8 @@ public enum JusticeAttackType
 { 
     Slash,
     DashSlash,
-    CircleSlash
+    CircleSlash,
+    CloakingSlash
 }
 
 public class Justice : MonoBehaviour
@@ -155,6 +156,9 @@ public class Justice : MonoBehaviour
                 case JusticeAttackType.CircleSlash:
                     curAttackChargeTime = circleAttackChargeTime;
                     break;
+                case JusticeAttackType.CloakingSlash:
+                    curAttackChargeTime = circleAttackChargeTime;
+                    break;
                 default:
                     break;
             }
@@ -202,5 +206,45 @@ public class Justice : MonoBehaviour
     public void ChangeAttackType()
     {
         currentAttackType = JusticeAttackType.Slash;
+    }
+
+    private void Parrying(Collider2D collision)
+    {
+        Vector3 dir = (collision.transform.position - transform.position).normalized;
+
+        GameObject parryingOb = null;
+        GameObject sparkOb = null;
+
+        // vfx : 반사 잔상
+        // 상단 방어
+        if (dir.y >= 0)
+            parryingOb = agentVFXPool.ActiveVFX("ParryingA");
+        // 하단 방어
+        else
+            parryingOb = agentVFXPool.ActiveVFX("ParryingB");
+
+        parryingOb.transform.right = -dir;
+        parryingOb.transform.position += dir * 1.5f;
+        
+        // vfx : 반사 스파크 
+        sparkOb = agentVFXPool.ActiveVFX("ParryingSpark");
+        sparkOb.transform.up = dir;
+        sparkOb.transform.position = collision.transform.position;
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        // 훅과 닿은 경우
+        if (Manager.Layer.playerHookLM.Contain(collision.gameObject.layer))
+        {
+            // 그랩
+            if (fsm.CurState == "Groggy")
+            {
+
+            }
+            // 반격
+            else
+                Parrying(collision);
+        }
     }
 }

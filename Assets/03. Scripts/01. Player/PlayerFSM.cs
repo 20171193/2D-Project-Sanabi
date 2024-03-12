@@ -217,7 +217,8 @@ public class PlayerFSM : PlayerBase
                 isGround = true;
             return;
         }
-        if (Manager.Layer.enemyBulletLM.Contain(collision.gameObject.layer))
+        if (Manager.Layer.enemyBulletLM.Contain(collision.gameObject.layer) ||
+            (Manager.Layer.bossAttackLM.Contain(collision.gameObject.layer)))
         {
             TakeDamage();
             return;

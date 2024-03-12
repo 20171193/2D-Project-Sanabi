@@ -22,7 +22,6 @@ public class ObjectEventTrigger : MonoBehaviour
     private Coroutine cameraActionRoutine;
     private PlayerInput prInput;    // 플레이어 입력제어
 
-
     public UnityEvent OnEnterTrigger;
     public UnityEvent OnExitTrigger;
 

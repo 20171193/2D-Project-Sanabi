@@ -67,8 +67,6 @@ public class Track : JusticeBaseState
         if (owner.WeaknessController.IsDisAppear)
             owner.WeaknessController.AppearAll();
 
-        if()
-
         // 애니메이션 전환 코루틴 실행
         owner.Anim.Play("MoveStart");
         // MoveStart -> Moving
@@ -160,7 +158,7 @@ public class Teleport : JusticeBaseState
     private void TeleportEnd()
     {
         // 공격 타입 변경
-        owner.ChangeAttackType(JusticeAttackType.CircleSlash);
+        owner.ChangeAttackType(JusticeAttackType.CloakingSlash);
         owner.transform.position = owner.PlayerTr.position;
 
         // 상태 전이 : 텔레포트 -> 차지
@@ -201,6 +199,12 @@ public class Charge : JusticeBaseState
                 // VFX 활성화
                 vfx = owner.ChargeVFXPool.ActiveVFX("DashSlashCharge").GetComponent<JusticeVFX>();
                 isAiming = true;
+                break;
+            case JusticeAttackType.CloakingSlash:
+                isAiming = false;
+
+                // VFX 활성화
+                vfx = owner.ChargeVFXPool.ActiveVFX("CloakingSlashCharge").GetComponent<JusticeVFX>();
                 break;
         }
 
@@ -246,8 +250,8 @@ public class Charge : JusticeBaseState
             yield return null;
         }
 
-        // 원형 슬래시터 어택일 경우
-        if (owner.CurrentAttackType == JusticeAttackType.CircleSlash)
+        // 텔레포트 어택일 경우
+        if (owner.CurrentAttackType == JusticeAttackType.CloakingSlash)
         {
             owner.Anim.Play("TeleportEnd");
             yield return new WaitForSeconds(0.3f);
@@ -280,6 +284,7 @@ public class Attack : JusticeBaseState
                 owner.CurSlashCount++;
                 break;
             case JusticeAttackType.CircleSlash:
+            case JusticeAttackType.CloakingSlash:
                 owner.Anim.Play("CircleSlashAttack");
                 vfx = owner.AgentVFXPool.ActiveVFX("CircleSlash").GetComponent<JusticeVFX>();
 

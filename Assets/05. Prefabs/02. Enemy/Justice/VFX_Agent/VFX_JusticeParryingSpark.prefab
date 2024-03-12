@@ -121,4 +121,4 @@ MonoBehaviour:
   anim: {fileID: 5662760773411484360}
   size: 5
   vfxName: 
-  releaseTime: 0
+  releaseTime: 0.2
