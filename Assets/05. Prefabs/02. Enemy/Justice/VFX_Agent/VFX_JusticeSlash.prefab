@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 8154478223084253735}
   - component: {fileID: 1681897303}
   - component: {fileID: 1681897304}
-  m_Layer: 0
+  m_Layer: 21
   m_Name: VFX_JusticeSlash
   m_TagString: Untagged
   m_Icon: {fileID: 0}

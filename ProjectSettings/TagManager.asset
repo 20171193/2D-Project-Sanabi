@@ -24,9 +24,9 @@ TagManager:
   - PlayerWallChecker
   - PlayerGroundChecker
   - InteractableInvoker
-  - 
-  - 
-  - 
+  - Boss
+  - BossWeakness
+  - BossAttack
   - 
   - 
   - 

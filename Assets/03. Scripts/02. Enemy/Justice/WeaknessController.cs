@@ -99,6 +99,7 @@ public class WeaknessController : MonoBehaviour
     {
         isSpawnIdle = false;
         AppearAll();
+
         activeRoutine = StartCoroutine(AcitveRoutine());
     }
 

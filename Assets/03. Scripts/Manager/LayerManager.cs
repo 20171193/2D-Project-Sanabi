@@ -4,24 +4,42 @@ using UnityEngine;
 
 public class LayerManager : MonoBehaviour
 {
+    [Header("Ground / Wall")]
+    [Space(3)]
+    #region Ground / Wall
     [Header("IsGround")]
     public LayerMask groundLM;
     [Header("IsDamageGround")]
     public LayerMask damageGroundLM;
     [Header("IsWall")]
     public LayerMask wallLM;
-    [Header("HookInteractable")]
+    #endregion
+
+    [Space(3)]
+    [Header("Hook")]
+    [Space(3)]
+    #region Hook
     public LayerMask hookInteractableLM;
-    [Header("HookingGround")]
     public LayerMask hookingGroundLM;
-    [Header("Hook interactable Platform")]
     public LayerMask hookingPlatformLM;
-    [Header("Player Hook")]
     public LayerMask playerHookLM;
-    [Header("Enemy")]
-    public LayerMask enemyLM;
-    [Header("Enemy Bullet")]
-    public LayerMask enemyBulletLM;
-    [Header("RacastBlock")]
     public LayerMask rayBlockObjectLM;
+    #endregion
+
+    [Space(3)]
+    [Header("Enemy")]
+    [Space(3)]
+    #region Enemy
+    public LayerMask enemyLM;
+    public LayerMask enemyBulletLM;
+    #endregion
+
+    [Space(3)]
+    [Header("Boss")]
+    [Space(3)]
+    #region Boss
+    public LayerMask bossLM;
+    public LayerMask bossAttackLM;
+    public LayerMask bossWeaknessLM;
+    #endregion
 }

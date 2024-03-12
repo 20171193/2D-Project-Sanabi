@@ -162,6 +162,18 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2477913487414431127, guid: 62045a35590d55440a0000a299f07f3c, type: 3}
+      propertyPath: bossLM.m_Bits
+      value: 524288
+      objectReference: {fileID: 0}
+    - target: {fileID: 2477913487414431127, guid: 62045a35590d55440a0000a299f07f3c, type: 3}
+      propertyPath: bossAttackLM.m_Bits
+      value: 2097152
+      objectReference: {fileID: 0}
+    - target: {fileID: 2477913487414431127, guid: 62045a35590d55440a0000a299f07f3c, type: 3}
+      propertyPath: bossWeaknessLM.m_Bits
+      value: 1048576
+      objectReference: {fileID: 0}
     - target: {fileID: 2477913487414431208, guid: 62045a35590d55440a0000a299f07f3c, type: 3}
       propertyPath: m_Name
       value: Manager
