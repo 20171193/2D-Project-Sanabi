@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class PlayerSkill : PlayerBase
 {
@@ -27,12 +28,15 @@ public class PlayerSkill : PlayerBase
 
     private Coroutine dashCoroutine;
     private Coroutine ropeForceRoutine;
+    private Coroutine ghostTrailRoutine;    // 잔상효과
+    private Coroutine ceilingStickRoutine;
 
     protected override void Awake()
     {
         base.Awake();
     }
-
+    
+    // 로프파워 스킬
     public void RopeForce()
     {
         // Shift Key : RopeForceSkill
@@ -44,10 +48,10 @@ public class PlayerSkill : PlayerBase
 
         // 로프 최대 속도에 로프파워속도만큼 더해 스킬 사용중 최대 속도를 증가시킴
         // 로프 루틴(코루틴) 종료 시 초기화
-        if (ropeForceRoutine != null)
-            StopCoroutine(ropeForceRoutine);
+        if (ghostTrailRoutine != null)
+            StopCoroutine(ghostTrailRoutine);
 
-        ropeForceRoutine = StartCoroutine(RopeForceRoutine());
+        ghostTrailRoutine = StartCoroutine(GhostTrailRoutine(0.5f, () => PrMover.CurrentMaxRopingPower -= ropeSkillPower));
 
         // 잔상 파티클 렌더러 플립
         if (transform.rotation.y == 0)
@@ -61,16 +65,8 @@ public class PlayerSkill : PlayerBase
         // 현재 플레이어가 바라보고있는 방향으로 로프파워를 가해줌
         rigid.AddForce(ropeSkillPower * transform.right, ForceMode2D.Impulse);
     }
-    IEnumerator RopeForceRoutine()
-    {
 
-        ropeForceParticle.Play();
-        yield return new WaitForSeconds(0.5f);
-        PrMover.CurrentMaxRopingPower -= ropeSkillPower;
-        ropeForceParticle.Stop();
-    }
-
-
+    // 대쉬 스킬
     public void Dash(IGrabable grabed)
     {
         // 훅이 벽이 아닌 상호작용 가능한 오브젝트에 닿은 경우 대쉬스킬 발동
@@ -93,6 +89,7 @@ public class PlayerSkill : PlayerBase
         // 닿은 오브젝트까지 트레일링 (물리 이동이 아닌 선형보간 이동방식) 
         dashCoroutine = StartCoroutine(DashTrailRoutine(grabed));
     }
+    // 대쉬 트레일링
     IEnumerator DashTrailRoutine(IGrabable grabed)
     {
         Vector3 startPos = transform.position;
@@ -128,6 +125,8 @@ public class PlayerSkill : PlayerBase
         Grab(grabed);
         yield return null;
     }
+
+    // 그랩 스킬
     public void Grab(IGrabable target)
     {
         // 대쉬에서 전환된 그랩
@@ -141,4 +140,49 @@ public class PlayerSkill : PlayerBase
 
         playerFSM.ChangeState("Grab");
     }
+
+    // 그랩대쉬 스킬 
+    public void CeilingStick()
+    {
+        PrFSM.IsCeilingStick = true;
+        PrFSM.IsGround = false;
+        PrFSM.ChangeState("CeilingStickStart");
+
+        ceilingStickRoutine = StartCoroutine(CeilingStickRoutine());
+        ghostTrailRoutine = StartCoroutine(GhostTrailRoutine(0.3f, null));
+    }
+
+    // 그랩대쉬 루틴 (트레일링)
+    IEnumerator CeilingStickRoutine()
+    {
+        Vector3 startPos = transform.position;
+        Vector3 endPos = PrHooker.FiredHook.transform.position;
+
+        float time = Vector3.Distance(startPos, endPos) / dashPower;
+        float rate = 0f;
+
+        while (rate < 1f)
+        {
+            rate += Time.deltaTime / time;
+            transform.position = Vector3.Lerp(startPos, endPos, rate);
+            yield return null;
+        }
+
+        transform.position = endPos;
+
+        // 상태전환 : CeilingStickStart -> CeilingStickIdle
+        PrHooker.FiredHook.DisConnecting();
+        yield return null;
+    }
+
+
+    // 잔상 루틴
+    IEnumerator GhostTrailRoutine(float activeTime, UnityAction afterAction)
+    {
+        ropeForceParticle.Play();
+        yield return new WaitForSeconds(activeTime);
+        afterAction?.Invoke();
+        ropeForceParticle.Stop();
+    }
+
 }

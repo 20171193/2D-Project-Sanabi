@@ -22,7 +22,7 @@ public class PlayerMover : PlayerBase
     [SerializeField]
     private float hztBrakePower;    // horizontal movement brake force
     public float HztBrakePower { get { return hztBrakePower; } }
-    
+
     [SerializeField]
     private float vtcBrakePower;    // vertical movement brake force
     public float VtcBrakePower { get { return vtcBrakePower; } }
@@ -75,7 +75,15 @@ public class PlayerMover : PlayerBase
 
     [SerializeField]
     private float maxRopingPower;
-    public float MaxRopingPower { get {  return maxRopingPower; }  }
+    public float MaxRopingPower { get { return maxRopingPower; } }
+
+    [SerializeField]
+    private float ceilingMovePower;
+    public float CeilingMovePower { get { return ceilingMovePower; } }
+
+    [SerializeField]
+    private float maxCeilingMovePower;
+    public float MaxCeilingMovePower { get { return maxCeilingMovePower; } }
     #endregion
 
     [Space(3)]
@@ -112,12 +120,33 @@ public class PlayerMover : PlayerBase
             HitJump();
             return;
         }
-        if (PrFSM.IsJointed || PrFSM.IsDash || PrFSM.IsGrab) return;
+        if (PrFSM.IsDash || PrFSM.IsGrab || PrFSM.IsCeilingStick) return;
+
+
+
+        if (PrFSM.IsJointed)
+        {
+            PrSkill.CeilingStick();
+            return;
+        }
+        if (PrFSM.IsCeilingStick)
+        {
+            PrFSM.IsCeilingStick = false;
+            PrFSM.FSM.ChangeState("Jump");
+            Jump();
+            return;
+        }
 
         if (PrFSM.IsInWall)
+        {
             WallJump();
+            return;
+        }
         if (PrFSM.IsGround)
+        {
             Jump();
+            return;
+        }
     }
 
     // 기본 점프

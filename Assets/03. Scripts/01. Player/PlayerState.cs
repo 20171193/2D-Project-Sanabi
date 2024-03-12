@@ -19,6 +19,7 @@ public class PlayerIdle : PlayerBaseState
 
     public override void Enter()
     {
+        Debug.Log("Enter : Idle");
         owner.Anim.Play("Idle");
     }
 }
@@ -37,7 +38,7 @@ public class PlayerRun : PlayerBaseState
     public override void Enter()
     {
         //owner.Rigid.velocity = Vector3.zero;
-
+        Debug.Log("Enter : Run");
         owner.Anim.Play("Run");
     }
 
@@ -79,6 +80,8 @@ public class PlayerRunStop : PlayerBaseState
 
     public override void Enter()
     {
+        Debug.Log("Enter : Runstop");
+
         owner.Anim.Play("RunStop");
     }
 
@@ -122,26 +125,26 @@ public class PlayerWallSlide : PlayerBaseState
     }
     public override void FixedUpdate()
     {
-        
+
     }
     private void WallMove()
     {
         owner.Anim.SetFloat("MovePower", mover.MoveVtc);
 
-        if(mover.MoveVtc != 0)
+        if (mover.MoveVtc != 0)
         {
-            if(mover.MoveVtc < -PlayerBase.MoveForce_Threshold)
+            if (mover.MoveVtc < -PlayerBase.MoveForce_Threshold)
             {
                 owner.OnWallSliding?.Invoke();
 
                 float moveYPos = Mathf.Lerp(owner.transform.position.y, owner.transform.position.y + mover.SlidingPower * mover.MoveVtc, Time.deltaTime);
                 owner.transform.position = new Vector3(owner.transform.position.x, moveYPos, 0);
             }
-            else if(mover.MoveVtc > PlayerBase.MoveForce_Threshold)
+            else if (mover.MoveVtc > PlayerBase.MoveForce_Threshold)
             {
                 owner.OnClimb?.Invoke();
 
-                float moveYPos = Mathf.Lerp(owner.transform.position.y, owner.transform.position.y + mover.ClimbPower*mover.MoveVtc, Time.deltaTime);
+                float moveYPos = Mathf.Lerp(owner.transform.position.y, owner.transform.position.y + mover.ClimbPower * mover.MoveVtc, Time.deltaTime);
                 owner.transform.position = new Vector3(owner.transform.position.x, moveYPos, 0);
             }
         }
@@ -165,6 +168,10 @@ public class PlayerJump : PlayerBaseState
     {
         this.owner = owner;
         mover = owner.PrMover;
+    }
+    public override void Enter()
+    {
+        Debug.Log("Enter : Jump");
     }
     public override void FixedUpdate()
     {
@@ -201,6 +208,7 @@ public class PlayerFall : PlayerBaseState
 
     public override void Enter()
     {
+        Debug.Log("Enter : Fall");
         owner.Anim.Play("Fall");
     }
 
@@ -242,6 +250,8 @@ public class PlayerRoping : PlayerBaseState
 
     public override void Enter()
     {
+        Debug.Log("Enter : Roping");
+
         // Calculate the distance to fired hook and AddForce
         owner.Anim.Play("RopeAction");
         //StartRecoil();
@@ -277,6 +287,120 @@ public class PlayerRoping : PlayerBaseState
         owner.PrMover.CurrentMaxRopingPower = owner.PrMover.MaxRopingPower;
     }
 }
+public class PlayerCeilingStickStart : PlayerBaseState
+{
+    private PlayerSkill skill;
+    public PlayerCeilingStickStart(PlayerFSM owner)
+    {
+        this.owner = owner;
+        skill = owner.PrSkill;
+    }
+
+    public override void Enter()
+    {
+        Debug.Log("Enter : StcikStart");
+
+        owner.Anim.Play("CeilingStickStart");
+    }
+    public override void Exit()
+    {
+    }
+}
+public class PlayerCeilingStickIdle : PlayerBaseState
+{
+    private PlayerMover mover;
+
+    public PlayerCeilingStickIdle(PlayerFSM owner)
+    {
+        this.owner = owner;
+        mover = owner.PrMover;
+    }
+    public override void Enter()
+    {
+        Debug.Log("Enter : StcikIdle");
+
+        owner.Rigid.velocity = Vector3.zero;
+        owner.Anim.Play("CeilingStickIdle");
+    }
+    public override void Exit()
+    {
+        //owner.Rigid.gravityScale = 1f;
+    }
+    public override void Update()
+    {
+        if (mover.MoveHzt != 0)
+            owner.FSM.ChangeState("CeilingStickMove");
+    }
+
+}
+public class PlayerCeilingStickMove : PlayerBaseState
+{
+    private PlayerMover mover;
+    private Coroutine brakeRoutine;
+
+    public PlayerCeilingStickMove(PlayerFSM owner)
+    {
+        this.owner = owner;
+        mover = owner.PrMover;
+    }
+
+    public override void Enter()
+    {
+        Debug.Log("Enter : StcikMove");
+        owner.Anim.Play("CeilingStickMove");
+    }
+    public override void Update()
+    {
+        owner.Anim.SetFloat("MovePower", owner.Rigid.velocity.magnitude);
+    }
+    public override void FixedUpdate()
+    {
+        CeilingMove();
+    }
+    public override void Exit()
+    {
+    }
+    private void CeilingMove()
+    {
+        // 캐릭터 회전
+        if (mover.MoveHzt > 0)
+            owner.transform.rotation = Quaternion.Euler(0, 0, 0);
+        else if (mover.MoveHzt < 0)
+            owner.transform.rotation = Quaternion.Euler(0, -180, 0);
+
+        if (mover.MoveHzt == 0)
+        {
+            // 브레이크 적용
+            if (owner.Rigid.velocity.x > PlayerBase.MoveForce_Threshold)
+                owner.Rigid.AddForce(Vector2.left * mover.HztBrakePower);
+            else if (owner.Rigid.velocity.x < -PlayerBase.MoveForce_Threshold)
+                owner.Rigid.AddForce(Vector2.right * mover.HztBrakePower);
+
+            // 브레이크 이후 딜레이 적용 -> 일정시간 이후 Idle 상태로 전환
+            if (brakeRoutine == null)
+            {
+                owner.Anim.Play("CeilingMoveEnd");
+                brakeRoutine = owner.StartCoroutine(Extension.DelayRoutine(0.3f, () => owner.FSM.ChangeState("CeilingStickIdle")));
+            }
+        }
+        else
+        {
+            // 브레이크 이후 이동 시 이전에 진행중이던 브레이크 루틴 종료
+            if (brakeRoutine != null)
+            {
+                // 이동 애니메이션 재실행
+                owner.Anim.Play("CeilingStickMove");
+                owner.StopCoroutine(brakeRoutine);
+                brakeRoutine = null;
+            }
+
+            // 실제 이동
+            owner.Rigid.AddForce(Vector2.right * mover.MoveHzt * mover.CeilingMovePower);
+            // 이동속도 제한
+            owner.Rigid.velocity = new Vector2(Mathf.Clamp(owner.Rigid.velocity.x, -mover.MaxCeilingMovePower, mover.MaxCeilingMovePower), owner.Rigid.velocity.y);
+        }
+    }
+}
 
 #endregion
 
@@ -295,7 +419,7 @@ public class PlayerDash : PlayerBaseState
 
         owner.Anim.Play("Dash");
     }
-    
+
 }
 public class PlayerGrab : PlayerBaseState
 {
@@ -317,7 +441,7 @@ public class PlayerGrab : PlayerBaseState
     public override void FixedUpdate()
     {
         // Grab Moving
-        if(owner.IsEnableGrabMove)
+        if (owner.IsEnableGrabMove)
             GrabMove();
     }
     public override void Update()
