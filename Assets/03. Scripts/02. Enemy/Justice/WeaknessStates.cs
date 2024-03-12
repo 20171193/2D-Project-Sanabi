@@ -49,7 +49,7 @@ public class Active : WeaknessBaseState
     public Active(Weakness owner) { this.owner = owner; }
     public override void Enter()
     {
-        owner.Anim.Play("Active");
+        owner.Anim.Play("Activate");
         owner.IsActive = true;
         ChangeWithDelay("Idle");
     }

@@ -36,7 +36,7 @@ public class PlayerRun : PlayerBaseState
 
     public override void Enter()
     {
-        owner.Rigid.velocity = Vector3.zero;
+        //owner.Rigid.velocity = Vector3.zero;
 
         owner.Anim.Play("Run");
     }
