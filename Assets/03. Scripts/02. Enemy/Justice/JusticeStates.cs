@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Events;
+using UnityEngine.Rendering;
 
 public class JusticeBaseState : BaseState
 {
@@ -18,18 +20,12 @@ public class Init : JusticeBaseState
     {
         owner.Anim.Play("Init");
 
-        initRoutine = owner.StartCoroutine(InitRoutine());
+        initRoutine = owner.StartCoroutine(Extension.DelayRoutine(1.5f, () => owner.FSM.ChangeState("BattleMode")));
     }
     public override void Exit()
     {
         if (initRoutine != null)
             owner.StopCoroutine(initRoutine);
-    }
-
-    IEnumerator InitRoutine()
-    {
-        yield return new WaitForSeconds(1.5f);
-        owner.FSM.ChangeState("BattleMode");
     }
 }
 public class BattleMode : JusticeBaseState
@@ -41,20 +37,12 @@ public class BattleMode : JusticeBaseState
     public override void Enter()
     {
         owner.Anim.Play("ActiveBattleMode");
-        battleModeTimer = owner.StartCoroutine(BattleModeTimer());
+        battleModeTimer = owner.StartCoroutine(Extension.DelayRoutine(1.5f, ()=>owner.FSM.ChangeState("Track")));
     }
     public override void Exit()
     {
-
         if (battleModeTimer != null)
             owner.StopCoroutine(battleModeTimer);
-    }
-
-    IEnumerator BattleModeTimer()
-    {
-        yield return new WaitForSeconds(1.5f);
-        // 상태전이 : 배틀모드 -> 트래킹
-        owner.FSM.ChangeState("Track");
     }
 }
 public class Track : JusticeBaseState
@@ -67,6 +55,9 @@ public class Track : JusticeBaseState
     // - 트래킹 -> 텔레포트
 
     private Coroutine trackingRoutine;
+    private bool isTracking = true;
+
+    private Coroutine animationRoutine;
 
     public Track(Justice owner) { this.owner = owner; }
 
@@ -76,17 +67,23 @@ public class Track : JusticeBaseState
         if (owner.WeaknessController.IsDisAppear)
             owner.WeaknessController.AppearAll();
 
+        if()
 
-        Debug.Log("Justice Tracking");
-        owner.Anim.Play("Moving");
+        // 애니메이션 전환 코루틴 실행
+        owner.Anim.Play("MoveStart");
+        // MoveStart -> Moving
+        animationRoutine = owner.StartCoroutine(Extension.DelayRoutine(0.3f, () => owner.Anim.Play("Moving")));
+
+        // 트래킹 코루틴 실행
         trackingRoutine = owner.StartCoroutine(TrackingRoutine());
     }
 
     public override void Update()
     {
+        if (!isTracking) return;
+        
         AgentRotation();
         Tracking();
-        owner.Anim.SetFloat("MoveSpeed", owner.Rigid.velocity.magnitude);
     }
 
     public override void Exit()
@@ -106,25 +103,36 @@ public class Track : JusticeBaseState
     {
         Vector3 distToPlayer = owner.PlayerTr.position - owner.transform.position;
         owner.transform.Translate(distToPlayer.normalized * owner.MoveSpeed * Time.deltaTime, Space.World);
+
+        // 트래킹 중 탐색도 같이 실시
         Detecting(distToPlayer.magnitude);
     }
 
     private void Detecting(float distance)
     {
         // 타깃이 공격범위에 들어와있는지 체크
-        if ((owner.CurrentAttackType == JusticeAttackType.Slash && distance <= owner.SlashAttackRange - Justice.Attack_Threshold)
-            || (owner.CurrentAttackType == JusticeAttackType.DashSlash && distance <= owner.DashSlashAttackRange - Justice.Attack_Threshold))
-        { 
-            // 상태 전이 : 트래킹 -> 차지
-            owner.FSM.ChangeState("Charge");
+        if ((owner.CurrentAttackType == JusticeAttackType.Slash && distance <= owner.SlashAttackRange - Justice.Attack_Threshold) ||
+            (owner.CurrentAttackType == JusticeAttackType.DashSlash && distance <= owner.DashSlashAttackRange - Justice.Attack_Threshold))
+        {
+            isTracking = false;
+
+            // 상태 전환 코루틴 실행
+            owner.Anim.Play("MoveEnd");
+            // 트래킹 -> 차지
+            animationRoutine = owner.StartCoroutine(Extension.DelayRoutine(0.3f, () => owner.FSM.ChangeState("Charge")));
         }
     }
 
     IEnumerator TrackingRoutine()
     {
+        isTracking = true;
         yield return new WaitForSeconds(owner.TrackingTime);
-        // 상태 전이 : 트래킹 -> 텔레포트
-        owner.FSM.ChangeState("Teleport");
+        isTracking = false;
+
+        // 상태 전환 코루틴 실행
+        owner.Anim.Play("MoveEnd");
+        // 트래킹 -> 텔레포트
+        animationRoutine = owner.StartCoroutine(Extension.DelayRoutine(0.3f, () => owner.FSM.ChangeState("Teleport")));
     }
 }
 public class Teleport : JusticeBaseState
@@ -139,21 +147,18 @@ public class Teleport : JusticeBaseState
         if (!owner.WeaknessController.IsDisAppear)
             owner.WeaknessController.DisAppearAll();
 
-        Debug.Log("Justice Teleport");
-
         owner.Anim.Play("TeleportStart");
-        teleportDelayTimer = owner.StartCoroutine(TeleportDelayTimer());
+        // 텔레포트 딜레이 시간만큼 딜레이 후 상태전환
+        teleportDelayTimer = owner.StartCoroutine(Extension.DelayRoutine(owner.TeleportTime, () => TeleportEnd()));
     }
-
     public override void Exit()
     {
         if(teleportDelayTimer != null)
             owner.StopCoroutine(teleportDelayTimer);
     }
 
-    IEnumerator TeleportDelayTimer()
+    private void TeleportEnd()
     {
-        yield return new WaitForSeconds(owner.TeleportTime);
         // 공격 타입 변경
         owner.ChangeAttackType(JusticeAttackType.CircleSlash);
         owner.transform.position = owner.PlayerTr.position;

@@ -2,11 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Events;
 
 // Extension method
 public static class Extension
 {
-    // Check if the layer is included in the layermask
+    // 레이어마스크가 해당 레이어를 포함하고 있는지 체크
     public static bool Contain(this LayerMask layerMask, int layer)
     {
         return ((1 << layer) & layerMask) != 0;
@@ -44,5 +45,11 @@ public static class Extension
     {
         Vector3 ret = new Vector3(origin.x, origin.y, 0f);
         return ret;
+    }
+
+    public static IEnumerator DelayRoutine(float delayTime, UnityAction nextAction)
+    {
+        yield return new WaitForSeconds(delayTime);
+        nextAction?.Invoke();
     }
 }
