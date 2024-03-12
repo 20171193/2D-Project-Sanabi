@@ -96,7 +96,7 @@ public class PlayerHooker : PlayerBase
 
         HookAimSet();
 
-        if (!PrFSM.IsInWall && !PrFSM.IsJointed && !PrFSM.IsGrab && !PrFSM.IsDash)
+        if (!PrFSM.IsCeilingStick && !PrFSM.IsInWall && !PrFSM.IsJointed && !PrFSM.IsGrab && !PrFSM.IsDash)
             RopeRayCast();
         else
             hookAim.LineOff();
@@ -140,6 +140,7 @@ public class PlayerHooker : PlayerBase
     {
         if (value.isPressed)
         {
+            if (playerFSM.IsCeilingStick) return;
             if (playerFSM.BeDamaged) return;
             if (playerFSM.IsInWall) return;
             if (playerFSM.IsHookShoot) return;

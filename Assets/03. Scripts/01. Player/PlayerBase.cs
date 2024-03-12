@@ -37,6 +37,7 @@ public class PlayerBase : MonoBehaviour
     [SerializeField]
     protected Animator anim;
     public Animator Anim { get { return anim; } }
+
     [SerializeField]
     protected Camera cam;
 
