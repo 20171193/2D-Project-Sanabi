@@ -213,6 +213,59 @@ public class PlayerJump : PlayerBaseState
         }
     }
 }
+public class PlayerHookingJump : PlayerBaseState
+{
+    private PlayerMover mover;
+    
+    public PlayerHookingJump(PlayerFSM owner)
+    {
+        this.owner = owner;
+        mover = owner.PrMover;
+    }
+    public override void Enter()
+    {
+        Debug.Log("Enter : HookingJump");
+        owner.Anim.Play("RopeJump");
+    }
+    public override void FixedUpdate()
+    {
+        FlyMoveMent();
+    }
+    public override void Update()
+    {
+        Rotation();
+    }
+    private void Rotation()
+    {
+        // 캐릭터 회전
+        if (mover.MoveHzt > 0)
+            owner.transform.rotation = Quaternion.Euler(0, 0, 0);
+        else if (mover.MoveHzt < 0)
+            owner.transform.rotation = Quaternion.Euler(0, -180, 0);
+    }
+
+    private void FlyMoveMent()
+    {
+        // 실제 이동
+        //owner.Rigid.AddForce(Vector2.right * mover.MoveHzt * mover.FlyMovePower);
+
+        if (mover.MoveHzt == 0)
+        {
+            // 브레이크 적용
+            if (owner.Rigid.velocity.x > PlayerBase.MoveForce_Threshold)
+                owner.Rigid.AddForce(Vector2.left * mover.HztBrakePower);
+            else if (owner.Rigid.velocity.x < -PlayerBase.MoveForce_Threshold)
+                owner.Rigid.AddForce(Vector2.right * mover.HztBrakePower);
+        }
+        else
+        {
+            // 실제 이동
+            owner.Rigid.AddForce(Vector2.right * mover.MoveHzt * mover.MovePower);
+            // 이동속도 제한
+            owner.Rigid.velocity = new Vector2(Mathf.Clamp(owner.Rigid.velocity.x, -mover.MaxMoveSpeed, mover.MaxMoveSpeed), owner.Rigid.velocity.y);
+        }
+    }
+}
 public class PlayerFall : PlayerBaseState
 {
     private PlayerMover mover;
@@ -226,6 +279,7 @@ public class PlayerFall : PlayerBaseState
     public override void Enter()
     {
         Debug.Log("Enter : Fall");
+        owner.Rigid.gravityScale = 1;
         owner.Anim.Play("Fall");
     }
 
@@ -276,6 +330,7 @@ public class PlayerHookShoot : PlayerBaseState
     }
     public override void Enter()
     {
+        Debug.Log("Enter : HookShoot");
         owner.Rigid.velocity = Vector2.zero;
         owner.Anim.Play("HookShoot");
     }

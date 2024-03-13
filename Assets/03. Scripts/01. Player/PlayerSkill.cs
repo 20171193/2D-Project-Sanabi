@@ -116,6 +116,7 @@ public class PlayerSkill : PlayerBase
         Manager.Camera.SetMainCamera();
         gameObject.layer = LayerMask.NameToLayer("Player");
         Time.timeScale = 1f;
+        Debug.Log("object Grabstart");
         Grab(grabed);
         yield return null;
     }
@@ -163,7 +164,7 @@ public class PlayerSkill : PlayerBase
 
         // 잡은 오브젝트를 Hooker에 할당.
         playerHooker.GrabedObject = target;
-
+        Debug.Log(target);
         playerFSM.ChangeState("Grab");
     }
 
@@ -174,8 +175,9 @@ public class PlayerSkill : PlayerBase
         PrFSM.IsGround = false;
         PrFSM.ChangeState("CeilingStickStart");
 
-        ceilingStickRoutine = StartCoroutine(CeilingStickRoutine());
         ghostTrailRoutine = StartCoroutine(GhostTrailRoutine(1f, null));
+        PrHooker.FiredHook.DistJoint.distance = 0.8f;
+        //ceilingStickRoutine = StartCoroutine(CeilingStickRoutine());
     }
 
     IEnumerator CeilingStickRoutine()
