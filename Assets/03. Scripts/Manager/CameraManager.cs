@@ -6,8 +6,7 @@ public class CameraManager : MonoBehaviour
 {
     enum CameraOrder
     {
-        EventCamera,
-        MainCamera,
+        IdleCamera,
         CurrentCamera
     }
 
@@ -25,37 +24,50 @@ public class CameraManager : MonoBehaviour
 
     private void Awake()
     {
-        eventCamera.Priority = (int)CameraOrder.EventCamera;
-        mainCamera.Priority = (int)CameraOrder.MainCamera;
+        GameObject player = GameObject.FindWithTag("Player");
+        mainCamera = GameObject.FindWithTag("MainCamera").GetComponent<CinemachineVirtualCamera>();
+        eventCamera = GameObject.FindWithTag("EventCamera").GetComponent<CinemachineVirtualCamera>();
+        mainCamera.Follow = player.transform;
+        eventCamera.Follow = player.transform;
+
+        eventCamera.Priority = (int)CameraOrder.IdleCamera;
+        mainCamera.Priority = (int)CameraOrder.CurrentCamera;
+        currentCamera = mainCamera;
     }
 
     private void InitPriority()
     {
-        eventCamera.Priority = (int)CameraOrder.EventCamera;
-        mainCamera.Priority = (int)CameraOrder.MainCamera;
+        eventCamera.Priority = (int)CameraOrder.IdleCamera;
+        mainCamera.Priority = (int)CameraOrder.CurrentCamera;
 
-        if(currentCamera != null)
-            currentCamera.Priority = (int)CameraOrder.CurrentCamera;
+        currentCamera = mainCamera;
     }
 
     public void SetMainCamera()
     {
         InitPriority();
+        
+        currentCamera.Priority = (int)CameraOrder.IdleCamera;
+        mainCamera.Priority = (int)CameraOrder.CurrentCamera;
+
         currentCamera = mainCamera;
-        currentCamera.Priority = (int)CameraOrder.CurrentCamera;
     }
     public void SetEventCamera()
     {
         InitPriority();
+        currentCamera.Priority = (int)CameraOrder.IdleCamera;
+        eventCamera.Priority = (int)CameraOrder.CurrentCamera;
+
         currentCamera = eventCamera;
-        currentCamera.Priority = (int)CameraOrder.CurrentCamera;
     }
 
     public void SetCutSceneCamera(CinemachineVirtualCamera cutSceneCamera)
     {
         InitPriority();
+        currentCamera.Priority = (int)CameraOrder.IdleCamera;
+        cutSceneCamera.Priority = (int)CameraOrder.CurrentCamera;
+
         currentCamera = cutSceneCamera;
-        currentCamera.Priority = (int)CameraOrder.CurrentCamera;
     }
 
 

@@ -170,9 +170,21 @@ PrefabInstance:
       propertyPath: topCollider
       value: 
       objectReference: {fileID: 0}
+    - target: {fileID: 2477913487189770416, guid: 62045a35590d55440a0000a299f07f3c, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 82.9
+      objectReference: {fileID: 0}
+    - target: {fileID: 2477913487189770416, guid: 62045a35590d55440a0000a299f07f3c, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 31.4
+      objectReference: {fileID: 0}
     - target: {fileID: 2477913487189770417, guid: 62045a35590d55440a0000a299f07f3c, type: 3}
       propertyPath: m_Follow
       value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 2477913487189770423, guid: 62045a35590d55440a0000a299f07f3c, type: 3}
+      propertyPath: m_TagString
+      value: EventCamera
       objectReference: {fileID: 0}
     - target: {fileID: 2477913487414431125, guid: 62045a35590d55440a0000a299f07f3c, type: 3}
       propertyPath: m_RootOrder
@@ -221,6 +233,18 @@ PrefabInstance:
     - target: {fileID: 2477913487414431208, guid: 62045a35590d55440a0000a299f07f3c, type: 3}
       propertyPath: m_Name
       value: Manager
+      objectReference: {fileID: 0}
+    - target: {fileID: 2477913487805201684, guid: 62045a35590d55440a0000a299f07f3c, type: 3}
+      propertyPath: m_TagString
+      value: MainCamera
+      objectReference: {fileID: 0}
+    - target: {fileID: 2477913487805201686, guid: 62045a35590d55440a0000a299f07f3c, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 82.9
+      objectReference: {fileID: 0}
+    - target: {fileID: 2477913487805201686, guid: 62045a35590d55440a0000a299f07f3c, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 35.4
       objectReference: {fileID: 0}
     - target: {fileID: 2477913487805201687, guid: 62045a35590d55440a0000a299f07f3c, type: 3}
       propertyPath: m_Follow
