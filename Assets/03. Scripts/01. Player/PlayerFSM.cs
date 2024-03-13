@@ -46,14 +46,6 @@ public class PlayerFSM : PlayerBase
     public bool IsEnableGrabMove { get { return isEnableGrabMove; } set { isEnableGrabMove = value; } }
 
     [SerializeField]
-    private bool isHookShoot = false;
-    public bool IsHookShoot { get { return isHookShoot; } set { isHookShoot = value; } }
-
-    [SerializeField]
-    private bool isRaycastHit = false;
-    public bool IsRaycastHit { get { return isRaycastHit; }set { isRaycastHit = value; } }
-
-    [SerializeField]
     private bool isCeilingStick = false;
     public bool IsCeilingStick { 
         get { return isCeilingStick; }
@@ -101,6 +93,9 @@ public class PlayerFSM : PlayerBase
         fsm.AddState("Damaged", new PlayerDamaged(this));
         fsm.AddState("Run", new PlayerRun(this));
         fsm.AddState("RunStop", new PlayerRunStop(this));
+
+        fsm.AddState("HookShoot", new PlayerHookShoot(this));
+
         fsm.AddState("Fall", new PlayerFall(this));
         fsm.AddState("Jump", new PlayerJump(this));
         fsm.AddState("Roping", new PlayerRoping(this));
@@ -116,7 +111,7 @@ public class PlayerFSM : PlayerBase
         {
             return beDamaged;
         });
-        fsm.AddTransition("Damaged", "Idle", 0f, () =>
+        fsm.AddTransition("Damaged", "Fall", 0f, () =>
         {
             return !beDamaged;
         });
@@ -204,6 +199,20 @@ public class PlayerFSM : PlayerBase
         fsm.LateUpdate();
     }
 
+    public bool IsHookable()
+    {
+        // 훅 샷이 가능한 상태
+        // : Idle, Run, RunStop, Jump, Fall
+        string myState = FSM.CurState;
+
+        return 
+            myState == "Idle" ||
+            myState == "Run" ||
+            myState == "RunStop" ||
+            myState == "Jump" ||
+            myState == "Fall";
+    }
+
     private void TakeDamage()
     {
         DoImpulse();
@@ -213,7 +222,6 @@ public class PlayerFSM : PlayerBase
         beDamaged = true;
         PrHooker.FiredHook?.DisConnecting();
     }
-
     IEnumerator TakeDamageRoutine()
     {
         // 무적상태로 변경
