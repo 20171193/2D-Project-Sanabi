@@ -208,9 +208,9 @@ public class PlayerMover : PlayerBase
 
         // 기존 상태 초기화
         PrFSM.IsCeilingStick = false;
-        PrFSM.ChangeState("Jump");
+        PrFSM.ChangeState("Fall");
 
-        rigid.velocity = new Vector2(MoveHzt * 3f, jumpPower);
+        rigid.velocity = new Vector2(MoveHzt * 3f, -0.5f);
     }
     #endregion
 

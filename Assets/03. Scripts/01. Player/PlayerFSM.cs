@@ -102,26 +102,30 @@ public class PlayerFSM : PlayerBase
         fsm.AddState("CeilingStickIdle", new PlayerCeilingStickIdle(this));
         fsm.AddState("CeilingStickMove", new PlayerCeilingStickMove(this));
 
-        fsm.AddTransition("Jump", "Fall", 0f, () =>
+        fsm.AddTransition("Roping", "Idle", 0f, () =>
         {
-            return rigid.velocity.y < -JumpForce_Threshold;
+            return IsGround && !isJointed;
         });
-        fsm.AddTransition("HookingJump", "Fall", 0f, () =>
+        fsm.AddTransition("HookingJump", "Idle", 0f, () =>
+        {
+            return IsGround;
+        });
+        fsm.AddTransition("Jump", "Idle", 0f, () =>
+        {
+            return IsGround;
+        });
+
+        #region fall transition
+        fsm.AddTransition("Jump", "Fall", 0f, () =>
         {
             return rigid.velocity.y < -JumpForce_Threshold;
         });
 
         fsm.AddAnyState("Fall", () =>
         {
-            return  !isGround && fsm.CurState != "Roping" && fsm.CurState != "WallSlide" && fsm.CurState != "Grab"
+            return  !isGround && fsm.CurState != "CeilingStickStart" && fsm.CurState != "HookShoot" && fsm.CurState != "Roping" && fsm.CurState != "WallSlide" && fsm.CurState != "Grab"
                     && rigid.velocity.y < -JumpForce_Threshold;
         });
-
-        fsm.AddTransition("WallSlide", "Idle", 0f, () =>
-        {
-            return isGround || !isInWall;
-        });
-
         fsm.AddTransition("Fall", "Idle", 0f, () =>
         {
             return isGround && PrMover.MoveHzt == 0;
@@ -131,6 +135,14 @@ public class PlayerFSM : PlayerBase
         {
             return isGround && PrMover.MoveHzt != 0;
         });
+        #endregion
+
+        fsm.AddTransition("WallSlide", "Idle", 0f, () =>
+        {
+            return isGround || !isInWall;
+        });
+
+
 
         fsm.AddTransition("Idle", "Run", 0f, () =>
         {
@@ -286,6 +298,7 @@ public class PlayerFSM : PlayerBase
         if (Manager.Layer.wallLM.Contain(collision.gameObject.layer) && CheckGround(GroundType.Wall))
         {
             Debug.Log("Trigger wall");
+            IsCeilingStick = false;
             PrHooker.FiredHook?.DisConnecting();
 
             isInWall = true;
@@ -300,6 +313,11 @@ public class PlayerFSM : PlayerBase
             rigid.velocity = new Vector2(rigid.velocity.x, -0.01f);
             // ground check
             OnLanding?.Invoke();
+
+            if(isJointed)
+                PrHooker.FiredHook?.DisConnecting();
+            if (IsCeilingStick)
+                IsCeilingStick = false;
 
             isGround = true;
             return;
@@ -337,6 +355,7 @@ public class PlayerFSM : PlayerBase
         if (CeilingChecker.activeSelf &&
             Manager.Layer.hookingGroundLM.Contain(collision.gameObject.layer))
         {
+            Debug.Log("Change fall");
             IsCeilingStick = false;
             fsm.ChangeState("Fall");
             return;

@@ -279,6 +279,7 @@ public class PlayerFall : PlayerBaseState
     public override void Enter()
     {
         Debug.Log("Enter : Fall");
+        owner.PrHooker.FiredHook?.DisConnecting();
         owner.Rigid.gravityScale = 1;
         owner.Anim.Play("Fall");
     }
@@ -387,6 +388,7 @@ public class PlayerRoping : PlayerBaseState
 public class PlayerCeilingStickStart : PlayerBaseState
 {
     private PlayerSkill skill;
+    private Coroutine ceilingStickRoutine;
     public PlayerCeilingStickStart(PlayerFSM owner)
     {
         this.owner = owner;
@@ -396,12 +398,18 @@ public class PlayerCeilingStickStart : PlayerBaseState
     public override void Enter()
     {
         Debug.Log("Enter : StcikStart");
-
+        //ceilingStickRoutine = owner.StartCoroutine(CeilingStickRoutine());
         owner.Anim.Play("CeilingStickStart");
     }
     public override void Exit()
     {
+    
     }
+
+    //IEnumerator CeilingStickRoutine()
+    //{
+
+    //}
 }
 public class PlayerCeilingStickIdle : PlayerBaseState
 {

@@ -33,12 +33,10 @@ public class TrooperSpawner : Spawner
     public override void DestroySpawner()
     {
         base.DestroySpawner();
-        Debug.Log("Destroy Trooper Spawner");
     }
 
     public override void Spawn()
     {
-        Debug.Log("Spawn!");
         spawnCount--;
         spawnedTrooper = Manager.Pool.GetPool(trooperPrefab, spawnPos.position, spawnPos.rotation) as Trooper;
         spawnedTrooper.OnDie += OnTrooperDied;
@@ -57,12 +55,10 @@ public class TrooperSpawner : Spawner
     // Animation Bind
     public void OnAnimationSpawn()
     {
-        Debug.Log("Spawn Bind!");
         Spawn();
     }
     public void OnAnimationDisable()
     {
-        Debug.Log("Trooper Spawner Destroy");
         DestroySpawner();
     }
 }
