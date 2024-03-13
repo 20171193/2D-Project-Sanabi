@@ -5510,12 +5510,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   lr: {fileID: 8338325328473934066}
   aimRendererOb: {fileID: 8338325329016645102}
-  enemyLineMt:
-  - {fileID: 2100000, guid: 887cc20b518a3174fa4242551eca7308, type: 2}
-  groundLineMt:
-  - {fileID: 2100000, guid: 0338845cc8edd89429fd3d53b9a149d9, type: 2}
-  - {fileID: 2100000, guid: 80acb1071874db44a956bcaf67d18e76, type: 2}
-  - {fileID: 2100000, guid: 302ca3dbec43da14190b4ce1032d6094, type: 2}
+  enemyLineMt: {fileID: 2100000, guid: 887cc20b518a3174fa4242551eca7308, type: 2}
+  groundLineMt: {fileID: 2100000, guid: 0338845cc8edd89429fd3d53b9a149d9, type: 2}
   renderTargetPos: {x: 0, y: 0, z: 0}
   isLineRendering: 0
 --- !u!1 &8338325328590322910
@@ -5704,7 +5700,7 @@ GameObject:
   - component: {fileID: 8338325329431907394}
   - component: {fileID: 8338325329431907395}
   - component: {fileID: 1942553676}
-  m_Layer: 9
+  m_Layer: 3
   m_Name: Player_SNB
   m_TagString: Player
   m_Icon: {fileID: 0}

@@ -21,12 +21,27 @@ public class HookAim : MonoBehaviour
     private LineRenderer lr;
 
     [SerializeField]
-    private GameObject aimRendererOb;
+    private SpriteRenderer aimSpr;
 
     [SerializeField]
-    private Material[] enemyLineMt;
+    private GameObject aimRendererOb;
+    [SerializeField]
+    private GameObject arrivingAim;
+
+    [SerializeField]
+    private Sprite groundArrivingAimSp;
+    [SerializeField]
+    private Sprite enemyArrivingAimSp;
+    
+    [SerializeField]
+    private Sprite groundAimSp;
+    [SerializeField]
+    private Sprite enemyAimSp;
+
     [SerializeField]
     private Material[] groundLineMt;
+    [SerializeField]
+    private Material[] enemyLineMt;
 
     [Space(3)]
     [Header("Ballancing")]
@@ -37,7 +52,6 @@ public class HookAim : MonoBehaviour
 
     [SerializeField]
     private bool isLineRendering;
-
 
     private void Awake()
     {
@@ -53,14 +67,19 @@ public class HookAim : MonoBehaviour
     public void LineOn(LineRenderType type, Vector3 targetPos)
     {
         aimRendererOb.SetActive(true);
+        arrivingAim.SetActive(true);
 
         switch (type)
         {
             case LineRenderType.Ground:
                 lr.materials = groundLineMt;
+                aimSpr.sprite = groundAimSp;
+                arrivingAim.GetComponent<SpriteRenderer>().sprite = groundArrivingAimSp;
                 break;
             case LineRenderType.Enemy:
-                lr.materials = groundLineMt;
+                lr.materials = enemyLineMt;
+                aimSpr.sprite = enemyAimSp;
+                arrivingAim.GetComponent<SpriteRenderer>().sprite = enemyArrivingAimSp;
                 break;
             case LineRenderType.Interactable:
                 lr.materials = groundLineMt;
@@ -77,6 +96,8 @@ public class HookAim : MonoBehaviour
     {
         if (!isLineRendering) return;
 
+        arrivingAim.SetActive(false);
+        aimSpr.sprite = groundAimSp;
         lr.positionCount = 0;
         isLineRendering = false;
     }
@@ -84,5 +105,6 @@ public class HookAim : MonoBehaviour
     {
         lr.SetPosition(0, transform.position);
         lr.SetPosition(1, renderTargetPos);
+        arrivingAim.transform.position = renderTargetPos;
     }
 }
