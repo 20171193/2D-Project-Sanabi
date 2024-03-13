@@ -111,7 +111,7 @@ public class PlayerFSM : PlayerBase
         fsm.AddState("CeilingStickStart", new PlayerCeilingStickStart(this));
         fsm.AddState("CeilingStickIdle", new PlayerCeilingStickIdle(this));
         fsm.AddState("CeilingStickMove", new PlayerCeilingStickMove(this));
-        
+
         fsm.AddAnyState("Damaged", () =>
         {
             return beDamaged;
@@ -122,18 +122,18 @@ public class PlayerFSM : PlayerBase
         });
         fsm.AddAnyState("Roping", () =>
         {
-            return !beDamaged &&!isCeilingStick
+            return !beDamaged && !isCeilingStick
                     && isJointed;
         });
         fsm.AddAnyState("WallSlide", () =>
         {
-            return !beDamaged && !isDash && !isGrab 
+            return !beDamaged && !isDash && !isGrab
                     && isInWall;
         });
 
         fsm.AddAnyState("Jump", () =>
         {
-            return !isGrab && !beDamaged && !isInWall && !isGround && !isJointed 
+            return !isGrab && !beDamaged && !isInWall && !isGround && !isJointed
                     && rigid.velocity.y > JumpForce_Threshold;
         });
 
@@ -144,7 +144,7 @@ public class PlayerFSM : PlayerBase
 
         fsm.AddAnyState("Fall", () =>
         {
-            return !isGrab && !beDamaged && !isInWall && !isGround && !isJointed 
+            return !isGrab && !beDamaged && !isInWall && !isGround && !isJointed
                     && rigid.velocity.y < -JumpForce_Threshold;
         });
 
@@ -155,8 +155,14 @@ public class PlayerFSM : PlayerBase
 
         fsm.AddTransition("Fall", "Idle", 0f, () =>
         {
-            return isGround;
+            return isGround && PrMover.MoveHzt == 0;
         });
+
+        fsm.AddTransition("Fall", "Run", 0f, () =>
+        {
+            return isGround && PrMover.MoveHzt != 0;
+        });
+
         fsm.AddTransition("Idle", "Run", 0f, () =>
         {
             // is input Keyboard "A"key or "D" key

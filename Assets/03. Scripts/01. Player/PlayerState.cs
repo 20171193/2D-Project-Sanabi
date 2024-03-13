@@ -97,6 +97,8 @@ public class PlayerRunStop : PlayerBaseState
             owner.Rigid.AddForce(Vector2.left * mover.HztBrakePower);
         else if (owner.Rigid.velocity.x < -PlayerBase.MoveForce_Threshold)
             owner.Rigid.AddForce(Vector2.right * mover.HztBrakePower);
+
+
     }
 }
 #endregion
@@ -193,7 +195,23 @@ public class PlayerJump : PlayerBaseState
     private void FlyMoveMent()
     {
         // 실제 이동
-        owner.Rigid.AddForce(Vector2.right * mover.MoveHzt * mover.FlyMovePower);
+        //owner.Rigid.AddForce(Vector2.right * mover.MoveHzt * mover.FlyMovePower);
+
+        if (mover.MoveHzt == 0)
+        {
+            // 브레이크 적용
+            if (owner.Rigid.velocity.x > PlayerBase.MoveForce_Threshold)
+                owner.Rigid.AddForce(Vector2.left * mover.HztBrakePower);
+            else if (owner.Rigid.velocity.x < -PlayerBase.MoveForce_Threshold)
+                owner.Rigid.AddForce(Vector2.right * mover.HztBrakePower);
+        }
+        else
+        {
+            // 실제 이동
+            owner.Rigid.AddForce(Vector2.right * mover.MoveHzt * mover.MovePower);
+            // 이동속도 제한
+            owner.Rigid.velocity = new Vector2(Mathf.Clamp(owner.Rigid.velocity.x, -mover.MaxMoveSpeed, mover.MaxMoveSpeed), owner.Rigid.velocity.y);
+        }
     }
 }
 public class PlayerFall : PlayerBaseState
@@ -231,8 +249,21 @@ public class PlayerFall : PlayerBaseState
     }
     private void FlyMoveMent()
     {
-        // 실제 이동
-        owner.Rigid.AddForce(Vector2.right * mover.MoveHzt * mover.FlyMovePower);
+        if (mover.MoveHzt == 0)
+        {
+            // 브레이크 적용
+            if (owner.Rigid.velocity.x > PlayerBase.MoveForce_Threshold)
+                owner.Rigid.AddForce(Vector2.left * mover.HztBrakePower);
+            else if (owner.Rigid.velocity.x < -PlayerBase.MoveForce_Threshold)
+                owner.Rigid.AddForce(Vector2.right * mover.HztBrakePower);
+        }
+        else
+        {
+            // 실제 이동
+            owner.Rigid.AddForce(Vector2.right * mover.MoveHzt * mover.MovePower);
+            // 이동속도 제한
+            owner.Rigid.velocity = new Vector2(Mathf.Clamp(owner.Rigid.velocity.x, -mover.MaxMoveSpeed, mover.MaxMoveSpeed), owner.Rigid.velocity.y);
+        }
     }
 }
 #endregion
