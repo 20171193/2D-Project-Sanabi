@@ -140789,7 +140789,7 @@ PrefabInstance:
       objectReference: {fileID: 1734826502}
     - target: {fileID: 8338325329431907395, guid: e983d07af2f1f474cb1ddca9ebe5b6da, type: 3}
       propertyPath: dashPower
-      value: 80
+      value: 40
       objectReference: {fileID: 0}
     - target: {fileID: 8338325329431907395, guid: e983d07af2f1f474cb1ddca9ebe5b6da, type: 3}
       propertyPath: ropeSkillPower

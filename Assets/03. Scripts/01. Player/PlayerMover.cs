@@ -118,75 +118,98 @@ public class PlayerMover : PlayerBase
     }
     private void OnJump(InputValue value)
     {
-        if (PrFSM.BeDamaged)
-        {
-            HitJump();
-            return;
-        }
-        if (PrFSM.IsDash || PrFSM.IsGrab || PrFSM.IsCeilingStick) return;
+        if (PrFSM.FSM.CurState == "Grab" || PrFSM.FSM.CurState == "Dash" ||
+            PrFSM.FSM.CurState == "HookShoot" || PrFSM.FSM.CurState == "Fall") return;
 
-        if (PrFSM.IsJointed)
+        #region 스킬
+        // 로프액션 상태 -> 천장후킹
+        if (PrFSM.FSM.CurState == "Roping")
         {
             PrSkill.CeilingStick();
             return;
         }
-        if (PrFSM.IsCeilingStick)
+        #endregion
+
+
+        #region 점프
+        // 피격상태 -> 히트 점프
+        if (PrFSM.FSM.CurState == "Damaged")
         {
-            PrFSM.IsCeilingStick = false;
-            PrFSM.FSM.ChangeState("Jump");
-            Jump();
+            HitJump();
             return;
         }
-        if (PrFSM.IsInWall)
+        // 천장후킹 상태 -> 천장점프
+        if (PrFSM.IsCeilingStick)
+        {
+            CeilingJump();
+            return;
+        }
+        // 벽타기 상태 -> 벽점프
+        if (PrFSM.FSM.CurState == "WallSlide")
         {
             WallJump();
             return;
         }
+        // 지면 상태 -> 일반점프
         if (PrFSM.IsGround)
         {
             Jump();
             return;
         }
+        #endregion
     }
 
     // 기본 점프
     private void Jump()
     {
+        Debug.Log("Normal Jumping");
+
         PrFSM.OnJump?.Invoke();
 
-        anim.Play("Jump");
+        PrFSM.ChangeState("Jump");
         rigid.velocity = new Vector2(rigid.velocity.x, rigid.velocity.y + jumpPower);
     }
-
     // 벽 점프
     private void WallJump()
     {
+        Debug.Log("Wall Jumping");
         PrFSM.OnWallJump?.Invoke();
 
         rigid.gravityScale = 1;
 
         PrFSM.IsInWall = false;
         PrFSM.ChangeState("Jump");
-        anim.Play("Jump");
 
-        rigid.velocity = Vector2.zero;
         rigid.velocity = new Vector2(-transform.right.x * 3f, jumpPower);
     }
-
     // 히트상태 점프
     private void HitJump()
     {
-        PrFSM.BeDamaged = false;
+        Debug.Log("Hit Jumping");
+
+        // 기존 데미지 루틴 비활성화
+        PrFSM.InitDamageRoutine();
+
         PrFSM.ChangeState("Jump");
 
         PrFSM.OnHitJump?.Invoke();
-        anim.Play("Jump");
-
         rigid.velocity = Vector2.zero;
 
         Vector2 dir = (PrHooker.Aim.transform.position - transform.position).normalized;
         rigid.AddForce(dir * hittedJumpPower, ForceMode2D.Impulse);
 
+    }
+    private void CeilingJump()
+    {
+        Debug.Log("Ceiling Jumping");
+
+        rigid.gravityScale = 1;
+
+        // 기존 상태 초기화
+        PrFSM.IsCeilingStick = false;
+        PrFSM.ChangeState("Jump");
+
+        rigid.velocity = new Vector2(MoveHzt * 3f, jumpPower);
     }
     #endregion
 

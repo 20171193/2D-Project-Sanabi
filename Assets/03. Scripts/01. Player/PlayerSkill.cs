@@ -69,9 +69,6 @@ public class PlayerSkill : PlayerBase
     // 대쉬 스킬
     public void Dash(IGrabable grabed)
     {
-        // 훅이 벽이 아닌 상호작용 가능한 오브젝트에 닿은 경우 대쉬스킬 발동
-        playerFSM.IsDash = true;
-
         // 현재 속력과 중력을 0으로 변경
         rigid.velocity = Vector3.zero;
         rigid.gravityScale = 0;
@@ -122,7 +119,6 @@ public class PlayerSkill : PlayerBase
         Grab(grabed);
         yield return null;
     }
-
     //// 대쉬 트레일링
     //IEnumerator DashTrailRoutine(IGrabable grabed)
     //{
@@ -163,20 +159,15 @@ public class PlayerSkill : PlayerBase
     // 그랩 스킬
     public void Grab(IGrabable target)
     {
-        // 대쉬에서 전환된 그랩
-        playerFSM.IsDash = false;
-
         target.Grabbed(rigid);
 
         // 잡은 오브젝트를 Hooker에 할당.
         playerHooker.GrabedObject = target;
-        playerFSM.IsGrab = true;
 
         playerFSM.ChangeState("Grab");
     }
 
     // 그랩대쉬 스킬 
-    // 연결된 
     public void CeilingStick()
     {
         PrFSM.IsCeilingStick = true;
@@ -187,28 +178,45 @@ public class PlayerSkill : PlayerBase
         ghostTrailRoutine = StartCoroutine(GhostTrailRoutine(1f, null));
     }
 
-    // 그랩대쉬 루틴 (트레일링)
     IEnumerator CeilingStickRoutine()
     {
-        Vector3 startPos = transform.position;
-        Vector3 endPos = PrHooker.FiredHook.transform.position;
+        DistanceJoint2D distJoint = PrHooker.FiredHook.DistJoint;
 
-        float time = Vector3.Distance(startPos, endPos) / dashPower;
-        float rate = 0f;
-
-        while (rate < 1f)
+        while (distJoint.distance > 0.1f)
         {
-            rate += Time.deltaTime / time;
-            transform.position = Vector3.Lerp(startPos, endPos, rate);
+            distJoint.distance -= dashPower * Time.deltaTime;
+            Debug.Log(distJoint.distance);
             yield return null;
         }
 
-        transform.position = endPos;
-
-        // 상태전환 : CeilingStickStart -> CeilingStickIdle
+        transform.position = PrHooker.FiredHook.transform.position;
+        // 발사한 훅 비활성화
         PrHooker.FiredHook.DisConnecting();
         yield return null;
     }
+
+    // 그랩대쉬 루틴 (트레일링)
+    //IEnumerator CeilingStickRoutine()
+    //{
+    //    Vector3 startPos = transform.position;
+    //    Vector3 endPos = PrHooker.FiredHook.transform.position;
+
+    //    float time = Vector3.Distance(startPos, endPos) / dashPower;
+    //    float rate = 0f;
+
+    //    while (rate < 1f)
+    //    {
+    //        rate += Time.deltaTime / time;
+    //        transform.position = Vector3.Lerp(startPos, endPos, rate);
+    //        yield return null;
+    //    }
+
+    //    transform.position = endPos;
+
+    //    // 상태전환 : CeilingStickStart -> CeilingStickIdle
+    //    PrHooker.FiredHook.DisConnecting();
+    //    yield return null;
+    //}
 
 
     // 잔상 루틴

@@ -105,7 +105,7 @@ public class PlayerHooker : PlayerBase
 
         HookAimSet();
 
-        if (!PrFSM.IsCeilingStick && !PrFSM.IsInWall && !PrFSM.IsJointed && !PrFSM.IsGrab && !PrFSM.IsDash)
+        if (PrFSM.IsHookable())
             RopeRayCast();
         else
             hookAim.LineOff();
@@ -116,7 +116,7 @@ public class PlayerHooker : PlayerBase
         Vector2 rayDir = (mousePos - transform.position).normalized;
         hookHitInfo = Physics2D.Raycast(transform.position, rayDir, rayLength, Manager.Layer.hookInteractableLM);
 
-        if (!hookHitInfo || PrFSM.BeDamaged || Manager.Layer.rayBlockObjectLM.Contain(hookHitInfo.collider.gameObject.layer))
+        if (!hookHitInfo || PrFSM.FSM.CurState == "Damaged" || Manager.Layer.rayBlockObjectLM.Contain(hookHitInfo.collider.gameObject.layer))
         {
             IsRaycastHit = false;
             hookAim.LineOff();
@@ -171,7 +171,6 @@ public class PlayerHooker : PlayerBase
             // ±×·¦ Áß
             else if (playerFSM.FSM.CurState == "Grab")
             {
-                playerFSM.IsGrab = false;
                 GrabJump();
             }
             // ÈÅ ¼¦ÀÌ ´ê±â Àü¿¡ ¸¶¿ì½º¸¦ ¶¾ °æ¿ì 
