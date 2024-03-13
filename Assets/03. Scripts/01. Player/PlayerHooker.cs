@@ -63,6 +63,15 @@ public class PlayerHooker : PlayerBase
 
     private Coroutine hookReloadRoutine;
 
+    [SerializeField]
+    private bool isRaycastHit = false;
+    public bool IsRaycastHit { get { return isRaycastHit; } set { isRaycastHit = value; } }
+
+    [SerializeField]
+    private bool isHookShootDelay = false;
+    public bool IsHookShootDelay { get { return isHookShootDelay; } set { isHookShootDelay = value; } }
+
+
     protected override void Awake()
     {
         base.Awake();
@@ -109,12 +118,12 @@ public class PlayerHooker : PlayerBase
 
         if (!hookHitInfo || PrFSM.BeDamaged || Manager.Layer.rayBlockObjectLM.Contain(hookHitInfo.collider.gameObject.layer))
         {
-            playerFSM.IsRaycastHit = false;
+            IsRaycastHit = false;
             hookAim.LineOff();
             return;
         }
 
-        playerFSM.IsRaycastHit = true;
+        IsRaycastHit = true;
 
         // hit is Enemy
         if (Manager.Layer.enemyLM.Contain(hookHitInfo.collider.gameObject.layer))
@@ -140,34 +149,40 @@ public class PlayerHooker : PlayerBase
     {
         if (value.isPressed)
         {
-            if (playerFSM.IsCeilingStick) return;
-            if (playerFSM.BeDamaged) return;
-            if (playerFSM.IsInWall) return;
-            if (playerFSM.IsHookShoot) return;
-            if (playerFSM.IsGrab || playerFSM.IsJointed) return;
-            if (!playerFSM.IsRaycastHit) return;
+            // 훅 샷이 가능한 상태
+            // : Idle, Run, RunStop, Jump, Fall
+            // 조건
+            // : IsRaycastHit
+            if (!IsRaycastHit) return;       // 레이캐스트에 실패한 경우
+            if (isHookShootDelay) return;    // 딜레이 중
+            if (!PrFSM.IsHookable()) return; // 훅 샷이 불가능한 상태 
 
             HookShoot();
         }
         else
         {
-            if (playerFSM.IsJointed)
+            // 로프액션 중
+            if (PrFSM.FSM.CurState == "Roping")
             {
                 playerFSM.IsJointed = false;
                 firedHook?.DisConnecting();
                 RopeJump();
             }
-            else if (playerFSM.IsGrab)
+            // 그랩 중
+            else if (playerFSM.FSM.CurState == "Grab")
             {
                 playerFSM.IsGrab = false;
                 GrabJump();
             }
-            else
+            // 훅 샷이 닿기 전에 마우스를 뗀 경우 
+            else if (isHookShootDelay)
             {
-                PrFSM.FSM.ChangeState(PrFSM.FSM.CurState);
-
                 firedHook?.DisConnecting();
+                PrFSM.FSM.ChangeState("Idle");
             }
+            // 그 외 상태
+            else
+                return;            
         }
     }
 
@@ -198,20 +213,17 @@ public class PlayerHooker : PlayerBase
         hookAim.transform.position = transform.position + hookAim.transform.up * 1.7f;
     }
 
-    // if hook collide with enemy, Invoke OnGrabbedEnemy
-    // else if hook collide with ground, Invoke OnGrabbedGround
+    // 훅이 잡을 수 있는 적과 닿은 경우, Invoke OnGrabbedEnemy
+    // 훅이 지면과 연결된 경우, Invoke OnGrabbedGround
     private void HookShoot()
     {
-        if (playerFSM.IsHookShoot) return;
-
         playerFSM.OnHookShoot?.Invoke();
 
         // reload Routine
         hookReloadRoutine = StartCoroutine(HookReloadRoutine());
 
         hookAim.LineOff();
-        anim.Play("RopeShot");
-
+        PrFSM.FSM.ChangeState("HookShoot");
         ActiveHook();
     }
     #endregion
@@ -244,6 +256,9 @@ public class PlayerHooker : PlayerBase
         playerSkill.Dash(grabed);
     }
     #endregion
+
+    // 훅 활성화 상태
+    // 대상 오브젝트와 연결
     private void ActiveHook()
     {
         // Transform Setting
@@ -256,6 +271,9 @@ public class PlayerHooker : PlayerBase
 
         hookObject.SetActive(true);
     }
+
+    // 훅 비활성화 상태
+    // 대상 오브젝트와 연결해제
     private void ReleaseHook()
     {
         hookObject.SetActive(false);
@@ -270,8 +288,8 @@ public class PlayerHooker : PlayerBase
 
     IEnumerator HookReloadRoutine()
     {
-        playerFSM.IsHookShoot = true;
+        isHookShootDelay = true;
         yield return new WaitForSeconds(hookShootCoolTime);
-        playerFSM.IsHookShoot = false;
+        isHookShootDelay = false;
     }
 }

@@ -97,8 +97,6 @@ public class PlayerRunStop : PlayerBaseState
             owner.Rigid.AddForce(Vector2.left * mover.HztBrakePower);
         else if (owner.Rigid.velocity.x < -PlayerBase.MoveForce_Threshold)
             owner.Rigid.AddForce(Vector2.right * mover.HztBrakePower);
-
-
     }
 }
 #endregion
@@ -269,6 +267,18 @@ public class PlayerFall : PlayerBaseState
 #endregion
 
 #region RopeAction
+public class PlayerHookShoot : PlayerBaseState
+{
+    public PlayerHookShoot(PlayerFSM owner)
+    {
+        this.owner = owner;
+    }
+    public override void Enter()
+    {
+        owner.Rigid.velocity = Vector2.zero;
+        owner.Anim.Play("HookShoot");
+    }
+}
 public class PlayerRoping : PlayerBaseState
 {
     private PlayerMover mover;
