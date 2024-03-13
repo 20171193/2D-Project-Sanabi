@@ -13,6 +13,7 @@ public class Hook : MonoBehaviour
     public Rigidbody2D Rigid { get { return rigid; } }
     [SerializeField]
     private DistanceJoint2D distJoint;
+    public DistanceJoint2D DistJoint { get { return distJoint; } }
     [SerializeField]
     private Animator anim;
     [SerializeField]
@@ -56,6 +57,8 @@ public class Hook : MonoBehaviour
     [SerializeField]
     private bool isConnected = false;
     private Rigidbody2D connectedRigid;
+    [SerializeField]
+    private Transform grabedTr = null; 
 
     public float destroyTime;
     private Coroutine trailRoutine;
@@ -72,43 +75,67 @@ public class Hook : MonoBehaviour
     {
         if (isConnected)
             LineRendering();
+        if(grabedTr!= null)
+            transform.position = grabedTr.position;
     }
 
     private void LineRendering()
     {
+        // 연결된 상태에서 라인렌더링 : 플레이어와 훅 사이 체인 렌더링
         lr.positionCount = 2;
         lr.SetPosition(0, transform.position);
         lr.SetPosition(1, ownerRigid.position);
     }
+
+
+    // 오브젝트 그랩
     private void Grab(IGrabable grabed)
     {
-        hookHittedRoutine = StartCoroutine(HookHittedRoutine());
+        Connecting(true);
 
+        // 액션에 등록된 PlayerHooker의 함수 실행
         OnHookHitObject?.Invoke(grabed);
+
+        // 그랩한 경우 그랩된 오브젝트를 따라 훅의 위치를 변경해야함.
+        grabedTr = grabed.GetGameObject().transform;
+
+        hookHittedRoutine = StartCoroutine(HookHittedRoutine());
 
         GameObject grabedOb = grabed.GetGameObject();
         IKnockbackable knockbacked = grabedOb.GetComponent<IKnockbackable>();
         knockbacked?.KnockBack((grabedOb.transform.position - muzzlePos).normalized * knockBackPower);
 
-        DisConnecting();
     }
-    private void Connecting()
-    {
-        hookHittedRoutine = StartCoroutine(HookHittedRoutine());
 
-        isConnected = true;
+    // 지면 그립
+    private void Grip()
+    {
+        Connecting(false);
+        // 상대 조인트의 거리를 1만큼 줄여 플레이어를 살짝 띄우는 효과
+        distJoint.distance -= 1f;
+
+        // 액션에 등록된 PlayerHooker 함수 실행
         OnHookHitGround?.Invoke();
+    }
+
+    private void Connecting(bool isGrab)
+    {
+        isConnected = true;
+        //OnHookHitGround?.Invoke();
 
         anim.Play("Grabbing");
 
         rigid.isKinematic = true;
         rigid.freezeRotation = true;
 
-        distJoint.enabled = true;
-        distJoint.connectedBody = ownerRigid;
-
         float distance = (ownerRigid.transform.position - transform.position).magnitude;
         distJoint.distance = distance > maxDistance ? maxDistance : distance;
+
+        // 그랩의 경우엔 거리를 더 짧게 설정
+        //if (isGrab) distance /= 2f;
+
+        distJoint.enabled = true;
+        distJoint.connectedBody = ownerRigid;
     }
     public void DisConnecting()
     {
@@ -116,6 +143,7 @@ public class Hook : MonoBehaviour
         rigid.isKinematic = false;
         rigid.freezeRotation = false;
         isConnected = false;
+        grabedTr = null;
 
         OnDestroyHook?.Invoke();
     }
@@ -134,10 +162,13 @@ public class Hook : MonoBehaviour
 
         transform.position = hitInfo.point;
 
+        // 훅 vfx 출력
+        hookHittedRoutine = StartCoroutine(HookHittedRoutine());
+
         if (Manager.Layer.hookingGroundLM.Contain(hitInfo.collider.gameObject.layer))
         {
             transform.parent = hitInfo.collider.gameObject.transform;
-            Connecting();
+            Grip();
         }
         else
             Grab(hitInfo.collider.gameObject.GetComponent<IGrabable>());

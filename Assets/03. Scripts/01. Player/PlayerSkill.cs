@@ -85,46 +85,80 @@ public class PlayerSkill : PlayerBase
             transform.rotation = Quaternion.Euler(0, -180, 0);
 
         playerFSM.ChangeState("Dash");
-        
-        // 닿은 오브젝트까지 트레일링 (물리 이동이 아닌 선형보간 이동방식) 
-        dashCoroutine = StartCoroutine(DashTrailRoutine(grabed));
-    }
-    // 대쉬 트레일링
-    IEnumerator DashTrailRoutine(IGrabable grabed)
-    {
-        Vector3 startPos = transform.position;
-        Vector3 endPos = grabed.GetGrabPosition();
 
-        float time = Vector3.Distance(startPos, endPos) / dashPower;
-        float rate = 0f;
+        // 닿은 오브젝트까지 트레일링(물리 이동이 아닌 선형보간 이동방식)
+        //dashCoroutine = StartCoroutine(DashTrailRoutine(grabed));
+
+
+        // 훅 DistanceJoint2D의 distance를 줄이며 이동하는 방식
+        //Vector3 dir = (grabedPos - transform.position).normalized;
+        //rigid.AddForce(dir * 50f, ForceMode2D.Impulse);
+        dashCoroutine = StartCoroutine(DashTrail(grabed));
+    }
+    // fix
+    IEnumerator DashTrail(IGrabable grabed)
+    {
+        DistanceJoint2D distJoint = PrHooker.FiredHook.DistJoint;
 
         // 대쉬 중 플레이어 무적상태 적용(레이어 변경)
         gameObject.layer = LayerMask.NameToLayer("PlayerInvincible");
-        
         // 슬로우 연출
-        Time.timeScale = 0.5f;
-        while(rate < 1f)
+        Time.timeScale = 1f;
+        // 이벤트 카메라 변경
+        Manager.Camera.SetEventCamera();
+        while (distJoint.distance > 0.1f)
         {
-            // 카메라 시점 변경
-            if (rate >= 0.6f && rate <= 0.7f)
-                Manager.Camera.SetEventCamera();
-
-            rate += Time.deltaTime / time;
-            transform.position = Vector3.Lerp(startPos, endPos, rate);
+            distJoint.distance -= dashPower*Time.deltaTime;
+            Debug.Log(distJoint.distance);
             yield return null;
         }
-
-        // 카메라 시점 원상복구
+        // 발사한 훅 비활성화
+        PrHooker.FiredHook.DisConnecting();
+        transform.position = grabed.GetGrabPosition();
+        // 도착 시 원상복구
         Manager.Camera.SetMainCamera();
-
         gameObject.layer = LayerMask.NameToLayer("Player");
-        transform.position = endPos;
         Time.timeScale = 1f;
-        
-        // 목표지점에 도착한 뒤 닿은 오브젝트를 그랩
         Grab(grabed);
         yield return null;
     }
+
+    //// 대쉬 트레일링
+    //IEnumerator DashTrailRoutine(IGrabable grabed)
+    //{
+    //    Vector3 startPos = transform.position;
+    //    Vector3 endPos = grabed.GetGrabPosition();
+
+    //    float time = Vector3.Distance(startPos, endPos) / dashPower;
+    //    float rate = 0f;
+
+    //    // 대쉬 중 플레이어 무적상태 적용(레이어 변경)
+    //    gameObject.layer = LayerMask.NameToLayer("PlayerInvincible");
+
+    //    // 슬로우 연출
+    //    Time.timeScale = 0.5f;
+    //    while (rate < 1f)
+    //    {
+    //        // 카메라 시점 변경
+    //        if (rate >= 0.6f && rate <= 0.7f)
+    //            Manager.Camera.SetEventCamera();
+
+    //        rate += Time.deltaTime / time;
+    //        transform.position = Vector3.Lerp(startPos, endPos, rate);
+    //        yield return null;
+    //    }
+
+    //    // 카메라 시점 원상복구
+    //    Manager.Camera.SetMainCamera();
+
+    //    gameObject.layer = LayerMask.NameToLayer("Player");
+    //    transform.position = endPos;
+    //    Time.timeScale = 1f;
+
+    //    // 목표지점에 도착한 뒤 닿은 오브젝트를 그랩
+    //    Grab(grabed);
+    //    yield return null;
+    //}
 
     // 그랩 스킬
     public void Grab(IGrabable target)
@@ -142,6 +176,7 @@ public class PlayerSkill : PlayerBase
     }
 
     // 그랩대쉬 스킬 
+    // 연결된 
     public void CeilingStick()
     {
         PrFSM.IsCeilingStick = true;
@@ -149,7 +184,7 @@ public class PlayerSkill : PlayerBase
         PrFSM.ChangeState("CeilingStickStart");
 
         ceilingStickRoutine = StartCoroutine(CeilingStickRoutine());
-        ghostTrailRoutine = StartCoroutine(GhostTrailRoutine(0.3f, null));
+        ghostTrailRoutine = StartCoroutine(GhostTrailRoutine(1f, null));
     }
 
     // 그랩대쉬 루틴 (트레일링)
