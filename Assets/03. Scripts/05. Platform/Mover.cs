@@ -39,14 +39,14 @@ public class Mover : Platform
 
     private Coroutine trailRoutine;
 
-    private void Awake()
+    protected virtual void Awake()
     {
         startPos = startTr.position;
         chainEndPos = chainEndTr.position;
         endPos = endTr.position;
     }
 
-    private void OnEnable()
+    protected virtual void OnEnable()
     {
         LineRendering();
     }
@@ -109,11 +109,15 @@ public class Mover : Platform
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
+        Debug.Log("Mover Trigger Enter");
+
         if (Manager.Layer.playerHookLM.Contain(collision.gameObject.layer))
             Trail();
     }
     private void OnTriggerExit2D(Collider2D collision)
     {
+        Debug.Log("Mover Trigger Exit");
+
         if (Manager.Layer.playerHookLM.Contain(collision.gameObject.layer))
             StartCoroutine(RespawnRoutine());
     }
