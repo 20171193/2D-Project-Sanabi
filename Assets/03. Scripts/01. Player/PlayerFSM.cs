@@ -244,7 +244,7 @@ public class PlayerFSM : PlayerBase
         RaycastHit2D hit;
         Vector2 rayDir = Vector2.zero;
         LayerMask layerMask = 0;
-        float rayLength = 1.5f;
+        float rayLength = 2f;
 
         switch(groundType)
         {
@@ -272,7 +272,7 @@ public class PlayerFSM : PlayerBase
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        fsm.ChangeState(fsm.CurState);
+        //fsm.ChangeState(fsm.CurState);
     }
     private void OnTriggerEnter2D(Collider2D collision)
     {
