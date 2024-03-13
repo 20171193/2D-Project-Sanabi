@@ -230,11 +230,17 @@ public class PlayerHooker : PlayerBase
     }
     public void OnHookHitGround()
     {
+        // 튀어오르는 효과 적용
+        rigid.AddForce(Vector2.up * 5f, ForceMode2D.Impulse);
+
         playerFSM.IsJointed = true;
         playerFSM.ChangeState("Roping");
     }
     public void OnHookHitObject(IGrabable grabed)
     {
+        // 튀어오르는 효과 적용
+        rigid.AddForce(Vector2.up * 5f, ForceMode2D.Impulse);
+
         // 카메라 흔들림 효과 적용
         DoImpulse();
 

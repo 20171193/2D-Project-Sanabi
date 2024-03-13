@@ -51,7 +51,6 @@ public class Holder : Platform
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        Debug.Log("Hit holder");
         if (isHolding) return;
 
         // 플레이어가 부딪히거나, 플레이어 훅에 닿은 경우 홀딩

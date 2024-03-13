@@ -99,10 +99,6 @@ public class PlayerSkill : PlayerBase
 
         // 대쉬 중 플레이어 무적상태 적용(레이어 변경)
         gameObject.layer = LayerMask.NameToLayer("PlayerInvincible");
-        // 슬로우 연출
-        Time.timeScale = 1f;
-        // 이벤트 카메라 변경
-        Manager.Camera.SetEventCamera();
         while (distJoint.distance > 0.1f)
         {
             distJoint.distance -= dashPower*Time.deltaTime;
@@ -112,10 +108,7 @@ public class PlayerSkill : PlayerBase
         // 발사한 훅 비활성화
         PrHooker.FiredHook.DisConnecting();
         transform.position = grabed.GetGrabPosition();
-        // 도착 시 원상복구
-        Manager.Camera.SetMainCamera();
         gameObject.layer = LayerMask.NameToLayer("Player");
-        Time.timeScale = 1f;
         Debug.Log("object Grabstart");
         Grab(grabed);
         yield return null;
@@ -175,51 +168,17 @@ public class PlayerSkill : PlayerBase
         PrFSM.IsGround = false;
         PrFSM.ChangeState("CeilingStickStart");
 
+        // 닿은 오브젝트의 위치와 플레이어 위치를 계산해 플레이어 회전
+        if (transform.position.x < PrHooker.FiredHook.transform.position.x)
+            transform.rotation = Quaternion.Euler(0, 0, 0);
+        else
+            transform.rotation = Quaternion.Euler(0, -180, 0);
+
         ghostTrailRoutine = StartCoroutine(GhostTrailRoutine(1f, null));
         PrHooker.FiredHook.DistJoint.distance = 0.8f;
-        //ceilingStickRoutine = StartCoroutine(CeilingStickRoutine());
+        // 상태 전이는 PlayerFSM의 OnTriggerEnter2D에서 실행
+        // CeilingCheck와 충돌 시 -> CeilingStickIdle로 전환
     }
-
-    IEnumerator CeilingStickRoutine()
-    {
-        DistanceJoint2D distJoint = PrHooker.FiredHook.DistJoint;
-
-        while (distJoint.distance > 0.1f)
-        {
-            distJoint.distance -= dashPower * Time.deltaTime;
-            Debug.Log(distJoint.distance);
-            yield return null;
-        }
-
-        transform.position = PrHooker.FiredHook.transform.position;
-        // 발사한 훅 비활성화
-        PrHooker.FiredHook.DisConnecting();
-        yield return null;
-    }
-
-    // 그랩대쉬 루틴 (트레일링)
-    //IEnumerator CeilingStickRoutine()
-    //{
-    //    Vector3 startPos = transform.position;
-    //    Vector3 endPos = PrHooker.FiredHook.transform.position;
-
-    //    float time = Vector3.Distance(startPos, endPos) / dashPower;
-    //    float rate = 0f;
-
-    //    while (rate < 1f)
-    //    {
-    //        rate += Time.deltaTime / time;
-    //        transform.position = Vector3.Lerp(startPos, endPos, rate);
-    //        yield return null;
-    //    }
-
-    //    transform.position = endPos;
-
-    //    // 상태전환 : CeilingStickStart -> CeilingStickIdle
-    //    PrHooker.FiredHook.DisConnecting();
-    //    yield return null;
-    //}
-
 
     // 잔상 루틴
     IEnumerator GhostTrailRoutine(float activeTime, UnityAction afterAction)
