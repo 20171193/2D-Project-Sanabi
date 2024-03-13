@@ -89,11 +89,10 @@ public class PlayerFSM : PlayerBase
         fsm.AddState("Damaged", new PlayerDamaged(this));
         fsm.AddState("Run", new PlayerRun(this));
         fsm.AddState("RunStop", new PlayerRunStop(this));
-
         fsm.AddState("HookShoot", new PlayerHookShoot(this));
-
         fsm.AddState("Fall", new PlayerFall(this));
         fsm.AddState("Jump", new PlayerJump(this));
+        fsm.AddState("HookingJump", new PlayerHookingJump(this));
         fsm.AddState("Roping", new PlayerRoping(this));
         fsm.AddState("Dash", new PlayerDash(this));
         fsm.AddState("Grab", new PlayerGrab(this));
@@ -107,10 +106,14 @@ public class PlayerFSM : PlayerBase
         {
             return rigid.velocity.y < -JumpForce_Threshold;
         });
+        fsm.AddTransition("HookingJump", "Fall", 0f, () =>
+        {
+            return rigid.velocity.y < -JumpForce_Threshold;
+        });
 
         fsm.AddAnyState("Fall", () =>
         {
-            return  !isInWall && !isGround && !isJointed
+            return  !isGround && fsm.CurState != "Roping" && fsm.CurState != "WallSlide" && fsm.CurState != "Grab"
                     && rigid.velocity.y < -JumpForce_Threshold;
         });
 
@@ -160,6 +163,10 @@ public class PlayerFSM : PlayerBase
     private void Update()
     {
         fsm.Update();
+
+        Debug.DrawLine(transform.position, transform.position + Vector3.up * 1.5f, Color.red);
+        Debug.DrawLine(transform.position, transform.position + Vector3.down * 1.5f, Color.red);
+        Debug.DrawLine(transform.position, transform.position + transform.right * 1.5f, Color.red);
     }
     private void FixedUpdate()
     {
@@ -267,6 +274,7 @@ public class PlayerFSM : PlayerBase
             Manager.Layer.hookingGroundLM.Contain(collision.gameObject.layer) &&
             CheckGround(GroundType.HookingGround))
         {
+            PrHooker.FiredHook?.DisConnecting();
             IsCeilingStick = true;
             rigid.velocity = Vector3.zero;
 
@@ -278,6 +286,7 @@ public class PlayerFSM : PlayerBase
         if (Manager.Layer.wallLM.Contain(collision.gameObject.layer) && CheckGround(GroundType.Wall))
         {
             Debug.Log("Trigger wall");
+            PrHooker.FiredHook?.DisConnecting();
 
             isInWall = true;
             fsm.ChangeState("WallSlide");

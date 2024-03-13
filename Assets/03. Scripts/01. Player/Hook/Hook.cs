@@ -189,6 +189,10 @@ public class Hook : MonoBehaviour
     {
         if (trailRoutine != null)
             StopCoroutine(trailRoutine);
+        if (hookHittedRoutine != null)
+            StopCoroutine(hookHittedRoutine);
+        hookHittedVFX.SetActive(false);
+        hookHittedVFX.transform.parent = ownerRigid.transform;
     }
     private void OnDestroy()
     {

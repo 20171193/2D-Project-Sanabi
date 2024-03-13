@@ -125,6 +125,7 @@ public class PlayerMover : PlayerBase
         // 로프액션 상태 -> 천장후킹
         if (PrFSM.FSM.CurState == "Roping")
         {
+            Debug.Log("CeilingStickSkill");
             PrSkill.CeilingStick();
             return;
         }

@@ -161,18 +161,10 @@ public class PlayerHooker : PlayerBase
         }
         else
         {
-            // 로프액션 중
-            if (PrFSM.FSM.CurState == "Roping")
-            {
-                playerFSM.IsJointed = false;
-                firedHook?.DisConnecting();
-                RopeJump();
-            }
-            // 그랩 중
-            else if (playerFSM.FSM.CurState == "Grab")
-            {
-                GrabJump();
-            }
+            // 로프액션 혹은 그랩 중 -> 점프
+            if (PrFSM.FSM.CurState == "Roping" ||
+                playerFSM.FSM.CurState == "Grab")
+                HookingJump();
             // 훅 샷이 닿기 전에 마우스를 뗀 경우 
             else if (isHookShootDelay)
             {
@@ -185,20 +177,18 @@ public class PlayerHooker : PlayerBase
         }
     }
 
-    private void RopeJump()
-    {
-        rigid.AddForce(hookAim.transform.up * ropeJumpPower, ForceMode2D.Impulse);
-        anim.SetFloat("MovePower", rigid.velocity.magnitude);
-        anim.Play("RopeJump");
-    }
-    private void GrabJump()
+    private void HookingJump()
     {
         rigid.gravityScale = 1;
+        
+        // 연결된 훅이 있을 경우 해제
+        firedHook?.DisConnecting();
+        playerFSM.IsJointed = false;
+        // 그랩중인 오브젝트가 있을경우 그랩해제
+        grabedObject?.GrabEnd();
 
-        grabedObject.GrabEnd();
-
-        rigid.AddForce(hookAim.transform.up * 15f, ForceMode2D.Impulse);
-        anim.Play("RopeJump");
+        PrFSM.FSM.ChangeState("HookingJump");
+        rigid.AddForce(hookAim.transform.up * ropeJumpPower, ForceMode2D.Impulse);
     }
     #endregion
 
@@ -220,7 +210,6 @@ public class PlayerHooker : PlayerBase
 
         // reload Routine
         hookReloadRoutine = StartCoroutine(HookReloadRoutine());
-
         hookAim.LineOff();
         PrFSM.FSM.ChangeState("HookShoot");
         ActiveHook();
