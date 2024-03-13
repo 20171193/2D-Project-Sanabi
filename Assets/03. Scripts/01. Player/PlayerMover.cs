@@ -98,6 +98,9 @@ public class PlayerMover : PlayerBase
     protected float moveVtc;  // Keyboard input - 'W', 'S' *Wall Movement 
     public float MoveVtc { get { return moveVtc; } }
 
+    // ∏Æ∆—≈‰∏µ
+
+
     protected override void Awake()
     {
         base.Awake();
@@ -122,8 +125,6 @@ public class PlayerMover : PlayerBase
         }
         if (PrFSM.IsDash || PrFSM.IsGrab || PrFSM.IsCeilingStick) return;
 
-
-
         if (PrFSM.IsJointed)
         {
             PrSkill.CeilingStick();
@@ -136,7 +137,6 @@ public class PlayerMover : PlayerBase
             Jump();
             return;
         }
-
         if (PrFSM.IsInWall)
         {
             WallJump();
