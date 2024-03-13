@@ -4,6 +4,13 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using UnityEngine;
 using UnityEngine.Events;
 
+public enum GroundType
+{
+    Ground,
+    Wall,
+    HookingGround
+}
+
 public class PlayerFSM : PlayerBase
 {
     [SerializeField]
@@ -34,14 +41,6 @@ public class PlayerFSM : PlayerBase
     public bool IsJointed { get { return isJointed; } set { isJointed = value; } }
 
     [SerializeField]
-    private bool isDash = false;
-    public bool IsDash { get { return isDash; } set { isDash = value; } }
-
-    [SerializeField]
-    private bool isGrab = false;
-    public bool IsGrab { get { return isGrab; } set { isGrab = value; } }
-
-    [SerializeField]
     private bool isEnableGrabMove = false;
     public bool IsEnableGrabMove { get { return isEnableGrabMove; } set { isEnableGrabMove = value; } }
 
@@ -60,9 +59,6 @@ public class PlayerFSM : PlayerBase
         } 
     }
 
-    [SerializeField]
-    private bool beDamaged = false;
-    public bool BeDamaged { get { return beDamaged; } set { beDamaged = value; } }
     #endregion
 
     [Space(3)]
@@ -83,7 +79,7 @@ public class PlayerFSM : PlayerBase
     public UnityEvent OnLanding;        // invoke by PlayerMover (TriggerEnter2D)
 
     private Coroutine takeDamageRoutine;
-
+    public Coroutine TakeDamageCoroutine { get { return takeDamageRoutine; } }
     protected override void Awake()
     {
         base.Awake();
@@ -107,31 +103,6 @@ public class PlayerFSM : PlayerBase
         fsm.AddState("CeilingStickIdle", new PlayerCeilingStickIdle(this));
         fsm.AddState("CeilingStickMove", new PlayerCeilingStickMove(this));
 
-        fsm.AddAnyState("Damaged", () =>
-        {
-            return beDamaged;
-        });
-        fsm.AddTransition("Damaged", "Fall", 0f, () =>
-        {
-            return !beDamaged;
-        });
-        fsm.AddAnyState("Roping", () =>
-        {
-            return !beDamaged && !isCeilingStick
-                    && isJointed;
-        });
-        fsm.AddAnyState("WallSlide", () =>
-        {
-            return !beDamaged && !isDash && !isGrab
-                    && isInWall;
-        });
-
-        fsm.AddAnyState("Jump", () =>
-        {
-            return !isGrab && !beDamaged && !isInWall && !isGround && !isJointed
-                    && rigid.velocity.y > JumpForce_Threshold;
-        });
-
         fsm.AddTransition("Jump", "Fall", 0f, () =>
         {
             return rigid.velocity.y < -JumpForce_Threshold;
@@ -139,7 +110,7 @@ public class PlayerFSM : PlayerBase
 
         fsm.AddAnyState("Fall", () =>
         {
-            return !isGrab && !beDamaged && !isInWall && !isGround && !isJointed
+            return  !isInWall && !isGround && !isJointed
                     && rigid.velocity.y < -JumpForce_Threshold;
         });
 
@@ -219,9 +190,23 @@ public class PlayerFSM : PlayerBase
 
         takeDamageRoutine = StartCoroutine(TakeDamageRoutine());
 
-        beDamaged = true;
+        // 상태전이 : ? -> Damaged
+        fsm.ChangeState("Damaged");
         PrHooker.FiredHook?.DisConnecting();
     }
+    
+    // 히트 점프로 데미지 루틴을 빠져나간 경우
+    // 글리치 이펙트 초기화, 무적상태 초기화
+    public void InitDamageRoutine()
+    {
+        if (takeDamageRoutine != null)
+            StopCoroutine(takeDamageRoutine);
+        // 글리치 이펙트 비활성화
+        Camera.main.GetComponent<GlitchEffect>().enabled = false;
+        // 레이어 변경
+        gameObject.layer = LayerMask.NameToLayer("Player");
+    }
+
     IEnumerator TakeDamageRoutine()
     {
         // 무적상태로 변경
@@ -229,10 +214,41 @@ public class PlayerFSM : PlayerBase
         // 카메라 글리치 이펙트
         Camera.main.GetComponent<GlitchEffect>().enabled = true;
         yield return new WaitForSeconds(0.3f);
-        beDamaged = false;
         Camera.main.GetComponent<GlitchEffect>().enabled = false;
         yield return new WaitForSeconds(0.2f);
+        fsm.ChangeState("Idle");
         gameObject.layer = LayerMask.NameToLayer("Player");
+    }
+
+    private bool CheckGround(GroundType groundType)
+    {
+        RaycastHit2D hit;
+        Vector2 rayDir = Vector2.zero;
+        LayerMask layerMask = 0;
+        float rayLength = 1.5f;
+
+        switch(groundType)
+        {
+            case GroundType.Ground:
+                layerMask = Manager.Layer.groundLM;
+                rayDir = Vector2.down;
+                break;
+            case GroundType.HookingGround:
+                layerMask = Manager.Layer.hookingGroundLM;
+                rayDir = Vector2.up;
+                break;
+            case GroundType.Wall:
+                layerMask = Manager.Layer.wallLM;
+                rayDir = transform.right;
+                break;
+            default:
+                return false;
+        }
+
+        hit = Physics2D.Raycast(transform.position, rayDir, rayLength, layerMask);
+        if (hit)
+            Debug.Log($"Type Change {groundType}");
+        return hit;
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
@@ -243,55 +259,60 @@ public class PlayerFSM : PlayerBase
     {
         Debug.Log("Trigger enter");
 
-        if (CeilingChecker.activeSelf && Manager.Layer.hookingGroundLM.Contain(collision.gameObject.layer))
+        // 우선순위 
+        // 천장 > 바닥 > 벽
+
+        // 천장 체크 : 천장후킹
+        if (CeilingChecker.activeSelf &&
+            Manager.Layer.hookingGroundLM.Contain(collision.gameObject.layer) &&
+            CheckGround(GroundType.HookingGround))
         {
+            IsCeilingStick = true;
             rigid.velocity = Vector3.zero;
 
             fsm.ChangeState("CeilingStickIdle");
+            return;
         }
-        if (Manager.Layer.wallLM.Contain(collision.gameObject.layer))
-        {
-            if (isGround) return;
-            if (IsCeilingStick) IsCeilingStick = false;
 
+        // 벽 체크 : 벽타기 
+        if (Manager.Layer.wallLM.Contain(collision.gameObject.layer) && CheckGround(GroundType.Wall))
+        {
             Debug.Log("Trigger wall");
 
             isInWall = true;
             fsm.ChangeState("WallSlide");
+            return;
         }
+        // 바닥 체크 
+        if (Manager.Layer.groundLM.Contain(collision.gameObject.layer) && CheckGround(GroundType.Ground))
+        {
+            Debug.Log("Check Ground");
+            // 마찰력을 줄이기 위한 소프트 랜딩
+            rigid.velocity = new Vector2(rigid.velocity.x, -0.01f);
+            // ground check
+            OnLanding?.Invoke();
+
+            isGround = true;
+            return;
+        }
+
 
         if (Manager.Layer.damageGroundLM.Contain(collision.gameObject.layer))
         {
+            // 모든 상태 탈출
             isInWall = false;
+            IsCeilingStick = false;
 
             rigid.velocity = Vector3.zero;
             rigid.AddForce(collision.gameObject.transform.right * 12f + rigid.transform.right * -5f, ForceMode2D.Impulse);
             TakeDamage();
+            return;
         }
 
         if (Manager.Layer.enemyBulletLM.Contain(collision.gameObject.layer) ||
             (Manager.Layer.bossAttackLM.Contain(collision.gameObject.layer)))
         {
             TakeDamage();
-            return;
-        }
-
-
-        // Ground Check
-        if (!IsCeilingStick && Manager.Layer.groundLM.Contain(collision.gameObject.layer))
-        {
-            if (isInWall) return;
-
-            Debug.Log("Check Ground");
-            // 마찰력을 줄이기 위한 소프트 랜딩
-            rigid.velocity = new Vector2(rigid.velocity.x, -0.01f);
-
-            // ground check
-            OnLanding?.Invoke();
-
-            groundCount++;
-            if (groundCount > 0)
-                isGround = true;
             return;
         }
     }
@@ -301,16 +322,12 @@ public class PlayerFSM : PlayerBase
 
         if (Manager.Layer.groundLM.Contain(collision.gameObject.layer))
         {
-            if (isInWall) return;
-            // ground check
-            groundCount--;
-            if (groundCount <= 0)
-                isGround = false;
+             isGround = false;
         }
 
-        if (CeilingChecker.activeSelf && Manager.Layer.hookingGroundLM.Contain(collision.gameObject.layer))
+        if (CeilingChecker.activeSelf &&
+            Manager.Layer.hookingGroundLM.Contain(collision.gameObject.layer))
         {
-            //Debug.Log("Falling");
             IsCeilingStick = false;
             fsm.ChangeState("Fall");
             return;
@@ -319,15 +336,15 @@ public class PlayerFSM : PlayerBase
         if (Manager.Layer.wallLM.Contain(collision.gameObject.layer))
         {
             isInWall = false;
-            PrHooker.FiredHook?.DisConnecting();
+            //PrHooker.FiredHook?.DisConnecting();
 
-            if (PrMover.MoveVtc > 0)
+            // 벽을 오르는 상태에서 탈출했을 경우
+            if (PrMover.MoveVtc > 0 && fsm.CurState == "WallSlide")
             {
-                anim.Play("Jump");
-
+                fsm.ChangeState("Jump");
                 // Wall Exit to Up Position
                 OnWallJump?.Invoke();
-                rigid.AddForce(transform.up * 8f + transform.right * 3f, ForceMode2D.Impulse);
+                rigid.AddForce(transform.up * 10f, ForceMode2D.Impulse);
             }
         }
     }

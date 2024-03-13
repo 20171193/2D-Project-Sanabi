@@ -172,6 +172,7 @@ public class PlayerJump : PlayerBaseState
     public override void Enter()
     {
         Debug.Log("Enter : Jump");
+        owner.Anim.Play("Jump");
     }
     public override void FixedUpdate()
     {
