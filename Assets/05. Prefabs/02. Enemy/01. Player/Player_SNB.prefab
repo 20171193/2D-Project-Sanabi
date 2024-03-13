@@ -5155,6 +5155,64 @@ Transform:
   m_Father: {fileID: 8338325329431907400}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1833167293
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1833167294}
+  - component: {fileID: 1833167295}
+  m_Layer: 22
+  m_Name: CeilingChecker
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!4 &1833167294
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1833167293}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 8338325329431907400}
+  m_RootOrder: 9
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!61 &1833167295
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1833167293}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: -0.21505547, y: 1.1771479}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0, y: 0}
+    oldSize: {x: 0, y: 0}
+    newSize: {x: 0, y: 0}
+    adaptiveTilingThreshold: 0
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 0.56668854, y: 0.4817295}
+  m_EdgeRadius: 0
 --- !u!1 &2061561956
 GameObject:
   m_ObjectHideFlags: 0
@@ -5452,12 +5510,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   lr: {fileID: 8338325328473934066}
   aimRendererOb: {fileID: 8338325329016645102}
-  enemyLineMt:
-  - {fileID: 2100000, guid: 887cc20b518a3174fa4242551eca7308, type: 2}
-  groundLineMt:
-  - {fileID: 2100000, guid: 0338845cc8edd89429fd3d53b9a149d9, type: 2}
-  - {fileID: 2100000, guid: 80acb1071874db44a956bcaf67d18e76, type: 2}
-  - {fileID: 2100000, guid: 302ca3dbec43da14190b4ce1032d6094, type: 2}
+  enemyLineMt: {fileID: 2100000, guid: 887cc20b518a3174fa4242551eca7308, type: 2}
+  groundLineMt: {fileID: 2100000, guid: 0338845cc8edd89429fd3d53b9a149d9, type: 2}
   renderTargetPos: {x: 0, y: 0, z: 0}
   isLineRendering: 0
 --- !u!1 &8338325328590322910
@@ -5674,6 +5728,7 @@ Transform:
   - {fileID: 1156661053}
   - {fileID: 3166283507707156009}
   - {fileID: 1654936008}
+  - {fileID: 1833167294}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -5780,15 +5835,13 @@ MonoBehaviour:
   anim: {fileID: 0}
   cam: {fileID: 0}
   impulseSource: {fileID: 0}
+  ceilingChecker: {fileID: 1833167293}
   isGround: 0
+  groundCount: 0
   isInWall: 0
   isJointed: 0
-  isDash: 0
-  isGrab: 0
   isEnableGrabMove: 0
-  isHookShoot: 0
-  isRaycastHit: 0
-  beDamaged: 0
+  isCeilingStick: 0
   OnRun:
     m_PersistentCalls:
       m_Calls: []
@@ -5952,21 +6005,23 @@ MonoBehaviour:
   anim: {fileID: 0}
   cam: {fileID: 0}
   impulseSource: {fileID: 0}
-  movePower: 30
+  movePower: 60
   maxMoveSpeed: 12
   hztBrakePower: 30
   vtcBrakePower: 30
   holdingMovePower: 15
   maxHoldingMoveSpeed: 8
   holdingHztBrakePower: 15
-  climbPower: 3
-  slidingPower: 5
-  jumpPower: 12
+  climbPower: 8
+  slidingPower: 10
+  jumpPower: 15
   flyMovePower: 1
   hittedJumpPower: 15
   ropeMovePower: 3
   currentMaxRopingPower: 15
   maxRopingPower: 30
+  ceilingMovePower: 30
+  maxCeilingMovePower: 10
   moveHzt: 0
   moveVtc: 0
 --- !u!114 &8338325329431907394
@@ -5995,6 +6050,8 @@ MonoBehaviour:
   mousePos: {x: 0, y: 0, z: 0}
   hookObject: {fileID: 4504473988208090218}
   firedHook: {fileID: 8410238633388971286}
+  isRaycastHit: 0
+  isHookShootDelay: 0
 --- !u!114 &8338325329431907395
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6012,8 +6069,8 @@ MonoBehaviour:
   cam: {fileID: 0}
   impulseSource: {fileID: 0}
   ropeForceParticle: {fileID: 488339195}
-  ropeSkillPower: 10
-  dashPower: 50
+  ropeSkillPower: 15
+  dashPower: 40
   slowMotionTime: 0
 --- !u!114 &1942553676
 MonoBehaviour:
@@ -6113,7 +6170,7 @@ BoxCollider2D:
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: -1.2034367}
+  m_Offset: {x: -0.16947651, y: -1.2034367}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -6124,7 +6181,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 1, y: 0.3874228}
+  m_Size: {x: 0.6049442, y: 0.3874228}
   m_EdgeRadius: 0
 --- !u!1 &8338325329501459852
 GameObject:
@@ -6171,7 +6228,7 @@ BoxCollider2D:
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0.41567278, y: 0.3292513}
+  m_Offset: {x: 0.5538645, y: 0.31697798}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -6182,7 +6239,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.42571926, y: 1.469101}
+  m_Size: {x: 0.43408203, y: 1.4936476}
   m_EdgeRadius: 0
 --- !u!1001 &2597940208976043783
 PrefabInstance:
@@ -6439,6 +6496,10 @@ PrefabInstance:
     - target: {fileID: 9204252272020083190, guid: 9c0c4d3285540fc4cb9aa73ead938b19, type: 3}
       propertyPath: m_EnableCollision
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 9204252272020083190, guid: 9c0c4d3285540fc4cb9aa73ead938b19, type: 3}
+      propertyPath: m_MaxDistanceOnly
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9c0c4d3285540fc4cb9aa73ead938b19, type: 3}
