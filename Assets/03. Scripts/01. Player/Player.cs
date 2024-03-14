@@ -12,15 +12,19 @@ public class Player : MonoBehaviour
     public const float JumpForce_Threshold = 0.05f;
 
     // Linked Class
+    [SerializeField]
     private PlayerFSM playerFSM;
     public PlayerFSM PrFSM { get { return playerFSM; } }
 
+    [SerializeField]
     private PlayerMover playerMover;
     public PlayerMover PrMover { get { return playerMover; } }
 
+    [SerializeField]
     private PlayerHooker playerHooker;
     public PlayerHooker PrHooker { get { return playerHooker; } }
 
+    [SerializeField]
     private PlayerSkill playerSkill;
     public PlayerSkill PrSkill { get { return playerSkill; } }
 
@@ -67,17 +71,15 @@ public class Player : MonoBehaviour
     public Coroutine TakeDamageCoroutine { get { return takeDamageRoutine; } }
 
     private void Awake()
-    {
-        Debug.Log("Player Awake");
-
+    { 
         impulseSource = GetComponent<CinemachineImpulseSource>();
         rigid = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
         cam = Camera.main;
 
         // Assign linked class
-        playerFSM = GetComponent<PlayerFSM>();
         playerMover = GetComponent<PlayerMover>();
+        playerFSM = GetComponent<PlayerFSM>();
         playerHooker = GetComponent<PlayerHooker>();
         playerSkill = GetComponent<PlayerSkill>();
     }

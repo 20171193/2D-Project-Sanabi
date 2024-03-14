@@ -79,7 +79,6 @@ public class PlayerVFXPooler : MonoBehaviour
             }
 
             vfxPool.Add(name, new VFX(stack, originTr));
-            Debug.Log(name);
         }
     }
 

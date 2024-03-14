@@ -22,6 +22,14 @@ public class Justice : MonoBehaviour
     public Animator Anim { get { return anim; } }
 
     [SerializeField]
+    private Animator embientAnim;
+    public Animator EmbientAnim { get { return embientAnim; } }
+
+    [SerializeField]
+    private CircleCollider2D circleCol;
+    public CircleCollider2D CircleCol { get { return circleCol; } }
+
+    [SerializeField]
     private WeaknessController weaknessController;
     public WeaknessController WeaknessController { get { return weaknessController; } }
 
@@ -45,6 +53,12 @@ public class Justice : MonoBehaviour
     private float dashSlashAttackRange;
     public float DashSlashAttackRange { get { return dashSlashAttackRange; } }
 
+    [SerializeField]
+    private Vector3 beforeBattleModePos;
+    [SerializeField]
+    private Vector3 battleModePos;
+
+
     // 최소 공격 범위
     // (현재 공격 타입의 공격 범위 - 최소 공격 범위)에 플레이어가 존재할 경우 차지 상태로 전환
     [SerializeField]
@@ -53,6 +67,9 @@ public class Justice : MonoBehaviour
 
     [Header("Phase Data")]
     [Space(2)]
+    [SerializeField]
+    private Vector3 phase1Pos;
+    
     private List<JusticePhaseData> phaseDatas;
     public List<JusticePhaseData> PhaseDatas { get { return phaseDatas; } }
 
@@ -175,7 +192,9 @@ public class Justice : MonoBehaviour
         CurrentAttackType = JusticeAttackType.Slash;
 
         fsm = new StateMachine<Justice>(this);
-        fsm.AddState("Init", new Init(this));
+        fsm.AddState("PowerOff", new PowerOff());
+        fsm.AddState("PowerOn", new PowerOn(this));
+        fsm.AddState("BeforeBattleMode", new BeforeBattleMode(this));
         fsm.AddState("BattleMode", new BattleMode(this));
         fsm.AddState("Track", new Track(this));
         fsm.AddState("Teleport", new Teleport(this));
@@ -186,10 +205,8 @@ public class Justice : MonoBehaviour
         // 추후
         fsm.AddState("Counter", new Counter(this));
 
-
-        fsm.Init("Init");
+        fsm.Init("PowerOff");
     }
-
     private void Update()
     {
         fsm.Update();
@@ -198,6 +215,32 @@ public class Justice : MonoBehaviour
     {
         fsm.FixedUpdate();
     }
+
+    #region Cinematic
+    // 이벤트 트리거
+    public void EnterBeforeBattleMode()
+    {
+        fsm.ChangeState("PowerOn");
+
+        StartCoroutine(Extension.DelayRoutine(5f, () => fsm.ChangeState("BeforeBattleMode")));
+    }
+
+    // 시네마틱 용 애니메이션
+    public void SetBeforeBattlePos()
+    {
+        transform.position = beforeBattleModePos;
+        transform.rotation = Quaternion.Euler(0, 0, 0);
+    }
+    public void SetBattlePos()
+    {
+        transform.position = battleModePos;
+    }
+    public void EnableObjects()
+    {
+        embientAnim.Play("EnterBattleMode");
+        weaknessController.IsSpawnIdle = true;
+    }
+    #endregion
 
     public void ChangeAttackType(JusticeAttackType type)
     {
@@ -208,8 +251,11 @@ public class Justice : MonoBehaviour
         currentAttackType = JusticeAttackType.Slash;
     }
 
+    // 공격 반사
     private void Parrying(Collider2D collision)
     {
+        collision.GetComponent<Hook>().DisConnecting();
+
         Vector3 dir = (collision.transform.position - transform.position).normalized;
 
         GameObject parryingOb = null;
@@ -244,7 +290,12 @@ public class Justice : MonoBehaviour
             }
             // 반격
             else
+            {
                 Parrying(collision);
+
+                if (fsm.CurState == "BeforeBattleMode")
+                    fsm.ChangeState("BattleMode");
+            }
         }
     }
 }

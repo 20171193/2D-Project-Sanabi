@@ -9,35 +9,50 @@ public class JusticeBaseState : BaseState
 {
     protected Justice owner;
 }
-
-public class Init : JusticeBaseState
+public class PowerOff : JusticeBaseState
 {
-    // 공격을 시작하기 이전 상태
-    private Coroutine initRoutine;
-    public Init(Justice owner) { this.owner = owner; }
+    // 더미클래스
+}
+public class PowerOn : JusticeBaseState
+{
+    // 초기상태
+    public PowerOn(Justice owner) { this.owner = owner; }
 
     public override void Enter()
     {
-        owner.Anim.Play("Init");
-
-        initRoutine = owner.StartCoroutine(Extension.DelayRoutine(1.5f, () => owner.FSM.ChangeState("BattleMode")));
+        owner.Anim.Play("PowerOn");
     }
     public override void Exit()
     {
-        if (initRoutine != null)
-            owner.StopCoroutine(initRoutine);
     }
 }
+
+public class BeforeBattleMode : JusticeBaseState
+{
+    public BeforeBattleMode(Justice owner) { this.owner = owner; }
+
+    // 플레이어가 트리거 진입 시
+    public override void Enter()
+    {
+        owner.CircleCol.enabled = true;
+        owner.Anim.Play("BeforeBattleMode");
+    }
+    public override void Exit()
+    {
+    }
+}
+
 public class BattleMode : JusticeBaseState
 {
+    // 한번 공격을 받았을 때
     // 공격모드 진입 상태
     private Coroutine battleModeTimer;
     public BattleMode(Justice owner) { this.owner = owner; }
 
     public override void Enter()
     {
-        owner.Anim.Play("ActiveBattleMode");
-        battleModeTimer = owner.StartCoroutine(Extension.DelayRoutine(1.5f, ()=>owner.FSM.ChangeState("Track")));
+        owner.Anim.Play("BattleMode");
+        battleModeTimer = owner.StartCoroutine(Extension.DelayRoutine(10f, ()=>owner.FSM.ChangeState("Track")));
     }
     public override void Exit()
     {
@@ -145,6 +160,7 @@ public class Teleport : JusticeBaseState
         if (!owner.WeaknessController.IsDisAppear)
             owner.WeaknessController.DisAppearAll();
 
+        owner.EmbientAnim.Play("DisAppear");
         owner.Anim.Play("TeleportStart");
         // 텔레포트 딜레이 시간만큼 딜레이 후 상태전환
         teleportDelayTimer = owner.StartCoroutine(Extension.DelayRoutine(owner.TeleportTime, () => TeleportEnd()));
@@ -203,6 +219,7 @@ public class Charge : JusticeBaseState
             case JusticeAttackType.CloakingSlash:
                 isAiming = false;
 
+                owner.EmbientAnim.Play("Appear");
                 // VFX 활성화
                 vfx = owner.ChargeVFXPool.ActiveVFX("CloakingSlashCharge").GetComponent<JusticeVFX>();
                 break;

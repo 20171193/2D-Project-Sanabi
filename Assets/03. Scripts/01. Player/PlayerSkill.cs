@@ -80,7 +80,6 @@ public class PlayerSkill : PlayerBase
         GameObject vfx = Player.PrVFX.GetVFX("PlayerDash");
         Vector3 vec = grabedPos - transform.position;
         vfx.transform.right = vec.normalized;
-        // 대상과 거리 1/4 지점에 vfx 위치 세팅
         vfx.transform.position = transform.position + vec.normalized * 2f;
 
 

@@ -27,7 +27,19 @@ public class WeaknessController : MonoBehaviour
     [Header("Balancing")]
     [Space(2)]
     [SerializeField]
-    private bool isSpawnIdle = true;    // 모든 약점이 파괴되면 약점 생성 대기상태 진입
+    private bool isSpawnIdle = false;    // 모든 약점이 파괴되면 약점 생성 대기상태 진입
+    public bool IsSpawnIdle 
+    { 
+        get 
+        { 
+            return isSpawnIdle; 
+        } 
+        set
+        {
+            isSpawnIdle = value;
+        }
+    }
+
 
     [SerializeField]
     private bool isDisAppear = false;   // 약점이 꺼진 상태인지? 
@@ -56,10 +68,15 @@ public class WeaknessController : MonoBehaviour
     private void Update()
     {
         Rotation();
-        if (isSpawnIdle 
-            && owner.FSM.CurState != "Teleport" 
-            && owner.FSM.CurState != "Grabing")
+
+        if (IsSpawnIdle &&
+            owner.FSM.CurState != "Init" &&
+            owner.FSM.CurState != "Teleport" &&
+            owner.FSM.CurState != "Counter" &&
+            owner.FSM.CurState != "Groggy")
+        {
             Spawn();
+        }
     }
     private void Rotation()
     {
@@ -74,7 +91,7 @@ public class WeaknessController : MonoBehaviour
             if (activeRoutine != null)
                 StopCoroutine(activeRoutine);
 
-            isSpawnIdle = true;
+            IsSpawnIdle = true;
         }
     }
 
@@ -97,6 +114,8 @@ public class WeaknessController : MonoBehaviour
 
     private void Spawn()
     {
+        Debug.Log("Spawn");
+
         isSpawnIdle = false;
         AppearAll();
 

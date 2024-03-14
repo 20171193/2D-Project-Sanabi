@@ -19,7 +19,6 @@ public class PlayerIdle : PlayerBaseState
 
     public override void Enter()
     {
-        Debug.Log("Enter : Idle");
         owner.Anim.Play("Idle");
     }
 }
@@ -28,17 +27,14 @@ public class PlayerIdle : PlayerBaseState
 #region Run
 public class PlayerRun : PlayerBaseState
 {
-    private PlayerMover mover;
     public PlayerRun(Player owner)
     {
         this.owner = owner;
-        mover = owner.PrMover;
     }
 
     public override void Enter()
     {
         //owner.Rigid.velocity = Vector3.zero;
-        Debug.Log("Enter : Run");
         owner.Anim.Play("Run");
     }
 
@@ -48,20 +44,20 @@ public class PlayerRun : PlayerBaseState
     }
     private void Move()
     {
-        owner.Anim.SetFloat("MovePower", Mathf.Abs(mover.MoveHzt));
+        owner.Anim.SetFloat("MovePower", Mathf.Abs(owner.PrMover.MoveHzt));
 
         owner.OnRun?.Invoke();
 
         // 캐릭터 회전
-        if (mover.MoveHzt > 0)
+        if (owner.PrMover.MoveHzt > 0)
             owner.transform.rotation = Quaternion.Euler(0, 0, 0);
-        else if (mover.MoveHzt < 0)
+        else if (owner.PrMover.MoveHzt < 0)
             owner.transform.rotation = Quaternion.Euler(0, -180, 0);
 
         // 실제 이동
-        owner.Rigid.AddForce(Vector2.right * mover.MoveHzt * mover.MovePower);
+        owner.Rigid.AddForce(Vector2.right * owner.PrMover.MoveHzt * owner.PrMover.MovePower);
         // 이동속도 제한
-        owner.Rigid.velocity = new Vector2(Mathf.Clamp(owner.Rigid.velocity.x, -mover.MaxMoveSpeed, mover.MaxMoveSpeed), owner.Rigid.velocity.y);
+        owner.Rigid.velocity = new Vector2(Mathf.Clamp(owner.Rigid.velocity.x, -owner.PrMover.MaxMoveSpeed, owner.PrMover.MaxMoveSpeed), owner.Rigid.velocity.y);
     }
 
     public override void Exit()
@@ -71,17 +67,13 @@ public class PlayerRun : PlayerBaseState
 }
 public class PlayerRunStop : PlayerBaseState
 {
-    private PlayerMover mover;
     public PlayerRunStop(Player owner)
     {
         this.owner = owner;
-        mover = owner.PrMover;
     }
 
     public override void Enter()
     {
-        Debug.Log("Enter : Runstop");
-
         owner.Anim.Play("RunStop");
     }
 
@@ -94,9 +86,9 @@ public class PlayerRunStop : PlayerBaseState
     {
         // 브레이크 적용
         if (owner.Rigid.velocity.x > Player.MoveForce_Threshold)
-            owner.Rigid.AddForce(Vector2.left * mover.HztBrakePower);
+            owner.Rigid.AddForce(Vector2.left * owner.PrMover.HztBrakePower);
         else if (owner.Rigid.velocity.x < -Player.MoveForce_Threshold)
-            owner.Rigid.AddForce(Vector2.right * mover.HztBrakePower);
+            owner.Rigid.AddForce(Vector2.right * owner.PrMover.HztBrakePower);
     }
 }
 #endregion
@@ -104,16 +96,14 @@ public class PlayerRunStop : PlayerBaseState
 #region WallSliding
 public class PlayerWallSlide : PlayerBaseState
 {
-    private PlayerMover mover;
+    
     public PlayerWallSlide(Player owner)
     {
         this.owner = owner;
-        mover = owner.PrMover;
     }
 
     public override void Enter()
     {
-        Debug.Log("Enter WallSlide");
         owner.Rigid.gravityScale = 0;
         owner.Rigid.velocity = Vector2.zero;
 
@@ -129,22 +119,22 @@ public class PlayerWallSlide : PlayerBaseState
     }
     private void WallMove()
     {
-        owner.Anim.SetFloat("MovePower", mover.MoveVtc);
+        owner.Anim.SetFloat("MovePower", owner.PrMover.MoveVtc);
 
-        if (mover.MoveVtc != 0)
+        if (owner.PrMover.MoveVtc != 0)
         {
-            if (mover.MoveVtc < -Player.MoveForce_Threshold)
+            if (owner.PrMover.MoveVtc < -Player.MoveForce_Threshold)
             {
                 owner.OnWallSliding?.Invoke();
 
-                float moveYPos = Mathf.Lerp(owner.transform.position.y, owner.transform.position.y + mover.SlidingPower * mover.MoveVtc, Time.deltaTime);
+                float moveYPos = Mathf.Lerp(owner.transform.position.y, owner.transform.position.y + owner.PrMover.SlidingPower * owner.PrMover.MoveVtc, Time.deltaTime);
                 owner.transform.position = new Vector3(owner.transform.position.x, moveYPos, 0);
             }
-            else if (mover.MoveVtc > Player.MoveForce_Threshold)
+            else if (owner.PrMover.MoveVtc > Player.MoveForce_Threshold)
             {
                 owner.OnClimb?.Invoke();
 
-                float moveYPos = Mathf.Lerp(owner.transform.position.y, owner.transform.position.y + mover.ClimbPower * mover.MoveVtc, Time.deltaTime);
+                float moveYPos = Mathf.Lerp(owner.transform.position.y, owner.transform.position.y + owner.PrMover.ClimbPower * owner.PrMover.MoveVtc, Time.deltaTime);
                 owner.transform.position = new Vector3(owner.transform.position.x, moveYPos, 0);
             }
         }
@@ -162,16 +152,12 @@ public class PlayerWallSlide : PlayerBaseState
 #region Jump / Fall
 public class PlayerJump : PlayerBaseState
 {
-    private PlayerMover mover;
-
     public PlayerJump(Player owner)
     {
         this.owner = owner;
-        mover = owner.PrMover;
     }
     public override void Enter()
     {
-        Debug.Log("Enter : Jump");
         owner.Anim.Play("Jump");
     }
     public override void FixedUpdate()
@@ -185,9 +171,9 @@ public class PlayerJump : PlayerBaseState
     private void Rotation()
     {
         // 캐릭터 회전
-        if (mover.MoveHzt > 0)
+        if (owner.PrMover.MoveHzt > 0)
             owner.transform.rotation = Quaternion.Euler(0, 0, 0);
-        else if (mover.MoveHzt < 0)
+        else if (owner.PrMover.MoveHzt < 0)
             owner.transform.rotation = Quaternion.Euler(0, -180, 0);
     }
 
@@ -196,35 +182,32 @@ public class PlayerJump : PlayerBaseState
         // 실제 이동
         //owner.Rigid.AddForce(Vector2.right * mover.MoveHzt * mover.FlyMovePower);
 
-        if (mover.MoveHzt == 0)
+        if (owner.PrMover.MoveHzt == 0)
         {
             // 브레이크 적용
             if (owner.Rigid.velocity.x > Player.MoveForce_Threshold)
-                owner.Rigid.AddForce(Vector2.left * mover.HztBrakePower);
+                owner.Rigid.AddForce(Vector2.left * owner.PrMover.HztBrakePower);
             else if (owner.Rigid.velocity.x < -Player.MoveForce_Threshold)
-                owner.Rigid.AddForce(Vector2.right * mover.HztBrakePower);
+                owner.Rigid.AddForce(Vector2.right * owner.PrMover.HztBrakePower);
         }
         else
         {
             // 실제 이동
-            owner.Rigid.AddForce(Vector2.right * mover.MoveHzt * mover.MovePower);
+            owner.Rigid.AddForce(Vector2.right * owner.PrMover.MoveHzt * owner.PrMover.MovePower);
             // 이동속도 제한
-            owner.Rigid.velocity = new Vector2(Mathf.Clamp(owner.Rigid.velocity.x, -mover.MaxMoveSpeed, mover.MaxMoveSpeed), owner.Rigid.velocity.y);
+            owner.Rigid.velocity = new Vector2(Mathf.Clamp(owner.Rigid.velocity.x, -owner.PrMover.MaxMoveSpeed, owner.PrMover.MaxMoveSpeed), owner.Rigid.velocity.y);
         }
     }
 }
 public class PlayerHookingJump : PlayerBaseState
 {
-    private PlayerMover mover;
     
     public PlayerHookingJump(Player owner)
     {
         this.owner = owner;
-        mover = owner.PrMover;
     }
     public override void Enter()
     {
-        Debug.Log("Enter : HookingJump");
         owner.Anim.Play("RopeJump");
     }
     public override void FixedUpdate()
@@ -238,9 +221,9 @@ public class PlayerHookingJump : PlayerBaseState
     private void Rotation()
     {
         // 캐릭터 회전
-        if (mover.MoveHzt > 0)
+        if (owner.PrMover.MoveHzt > 0)
             owner.transform.rotation = Quaternion.Euler(0, 0, 0);
-        else if (mover.MoveHzt < 0)
+        else if (owner.PrMover.MoveHzt < 0)
             owner.transform.rotation = Quaternion.Euler(0, -180, 0);
     }
 
@@ -249,36 +232,33 @@ public class PlayerHookingJump : PlayerBaseState
         // 실제 이동
         //owner.Rigid.AddForce(Vector2.right * mover.MoveHzt * mover.FlyMovePower);
 
-        if (mover.MoveHzt == 0)
+        if (owner.PrMover.MoveHzt == 0)
         {
             // 브레이크 적용
             if (owner.Rigid.velocity.x > Player.MoveForce_Threshold)
-                owner.Rigid.AddForce(Vector2.left * mover.HztBrakePower);
+                owner.Rigid.AddForce(Vector2.left * owner.PrMover.HztBrakePower);
             else if (owner.Rigid.velocity.x < -Player.MoveForce_Threshold)
-                owner.Rigid.AddForce(Vector2.right * mover.HztBrakePower);
+                owner.Rigid.AddForce(Vector2.right * owner.PrMover.HztBrakePower);
         }
         else
         {
             // 실제 이동
-            owner.Rigid.AddForce(Vector2.right * mover.MoveHzt * mover.MovePower);
+            owner.Rigid.AddForce(Vector2.right * owner.PrMover.MoveHzt * owner.PrMover.MovePower);
             // 이동속도 제한
-            owner.Rigid.velocity = new Vector2(Mathf.Clamp(owner.Rigid.velocity.x, -mover.MaxMoveSpeed, mover.MaxMoveSpeed), owner.Rigid.velocity.y);
+            owner.Rigid.velocity = new Vector2(Mathf.Clamp(owner.Rigid.velocity.x, -owner.PrMover.MaxMoveSpeed, owner.PrMover.MaxMoveSpeed), owner.Rigid.velocity.y);
         }
     }
 }
 public class PlayerFall : PlayerBaseState
 {
-    private PlayerMover mover;
 
     public PlayerFall(Player owner)
     {
         this.owner = owner;
-        mover = owner.PrMover;
     }
 
     public override void Enter()
     {
-        Debug.Log("Enter : Fall");
         owner.PrHooker.FiredHook?.DisConnecting();
         owner.Rigid.gravityScale = 1;
         owner.Anim.Play("Fall");
@@ -296,27 +276,27 @@ public class PlayerFall : PlayerBaseState
     private void Rotation()
     {
         // 캐릭터 회전
-        if (mover.MoveHzt > 0)
+        if (owner.PrMover.MoveHzt > 0)
             owner.transform.rotation = Quaternion.Euler(0, 0, 0);
-        else if (mover.MoveHzt < 0)
+        else if (owner.PrMover.MoveHzt < 0)
             owner.transform.rotation = Quaternion.Euler(0, -180, 0);
     }
     private void FlyMoveMent()
     {
-        if (mover.MoveHzt == 0)
+        if (owner.PrMover.MoveHzt == 0)
         {
             // 브레이크 적용
             if (owner.Rigid.velocity.x > Player.MoveForce_Threshold)
-                owner.Rigid.AddForce(Vector2.left * mover.HztBrakePower);
+                owner.Rigid.AddForce(Vector2.left * owner.PrMover.HztBrakePower);
             else if (owner.Rigid.velocity.x < -Player.MoveForce_Threshold)
-                owner.Rigid.AddForce(Vector2.right * mover.HztBrakePower);
+                owner.Rigid.AddForce(Vector2.right * owner.PrMover.HztBrakePower);
         }
         else
         {
             // 실제 이동
-            owner.Rigid.AddForce(Vector2.right * mover.MoveHzt * mover.MovePower);
+            owner.Rigid.AddForce(Vector2.right * owner.PrMover.MoveHzt * owner.PrMover.MovePower);
             // 이동속도 제한
-            owner.Rigid.velocity = new Vector2(Mathf.Clamp(owner.Rigid.velocity.x, -mover.MaxMoveSpeed, mover.MaxMoveSpeed), owner.Rigid.velocity.y);
+            owner.Rigid.velocity = new Vector2(Mathf.Clamp(owner.Rigid.velocity.x, -owner.PrMover.MaxMoveSpeed, owner.PrMover.MaxMoveSpeed), owner.Rigid.velocity.y);
         }
     }
 }
@@ -331,25 +311,19 @@ public class PlayerHookShoot : PlayerBaseState
     }
     public override void Enter()
     {
-        Debug.Log("Enter : HookShoot");
         owner.Rigid.velocity = Vector2.zero;
         owner.Anim.Play("HookShoot");
     }
 }
 public class PlayerRoping : PlayerBaseState
 {
-    private PlayerMover mover;
-
     public PlayerRoping(Player owner)
     {
         this.owner = owner;
-        mover = owner.PrMover;
     }
 
     public override void Enter()
     {
-        Debug.Log("Enter : Roping");
-
         // Calculate the distance to fired hook and AddForce
         owner.Anim.Play("RopeAction");
         //StartRecoil();
@@ -367,15 +341,15 @@ public class PlayerRoping : PlayerBaseState
     private void Rotation()
     {
         // 캐릭터 회전
-        if (mover.MoveHzt > 0)
+        if (owner.PrMover.MoveHzt > 0)
             owner.transform.rotation = Quaternion.Euler(0, 0, 0);
-        else if (mover.MoveHzt < 0)
+        else if (owner.PrMover.MoveHzt < 0)
             owner.transform.rotation = Quaternion.Euler(0, -180, 0);
     }
     private void RopeMoveMent()
     {
         // 실제 이동
-        owner.Rigid.AddForce(Vector2.right * mover.MoveHzt * mover.RopeMovePower);
+        owner.Rigid.AddForce(Vector2.right * owner.PrMover.MoveHzt * owner.PrMover.RopeMovePower);
         // 이동속도 제한
         owner.Rigid.velocity = new Vector2(Mathf.Clamp(owner.Rigid.velocity.x, -owner.PrMover.CurrentMaxRopingPower, owner.PrMover.CurrentMaxRopingPower), owner.Rigid.velocity.y);
     }
@@ -397,7 +371,6 @@ public class PlayerCeilingStickStart : PlayerBaseState
 
     public override void Enter()
     {
-        Debug.Log("Enter : StcikStart");
         owner.Anim.Play("CeilingStickStart");
     }
     public override void Exit()
@@ -407,17 +380,14 @@ public class PlayerCeilingStickStart : PlayerBaseState
 }
 public class PlayerCeilingStickIdle : PlayerBaseState
 {
-    private PlayerMover mover;
+    
 
     public PlayerCeilingStickIdle(Player owner)
     {
         this.owner = owner;
-        mover = owner.PrMover;
     }
     public override void Enter()
     {
-        Debug.Log("Enter : StcikIdle");
-
         owner.Rigid.velocity = Vector3.zero;
         owner.Anim.Play("CeilingStickIdle");
     }
@@ -427,25 +397,23 @@ public class PlayerCeilingStickIdle : PlayerBaseState
     }
     public override void Update()
     {
-        if (mover.MoveHzt != 0)
+        if (owner.PrMover.MoveHzt != 0)
             owner.PrFSM.FSM.ChangeState("CeilingStickMove");
     }
 
 }
 public class PlayerCeilingStickMove : PlayerBaseState
 {
-    private PlayerMover mover;
+    
     private Coroutine brakeRoutine;
 
     public PlayerCeilingStickMove(Player owner)
     {
         this.owner = owner;
-        mover = owner.PrMover;
     }
 
     public override void Enter()
     {
-        Debug.Log("Enter : StcikMove");
         owner.Anim.Play("CeilingStickMove");
     }
     public override void Update()
@@ -462,18 +430,18 @@ public class PlayerCeilingStickMove : PlayerBaseState
     private void CeilingMove()
     {
         // 캐릭터 회전
-        if (mover.MoveHzt > 0)
+        if (owner.PrMover.MoveHzt > 0)
             owner.transform.rotation = Quaternion.Euler(0, 0, 0);
-        else if (mover.MoveHzt < 0)
+        else if (owner.PrMover.MoveHzt < 0)
             owner.transform.rotation = Quaternion.Euler(0, -180, 0);
 
-        if (mover.MoveHzt == 0)
+        if (owner.PrMover.MoveHzt == 0)
         {
             // 브레이크 적용
             if (owner.Rigid.velocity.x > Player.MoveForce_Threshold)
-                owner.Rigid.AddForce(Vector2.left * mover.HztBrakePower);
+                owner.Rigid.AddForce(Vector2.left * owner.PrMover.HztBrakePower);
             else if (owner.Rigid.velocity.x < -Player.MoveForce_Threshold)
-                owner.Rigid.AddForce(Vector2.right * mover.HztBrakePower);
+                owner.Rigid.AddForce(Vector2.right * owner.PrMover.HztBrakePower);
 
             // 브레이크 이후 딜레이 적용 -> 일정시간 이후 Idle 상태로 전환
             if (brakeRoutine == null)
@@ -494,9 +462,9 @@ public class PlayerCeilingStickMove : PlayerBaseState
             }
 
             // 실제 이동
-            owner.Rigid.AddForce(Vector2.right * mover.MoveHzt * mover.CeilingMovePower);
+            owner.Rigid.AddForce(Vector2.right * owner.PrMover.MoveHzt * owner.PrMover.CeilingMovePower);
             // 이동속도 제한
-            owner.Rigid.velocity = new Vector2(Mathf.Clamp(owner.Rigid.velocity.x, -mover.MaxCeilingMovePower, mover.MaxCeilingMovePower), owner.Rigid.velocity.y);
+            owner.Rigid.velocity = new Vector2(Mathf.Clamp(owner.Rigid.velocity.x, -owner.PrMover.MaxCeilingMovePower, owner.PrMover.MaxCeilingMovePower), owner.Rigid.velocity.y);
         }
     }
 }
@@ -522,14 +490,10 @@ public class PlayerDash : PlayerBaseState
 }
 public class PlayerGrab : PlayerBaseState
 {
-    private PlayerMover mover;
-    private PlayerHooker hooker;
 
     public PlayerGrab(Player owner)
     {
         this.owner = owner;
-        mover = owner.PrMover;
-        hooker = owner.PrHooker;
     }
 
     public override void Enter()
@@ -545,29 +509,29 @@ public class PlayerGrab : PlayerBaseState
     }
     public override void Update()
     {
-        owner.Anim.SetFloat("MovePower", mover.MoveHzt);
+        owner.Anim.SetFloat("MovePower", owner.PrMover.MoveHzt);
     }
     private void GrabMove()
     {
         // Move Braking
-        if (mover.MoveHzt == 0)
+        if (owner.PrMover.MoveHzt == 0)
         {
             if (owner.Rigid.velocity.x > Player.MoveForce_Threshold)
-                owner.Rigid.AddForce(Vector2.left * mover.HoldingHztBrakePower);
+                owner.Rigid.AddForce(Vector2.left * owner.PrMover.HoldingHztBrakePower);
             else if (owner.Rigid.velocity.x < Player.MoveForce_Threshold)
-                owner.Rigid.AddForce(Vector2.right * mover.HoldingHztBrakePower);
+                owner.Rigid.AddForce(Vector2.right * owner.PrMover.HoldingHztBrakePower);
         }
         else
         {
             // Character Rotation
-            if (mover.MoveHzt > 0)
+            if (owner.PrMover.MoveHzt > 0)
                 owner.transform.rotation = Quaternion.Euler(0, -180, 0);
-            else if (mover.MoveHzt < 0)
+            else if (owner.PrMover.MoveHzt < 0)
                 owner.transform.rotation = Quaternion.Euler(0, 0, 0);
 
             // Controll Grab Enemy
-            owner.Rigid.AddForce(Vector2.right * mover.MoveHzt * mover.HoldingMovePower);
-            owner.Rigid.velocity = new Vector2(Mathf.Clamp(owner.Rigid.velocity.x, -mover.MaxHoldingMoveSpeed, mover.MaxHoldingMoveSpeed), owner.Rigid.velocity.y);
+            owner.Rigid.AddForce(Vector2.right * owner.PrMover.MoveHzt * owner.PrMover.HoldingMovePower);
+            owner.Rigid.velocity = new Vector2(Mathf.Clamp(owner.Rigid.velocity.x, -owner.PrMover.MaxHoldingMoveSpeed, owner.PrMover.MaxHoldingMoveSpeed), owner.Rigid.velocity.y);
         }
     }
 
