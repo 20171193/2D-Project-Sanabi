@@ -55,7 +55,7 @@ MonoBehaviour:
     m_Bits: 256
   hookInteractableLM:
     serializedVersion: 2
-    m_Bits: 5312
+    m_Bits: 1578176
   hookingGroundLM:
     serializedVersion: 2
     m_Bits: 1024

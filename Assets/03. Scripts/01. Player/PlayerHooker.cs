@@ -125,14 +125,15 @@ public class PlayerHooker : PlayerBase
 
         IsRaycastHit = true;
 
+        int layer = hookHitInfo.collider.gameObject.layer;
         // hit is Enemy
-        if (Manager.Layer.enemyLM.Contain(hookHitInfo.collider.gameObject.layer))
+        if (Manager.Layer.enemyLM.Contain(layer) || Manager.Layer.bossWeaknessLM.Contain(layer))
         {
             hitType = LineRenderType.Enemy;
             hookAim.LineOn(hitType, hookHitInfo.point);
         }
         // hit is Interactable Object
-        else if (Manager.Layer.hookingPlatformLM.Contain(hookHitInfo.collider.gameObject.layer))
+        else if (Manager.Layer.hookingPlatformLM.Contain(layer))
         {
             hitType = LineRenderType.Interactable;
             hookAim.LineOn(hitType, hookHitInfo.point);
