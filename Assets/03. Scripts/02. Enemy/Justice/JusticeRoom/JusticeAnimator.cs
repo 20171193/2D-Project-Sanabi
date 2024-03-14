@@ -7,6 +7,7 @@ public class JusticeAnimator : MonoBehaviour
 {
     private Justice owner;
     private CinemachineImpulseSource impulse;
+
     private void Awake()
     {
         owner = transform.parent.GetComponent<Justice>();

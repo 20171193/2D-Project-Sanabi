@@ -314,6 +314,13 @@ public class PlayerHookShoot : PlayerBaseState
         owner.Rigid.velocity = Vector2.zero;
         owner.Anim.Play("HookShoot");
     }
+    public override void Update()
+    {
+        if (owner.PrHooker.HookObject.activeSelf == false)
+        {
+            owner.PrFSM.ChangeState("Idle");
+        }
+    }
 }
 public class PlayerRoping : PlayerBaseState
 {

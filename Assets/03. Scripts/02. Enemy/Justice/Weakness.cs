@@ -4,7 +4,7 @@ using Unity.VisualScripting.Dependencies.NCalc;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class Weakness : MonoBehaviour
+public class Weakness : MonoBehaviour, IHookAttackable
 {
     [Header("Components")]
     [Space(2)]
@@ -23,6 +23,7 @@ public class Weakness : MonoBehaviour
     [Space(3)]
     [Header("Unity Action")]
     [Space(2)]
+    public UnityAction OnHitted;
     public UnityAction OnDestroyed;
 
     [Space(3)]
@@ -58,5 +59,10 @@ public class Weakness : MonoBehaviour
         
     }
 
+    public void Hitted()
+    {
+        fsm.ChangeState("Destroy");
+        OnHitted?.Invoke();
+    }
 }
 

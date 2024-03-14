@@ -52,10 +52,13 @@ public class BattleMode : JusticeBaseState
     public override void Enter()
     {
         owner.Anim.Play("BattleMode");
-        battleModeTimer = owner.StartCoroutine(Extension.DelayRoutine(10f, ()=>owner.FSM.ChangeState("Track")));
+        Manager.Camera.SetCutSceneCamera(owner.BattleModeCamera);
+        battleModeTimer = owner.StartCoroutine(Extension.DelayRoutine(8f, ()=>owner.FSM.ChangeState("Track")));
     }
     public override void Exit()
     {
+        Manager.Camera.SetCameraPriority(CameraType.Main);
+
         if (battleModeTimer != null)
             owner.StopCoroutine(battleModeTimer);
     }
@@ -160,6 +163,7 @@ public class Teleport : JusticeBaseState
         if (!owner.WeaknessController.IsDisAppear)
             owner.WeaknessController.DisAppearAll();
 
+        owner.WeaknessController.DisAppearAll();
         owner.EmbientAnim.Play("DisAppear");
         owner.Anim.Play("TeleportStart");
         // 텔레포트 딜레이 시간만큼 딜레이 후 상태전환
@@ -218,8 +222,6 @@ public class Charge : JusticeBaseState
                 break;
             case JusticeAttackType.CloakingSlash:
                 isAiming = false;
-
-                owner.EmbientAnim.Play("Appear");
                 // VFX 활성화
                 vfx = owner.ChargeVFXPool.ActiveVFX("CloakingSlashCharge").GetComponent<JusticeVFX>();
                 break;
@@ -246,7 +248,8 @@ public class Charge : JusticeBaseState
     {
         if(chargeTimer != null)
             owner.StopCoroutine(chargeTimer);
-
+        owner.EmbientAnim.Play("Appear");
+        owner.WeaknessController.AppearAll();
         owner.Rigid.velocity = Vector3.zero;
         // vfx end
         vfx.Release();

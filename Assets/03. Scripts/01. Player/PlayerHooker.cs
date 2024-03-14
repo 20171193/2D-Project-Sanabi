@@ -90,6 +90,8 @@ public class PlayerHooker : PlayerBase
         firedHook.OnDestroyHook += OnHookDestroyed;
         firedHook.OnHookHitObject += OnHookHitObject;
         firedHook.OnHookHitGround += OnHookHitGround;
+        firedHook.OnHookAttacked += OnHookAttacked;
+        firedHook.OnHookAttackFailed += OnHookAttackFailed;
     }
 
 
@@ -213,6 +215,7 @@ public class PlayerHooker : PlayerBase
         hookReloadRoutine = StartCoroutine(HookReloadRoutine());
         hookAim.LineOff();
         Player.PrFSM.FSM.ChangeState("HookShoot");
+
         ActiveHook();
     }
     #endregion
@@ -229,6 +232,19 @@ public class PlayerHooker : PlayerBase
         // 로프 연결상태 해제
         Player.PrFSM.IsJointed = false;
     }
+    public void OnHookAttacked(IHookAttackable attackable)
+    {
+        // 약점 파괴
+        attackable.Hitted();
+        // 일정확률로 보스는 카운터 실행
+        // 카운터 시 공격 실패모드로 변경
+    }
+
+    public void OnHookAttackFailed()
+    {
+        // 
+    }
+
     public void OnHookHitGround()
     {
         // 튀어오르는 효과 적용
