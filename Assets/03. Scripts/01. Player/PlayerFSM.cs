@@ -110,10 +110,6 @@ public class PlayerFSM : PlayerBase
         {
             return IsGround;
         });
-        fsm.AddTransition("Jump", "Idle", 0f, () =>
-        {
-            return IsGround;
-        });
 
         #region fall transition
         fsm.AddTransition("Jump", "Fall", 0f, () =>

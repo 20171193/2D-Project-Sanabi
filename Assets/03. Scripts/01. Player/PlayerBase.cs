@@ -46,6 +46,8 @@ public class PlayerBase : MonoBehaviour
 
     protected virtual void Awake()
     {
+        Debug.Log("Player Awake");
+
         // Assign linked class
         playerFSM = GetComponent<PlayerFSM>();
         playerMover = GetComponent<PlayerMover>();
