@@ -118,15 +118,15 @@ public class PlayerMover : PlayerBase
     }
     private void OnJump(InputValue value)
     {
-        if (PrFSM.FSM.CurState == "Grab" || PrFSM.FSM.CurState == "Dash" ||
-            PrFSM.FSM.CurState == "HookShoot" || PrFSM.FSM.CurState == "Fall") return;
+        if (Player.PrFSM.FSM.CurState == "Grab" || Player.PrFSM.FSM.CurState == "Dash" ||
+            Player.PrFSM.FSM.CurState == "HookShoot" || Player.PrFSM.FSM.CurState == "Fall") return;
 
         #region 스킬
         // 로프액션 상태 -> 천장후킹
-        if (PrFSM.FSM.CurState == "Roping")
+        if (Player.PrFSM.FSM.CurState == "Roping")
         {
             Debug.Log("CeilingStickSkill");
-            PrSkill.CeilingStick();
+            Player.PrSkill.CeilingStick();
             return;
         }
         #endregion
@@ -134,25 +134,25 @@ public class PlayerMover : PlayerBase
 
         #region 점프
         // 피격상태 -> 히트 점프
-        if (PrFSM.FSM.CurState == "Damaged")
+        if (Player.PrFSM.FSM.CurState == "Damaged")
         {
             HitJump();
             return;
         }
         // 천장후킹 상태 -> 천장점프
-        if (PrFSM.IsCeilingStick)
+        if (Player.PrFSM.IsCeilingStick)
         {
             CeilingJump();
             return;
         }
         // 벽타기 상태 -> 벽점프
-        if (PrFSM.FSM.CurState == "WallSlide")
+        if (Player.PrFSM.FSM.CurState == "WallSlide")
         {
             WallJump();
             return;
         }
         // 지면 상태 -> 일반점프
-        if (PrFSM.IsGround)
+        if (Player.PrFSM.IsGround)
         {
             Jump();
             return;
@@ -165,23 +165,23 @@ public class PlayerMover : PlayerBase
     {
         Debug.Log("Normal Jumping");
 
-        PrFSM.OnJump?.Invoke();
+        Player.OnJump?.Invoke();
 
-        PrFSM.ChangeState("Jump");
-        rigid.velocity = new Vector2(rigid.velocity.x, rigid.velocity.y + jumpPower);
+        Player.PrFSM.ChangeState("Jump");
+        Player.Rigid.velocity = new Vector2(Player.Rigid.velocity.x, Player.Rigid.velocity.y + jumpPower);
     }
     // 벽 점프
     private void WallJump()
     {
         Debug.Log("Wall Jumping");
-        PrFSM.OnWallJump?.Invoke();
+        Player.OnWallJump?.Invoke();
 
-        rigid.gravityScale = 1;
+        Player.Rigid.gravityScale = 1;
 
-        PrFSM.IsInWall = false;
-        PrFSM.ChangeState("Jump");
+        Player.PrFSM.IsInWall = false;
+        Player.PrFSM.ChangeState("Jump");
 
-        rigid.velocity = new Vector2(-transform.right.x * 3f, jumpPower);
+        Player.Rigid.velocity = new Vector2(-transform.right.x * 3f, jumpPower);
     }
     // 히트상태 점프
     private void HitJump()
@@ -189,36 +189,36 @@ public class PlayerMover : PlayerBase
         Debug.Log("Hit Jumping");
 
         // 기존 데미지 루틴 비활성화
-        PrFSM.InitDamageRoutine();
+        Player.InitDamageRoutine();
 
-        PrFSM.ChangeState("Jump");
+        Player.PrFSM.ChangeState("Jump");
 
-        PrFSM.OnHitJump?.Invoke();
-        rigid.velocity = Vector2.zero;
+        Player.OnHitJump?.Invoke();
+        Player.Rigid.velocity = Vector2.zero;
 
-        Vector2 dir = (PrHooker.Aim.transform.position - transform.position).normalized;
-        rigid.AddForce(dir * hittedJumpPower, ForceMode2D.Impulse);
+        Vector2 dir = (Player.PrHooker.Aim.transform.position - transform.position).normalized;
+        Player.Rigid.AddForce(dir * hittedJumpPower, ForceMode2D.Impulse);
 
     }
     private void CeilingJump()
     {
         Debug.Log("Ceiling Jumping");
 
-        rigid.gravityScale = 1;
+        Player.Rigid.gravityScale = 1;
 
         // 기존 상태 초기화
-        PrFSM.IsCeilingStick = false;
-        PrFSM.ChangeState("Fall");
+        Player.PrFSM.IsCeilingStick = false;
+        Player.PrFSM.ChangeState("Fall");
 
-        rigid.velocity = new Vector2(MoveHzt * 3f, -0.5f);
+        Player.Rigid.velocity = new Vector2(MoveHzt * 3f, -0.5f);
     }
     #endregion
 
     #region Skills
     private void OnRopeForce(InputValue value)
     {
-        if (playerFSM.IsJointed)
-            playerSkill.RopeForce();
+        if (Player.PrFSM.IsJointed)
+            Player.PrSkill.RopeForce();
     }
     #endregion
 }
