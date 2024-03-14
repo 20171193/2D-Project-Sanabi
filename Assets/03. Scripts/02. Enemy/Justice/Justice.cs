@@ -259,13 +259,12 @@ public class Justice : MonoBehaviour
     // °ø°Ý ¹Ý»ç
     private void Parrying(Collider2D collision)
     {
-        collision.GetComponent<Hook>().DisConnecting();
+        collision.GetComponent<Hook>().OnHookAttackFailed?.Invoke();
 
         Vector3 dir = (collision.transform.position - transform.position).normalized;
 
         GameObject parryingOb = null;
         GameObject sparkOb = null;
-
         // vfx : ¹Ý»ç ÀÜ»ó
         // »ó´Ü ¹æ¾î
         if (dir.y >= 0)
@@ -294,6 +293,7 @@ public class Justice : MonoBehaviour
         // ÈÅ°ú ´êÀº °æ¿ì
         if (Manager.Layer.playerHookLM.Contain(collision.gameObject.layer))
         {
+            Debug.Log("Hitted Hook");
             // ±×·¦
             if (fsm.CurState == "Groggy")
             {

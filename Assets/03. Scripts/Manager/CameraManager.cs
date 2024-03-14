@@ -35,6 +35,7 @@ public class CameraManager : Singleton<CameraManager>
     protected override void Awake()
     {
         base.Awake();
+        mainConfiner = mainCamera.GetComponent<CinemachineConfiner2D>();
     }
 
     private void Start()

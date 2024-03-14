@@ -97,6 +97,7 @@ public class Destroy : WeaknessBaseState
     public override void Enter()
     {
         owner.Anim.Play("Destroy");
+        owner.CapCol.enabled = false;
         owner.IsActive = false;
         owner.OnDestroyed?.Invoke();
         ChangeWithDelay("Default");
