@@ -46,10 +46,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c1fc7bc2ea5642e46adee2b8c6273eb5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  prefabPath: 
   mainCamera: {fileID: 6156457593183898457}
   zoomCamera: {fileID: 6616243605097930643}
   currentCamera: {fileID: 0}
+  mainConfiner: {fileID: 0}
 --- !u!1001 &5340306033718754186
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -181,6 +181,10 @@ PrefabInstance:
     - target: {fileID: 2264384390949147406, guid: 576328fcd9cbebb4cb5ae375d539bbaa, type: 3}
       propertyPath: m_Name
       value: VirtualCamera_Main
+      objectReference: {fileID: 0}
+    - target: {fileID: 5340306033141386849, guid: 576328fcd9cbebb4cb5ae375d539bbaa, type: 3}
+      propertyPath: m_Enabled
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 576328fcd9cbebb4cb5ae375d539bbaa, type: 3}

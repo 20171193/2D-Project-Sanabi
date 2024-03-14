@@ -163,6 +163,7 @@ public class Teleport : JusticeBaseState
         if (!owner.WeaknessController.IsDisAppear)
             owner.WeaknessController.DisAppearAll();
 
+        owner.CircleCol.enabled = false;
         owner.WeaknessController.DisAppearAll();
         owner.EmbientAnim.Play("DisAppear");
         owner.Anim.Play("TeleportStart");
@@ -248,6 +249,8 @@ public class Charge : JusticeBaseState
     {
         if(chargeTimer != null)
             owner.StopCoroutine(chargeTimer);
+
+        owner.CircleCol.enabled = true;
         owner.EmbientAnim.Play("Appear");
         owner.WeaknessController.AppearAll();
         owner.Rigid.velocity = Vector3.zero;

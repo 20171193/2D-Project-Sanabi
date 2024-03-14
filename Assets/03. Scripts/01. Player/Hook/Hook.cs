@@ -131,7 +131,6 @@ public class Hook : MonoBehaviour
     // 공격 실패
     private void AttackFailed()
     {
-        DisConnecting();
         OnHookAttackFailed?.Invoke();
     }
 
@@ -193,8 +192,6 @@ public class Hook : MonoBehaviour
             Grab(hitInfo.collider.gameObject.GetComponent<IGrabable>());
         else if (Manager.Layer.bossWeaknessLM.Contain(targetLayer))
             Attack(hitInfo.collider.gameObject.GetComponent<IHookAttackable>());
-        else
-            AttackFailed();
 
         yield return null;
     }

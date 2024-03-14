@@ -15,6 +15,8 @@ public class PlayerHooker : PlayerBase
     [SerializeField]
     private HookAim hookAim;
     public HookAim Aim { get { return hookAim; } }
+    [SerializeField]
+    private GameObject hud_ArmJammed;
 
     [Space(3)]
     [Header("Specs")]
@@ -26,6 +28,10 @@ public class PlayerHooker : PlayerBase
     [SerializeField]
     private float hookShootPower;
     public float HookShootPower { get { return hookShootPower; } }
+
+    [SerializeField]
+    private float hookAttackFailedTime;
+    public float HookAttackFailedTime { get { return hookAttackFailedTime; } }
 
     [SerializeField]
     private float hookShootCoolTime;
@@ -62,6 +68,7 @@ public class PlayerHooker : PlayerBase
     public Hook FiredHook { get { return firedHook; } set { firedHook = value; } }
 
     private Coroutine hookReloadRoutine;
+    private Coroutine hookAttackFailedRoutine;
 
     [SerializeField]
     private bool isRaycastHit = false;
@@ -242,7 +249,10 @@ public class PlayerHooker : PlayerBase
 
     public void OnHookAttackFailed()
     {
-        // 
+        if (hookReloadRoutine != null)
+            StopCoroutine(hookReloadRoutine);
+        firedHook?.DisConnecting();
+        hookAttackFailedRoutine = StartCoroutine(HookAttackFailedRoutine());
     }
 
     public void OnHookHitGround()
@@ -297,6 +307,14 @@ public class PlayerHooker : PlayerBase
         firedHook.muzzlePos = Vector3.zero;
     }
 
+    IEnumerator HookAttackFailedRoutine()
+    {
+        isHookShootDelay = true;
+        hud_ArmJammed.SetActive(true);
+        yield return new WaitForSeconds(hookAttackFailedTime);
+        isHookShootDelay = false;
+        hud_ArmJammed.SetActive(false);
+    }
     IEnumerator HookReloadRoutine()
     {
         isHookShootDelay = true;

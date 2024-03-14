@@ -60,15 +60,16 @@ public class WeaknessController : MonoBehaviour
         {
             Vector3 rot = new Vector3(0, 0, 360 / 3 * i);
             weaknesses[i].transform.Rotate(rot);
-            weaknesses[i].transform.Translate(weaknesses[i].transform.up * 5);
+            weaknesses[i].transform.position = transform.position + weaknesses[i].transform.up * 5;
             weaknesses[i].OnDestroyed += OnDestroyedWeakness;
             weaknessCount++;
         }
     }
     private void Update()
     {
-        Rotation();
+        transform.position = owner.transform.position;
 
+        Rotation();
         if (IsSpawnIdle &&
             owner.FSM.CurState != "Init" &&
             owner.FSM.CurState != "Teleport" &&
@@ -99,6 +100,8 @@ public class WeaknessController : MonoBehaviour
     {
         foreach (Weakness weakness in weaknesses)
         {
+            if (weakness.FSM.CurState == "Destroy" || weakness.FSM.CurState == "Default") return;
+
             weakness.FSM.ChangeState("DisAppear");
         }
         isDisAppear = true;
@@ -107,6 +110,8 @@ public class WeaknessController : MonoBehaviour
     {
         foreach (Weakness weakness in weaknesses)
         {
+            if (weakness.FSM.CurState == "Destroy" || weakness.FSM.CurState == "Default") return;
+
             weakness.FSM.ChangeState("Appear");
         }
         isDisAppear = false;
@@ -128,9 +133,10 @@ public class WeaknessController : MonoBehaviour
         {
             foreach (Weakness weakness in weaknesses)
             {
-                if (!weakness.IsActive)
+                if (owner.FSM.CurState != "Teleport" && 
+                    (weakness.FSM.CurState == "Default" ||
+                    weakness.FSM.CurState == "InActive"))
                 {
-                    Debug.Log("Active Weakness");
                     weakness.FSM.ChangeState("Active");
                     break;
                 }
