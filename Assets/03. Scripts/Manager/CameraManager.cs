@@ -2,7 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Cinemachine;
-public class CameraManager : MonoBehaviour
+
+public enum CameraType
+{
+    Main,
+    Zoom
+}
+
+public class CameraManager : Singleton<CameraManager>
 {
     enum CameraOrder
     {
@@ -15,52 +22,63 @@ public class CameraManager : MonoBehaviour
     public CinemachineVirtualCamera MC { get { return mainCamera; } }
 
     [SerializeField]
-    private CinemachineVirtualCamera eventCamera;
-    public CinemachineVirtualCamera EC { get { return eventCamera; } }
+    private CinemachineVirtualCamera zoomCamera;
+    public CinemachineVirtualCamera ZC { get { return zoomCamera; } }
 
     [SerializeField]
     private CinemachineVirtualCamera currentCamera;
     public CinemachineVirtualCamera CC { get { return currentCamera; } }
 
-    private void Awake()
-    {
-        GameObject player = GameObject.FindWithTag("Player");
-        mainCamera = GameObject.FindWithTag("MainCamera").GetComponent<CinemachineVirtualCamera>();
-        eventCamera = GameObject.FindWithTag("EventCamera").GetComponent<CinemachineVirtualCamera>();
-        mainCamera.Follow = player.transform;
-        eventCamera.Follow = player.transform;
+    [SerializeField]
+    private CinemachineConfiner2D mainConfiner;
 
-        eventCamera.Priority = (int)CameraOrder.IdleCamera;
+    protected override void Awake()
+    {
+        base.Awake();
+    }
+
+    private void Start()
+    {
+        Debug.Log("Camera Start");
+
+        GameObject player = GameObject.FindWithTag("Player");
+        mainCamera.Follow = player.transform;
+        zoomCamera.Follow = player.transform;
+
+        zoomCamera.Priority = (int)CameraOrder.IdleCamera;
         mainCamera.Priority = (int)CameraOrder.CurrentCamera;
         currentCamera = mainCamera;
     }
+
 
     private void InitPriority()
     {
-        eventCamera.Priority = (int)CameraOrder.IdleCamera;
+        if(currentCamera)
+            currentCamera.Priority = (int)CameraOrder.IdleCamera;
+
+        zoomCamera.Priority = (int)CameraOrder.IdleCamera;
         mainCamera.Priority = (int)CameraOrder.CurrentCamera;
 
         currentCamera = mainCamera;
     }
 
-    public void SetMainCamera()
+    public void SetCameraPriority(CameraType type)
     {
         InitPriority();
-        
-        currentCamera.Priority = (int)CameraOrder.IdleCamera;
-        mainCamera.Priority = (int)CameraOrder.CurrentCamera;
 
-        currentCamera = mainCamera;
+        switch(type)
+        {
+            case CameraType.Main:
+                break;
+            case CameraType.Zoom:
+                zoomCamera.Priority = (int)CameraOrder.CurrentCamera;
+                mainCamera.Priority = (int)CameraOrder.IdleCamera;
+                currentCamera = zoomCamera;
+                break;
+            default:
+                break;
+        }
     }
-    public void SetEventCamera()
-    {
-        InitPriority();
-        currentCamera.Priority = (int)CameraOrder.IdleCamera;
-        eventCamera.Priority = (int)CameraOrder.CurrentCamera;
-
-        currentCamera = eventCamera;
-    }
-
     public void SetCutSceneCamera(CinemachineVirtualCamera cutSceneCamera)
     {
         InitPriority();
@@ -70,5 +88,9 @@ public class CameraManager : MonoBehaviour
         currentCamera = cutSceneCamera;
     }
 
+    public void SetConfiner(Collider2D shape)
+    {
+        mainConfiner.m_BoundingShape2D = shape;
+    }
 
 }

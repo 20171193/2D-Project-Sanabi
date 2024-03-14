@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class TestManager : MonoBehaviour
+public class TestManager : Singleton<GameManager>
 {
     public UnityEvent OnTestEvent;
     public Vector3 startPos;

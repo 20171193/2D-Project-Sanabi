@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class LayerManager : MonoBehaviour
+public class LayerManager : Singleton<LayerManager>
 {
     [Header("Ground / Wall")]
     [Space(3)]

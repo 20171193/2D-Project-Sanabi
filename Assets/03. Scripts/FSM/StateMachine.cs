@@ -66,7 +66,7 @@ public class StateMachine<TOwner>
         {
             if (transition.condition() && transition.end != curState)
             {
-                Manager.Coroutine.StartCoroutine(HasExitTime(transition));
+                ChangeState(transition.end);
                 return;
             }
         }
@@ -76,7 +76,7 @@ public class StateMachine<TOwner>
         {
             if (transition.condition())
             {
-                Manager.Coroutine.StartCoroutine(HasExitTime(transition));
+                ChangeState(transition.end);
                 return;
             }
         }
@@ -88,11 +88,5 @@ public class StateMachine<TOwner>
     public void FixedUpdate()
     {
         stateDic[curState].FixedUpdate();
-    }
-
-    IEnumerator HasExitTime(Transition transition)
-    {
-        yield return new WaitForSeconds(transition.exitTime);
-        ChangeState(transition.end);
     }
 }

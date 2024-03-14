@@ -45,7 +45,7 @@ public class ObjectEventTrigger : MonoBehaviour
         
         // 원상 복구
         prInput.enabled = true;
-        Manager.Camera.SetMainCamera();
+        Manager.Camera.SetCameraPriority(CameraType.Main);
     }
 
 

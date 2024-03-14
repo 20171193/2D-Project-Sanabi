@@ -23,9 +23,9 @@ public class Singleton<T> : MonoBehaviour where T : MonoBehaviour
         }
     }
 
-    public static void CreateInstance(string path)
+    public static void CreateInstance()
     {
-        T resource = Resources.Load<T>($"Manager/{typeof(T).Name}");
+        T resource = Resources.Load<T>($"{typeof(T).Name}");
         instance = Instantiate(resource);
     }
 
