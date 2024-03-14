@@ -46,6 +46,9 @@ public class ObjectEventTrigger : MonoBehaviour
         // 원상 복구
         prInput.enabled = true;
         Manager.Camera.SetCameraPriority(CameraType.Main);
+
+        if (playOnce == true)
+            Destroy(gameObject);
     }
 
 
@@ -55,7 +58,11 @@ public class ObjectEventTrigger : MonoBehaviour
         {
             OnEnterTrigger?.Invoke();
             if (isCameraAciton && enabled == true)
+            {
                 OnCameraAction();
+            }
+            else if (playOnce == true)
+                Destroy(gameObject);
         }
     }
     private void OnTriggerExit2D(Collider2D collision)
@@ -63,9 +70,6 @@ public class ObjectEventTrigger : MonoBehaviour
         if (targetLM.Contain(collision.gameObject.layer))
         {
             OnExitTrigger?.Invoke();
-
-            if (playOnce)
-                enabled = false;
         }
     }
 }

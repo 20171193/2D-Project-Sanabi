@@ -53,7 +53,10 @@ public class Weakness : MonoBehaviour
     {
         fsm.Update();
     }
-
+    private void FixedUpdate()
+    {
+        
+    }
 
 }
 

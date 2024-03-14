@@ -39,8 +39,6 @@ public class CameraManager : Singleton<CameraManager>
 
     private void Start()
     {
-        Debug.Log("Camera Start");
-
         GameObject player = GameObject.FindWithTag("Player");
         mainCamera.Follow = player.transform;
         zoomCamera.Follow = player.transform;
