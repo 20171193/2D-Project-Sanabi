@@ -51,7 +51,8 @@ public class PlayerSkill : PlayerBase
         if (ghostTrailRoutine != null)
             StopCoroutine(ghostTrailRoutine);
 
-        ghostTrailRoutine = StartCoroutine(GhostTrailRoutine(0.5f, () => PrMover.CurrentMaxRopingPower -= ropeSkillPower));
+        // 잔상 파티클 출력
+        ghostTrailRoutine = StartCoroutine(GhostTrailRoutine(0.5f, () => Player.PrMover.CurrentMaxRopingPower -= ropeSkillPower));
 
         // 잔상 파티클 렌더러 플립
         if (transform.rotation.y == 0)
@@ -59,29 +60,37 @@ public class PlayerSkill : PlayerBase
         else
             ropeForceParticle.GetComponent<ParticleSystemRenderer>().flip = new Vector3(1, 0, 0);
 
-        PrFSM.OnRopeForceStart?.Invoke();
-        PrMover.CurrentMaxRopingPower += ropeSkillPower;
+        Player.OnRopeForceStart?.Invoke();
+        Player.PrMover.CurrentMaxRopingPower += ropeSkillPower;
 
         // 현재 플레이어가 바라보고있는 방향으로 로프파워를 가해줌
-        rigid.AddForce(ropeSkillPower * transform.right, ForceMode2D.Impulse);
+        Player.Rigid.AddForce(ropeSkillPower * transform.right, ForceMode2D.Impulse);
     }
 
     // 대쉬 스킬
     public void Dash(IGrabable grabed)
     {
         // 현재 속력과 중력을 0으로 변경
-        rigid.velocity = Vector3.zero;
-        rigid.gravityScale = 0;
+        Player.Rigid.velocity = Vector3.zero;
+        Player.Rigid.gravityScale = 0;
 
         Vector3 grabedPos = grabed.GetGrabPosition();
-        
+
+        // 플레이어 대시 vfx 설정
+        GameObject vfx = Player.PrVFX.GetVFX("PlayerDash");
+        Vector3 vec = grabedPos - transform.position;
+        vfx.transform.right = vec.normalized;
+        // 대상과 거리 1/4 지점에 vfx 위치 세팅
+        vfx.transform.position = transform.position + vec.normalized * 2f;
+
+
         // 닿은 오브젝트의 위치와 플레이어 위치를 계산해 플레이어 회전
-        if(transform.position.x < grabedPos.x)
+        if (transform.position.x < grabedPos.x)
             transform.rotation = Quaternion.Euler(0, 0, 0);
         else
             transform.rotation = Quaternion.Euler(0, -180, 0);
 
-        playerFSM.ChangeState("Dash");
+        Player.PrFSM.ChangeState("Dash");
 
         // 닿은 오브젝트까지 트레일링(물리 이동이 아닌 선형보간 이동방식)
         //dashCoroutine = StartCoroutine(DashTrailRoutine(grabed));
@@ -95,18 +104,17 @@ public class PlayerSkill : PlayerBase
     // fix
     IEnumerator DashTrail(IGrabable grabed)
     {
-        DistanceJoint2D distJoint = PrHooker.FiredHook.DistJoint;
+        DistanceJoint2D distJoint = Player.PrHooker.FiredHook.DistJoint;
 
         // 대쉬 중 플레이어 무적상태 적용(레이어 변경)
         gameObject.layer = LayerMask.NameToLayer("PlayerInvincible");
         while (distJoint.distance > 0.1f)
         {
             distJoint.distance -= dashPower*Time.deltaTime;
-            Debug.Log(distJoint.distance);
             yield return null;
         }
         // 발사한 훅 비활성화
-        PrHooker.FiredHook.DisConnecting();
+        Player.PrHooker.FiredHook.DisConnecting();
         transform.position = grabed.GetGrabPosition();
         gameObject.layer = LayerMask.NameToLayer("Player");
         Debug.Log("object Grabstart");
@@ -153,29 +161,29 @@ public class PlayerSkill : PlayerBase
     // 그랩 스킬
     public void Grab(IGrabable target)
     {
-        target.Grabbed(rigid);
+        target.Grabbed(Player.Rigid);
 
         // 잡은 오브젝트를 Hooker에 할당.
-        playerHooker.GrabedObject = target;
+        Player.PrHooker.GrabedObject = target;
         Debug.Log(target);
-        playerFSM.ChangeState("Grab");
+        Player.PrFSM.ChangeState("Grab");
     }
 
     // 그랩대쉬 스킬 
     public void CeilingStick()
     {
-        PrFSM.IsCeilingStick = true;
-        PrFSM.IsGround = false;
-        PrFSM.ChangeState("CeilingStickStart");
+        Player.PrFSM.IsCeilingStick = true;
+        Player.PrFSM.IsGround = false;
+        Player.PrFSM.ChangeState("CeilingStickStart");
 
         // 닿은 오브젝트의 위치와 플레이어 위치를 계산해 플레이어 회전
-        if (transform.position.x < PrHooker.FiredHook.transform.position.x)
+        if (transform.position.x < Player.PrHooker.FiredHook.transform.position.x)
             transform.rotation = Quaternion.Euler(0, 0, 0);
         else
             transform.rotation = Quaternion.Euler(0, -180, 0);
 
         ghostTrailRoutine = StartCoroutine(GhostTrailRoutine(1f, null));
-        PrHooker.FiredHook.DistJoint.distance = 0.8f;
+        Player.PrHooker.FiredHook.DistJoint.distance = 0.8f;
         // 상태 전이는 PlayerFSM의 OnTriggerEnter2D에서 실행
         // CeilingCheck와 충돌 시 -> CeilingStickIdle로 전환
     }

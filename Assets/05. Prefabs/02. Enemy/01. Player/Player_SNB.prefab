@@ -5509,9 +5509,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   lr: {fileID: 8338325328473934066}
+  aimSpr: {fileID: 0}
   aimRendererOb: {fileID: 8338325329016645102}
-  enemyLineMt: {fileID: 2100000, guid: 887cc20b518a3174fa4242551eca7308, type: 2}
-  groundLineMt: {fileID: 2100000, guid: 0338845cc8edd89429fd3d53b9a149d9, type: 2}
+  arrivingAim: {fileID: 0}
+  groundArrivingAimSp: {fileID: 0}
+  enemyArrivingAimSp: {fileID: 0}
+  groundAimSp: {fileID: 0}
+  enemyAimSp: {fileID: 0}
+  groundLineMt:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  enemyLineMt:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
   renderTargetPos: {x: 0, y: 0, z: 0}
   isLineRendering: 0
 --- !u!1 &8338325328590322910
@@ -5695,6 +5707,7 @@ GameObject:
   - component: {fileID: 8338325329431907402}
   - component: {fileID: 8338325329431907407}
   - component: {fileID: 8338325329431907404}
+  - component: {fileID: 8346882547364347250}
   - component: {fileID: 8338325329431907392}
   - component: {fileID: 8338325329431907393}
   - component: {fileID: 8338325329431907394}
@@ -5819,7 +5832,7 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
---- !u!114 &8338325329431907392
+--- !u!114 &8346882547364347250
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -5828,20 +5841,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 8338325329431907403}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 217a0958360d19643a95a8e816b64dfc, type: 3}
+  m_Script: {fileID: 11500000, guid: 589610df7dc117545be7e9b6227216e4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rigid: {fileID: 0}
-  anim: {fileID: 0}
+  rigid: {fileID: 8338325329431907405}
+  anim: {fileID: 8338325329431907404}
   cam: {fileID: 0}
-  impulseSource: {fileID: 0}
-  ceilingChecker: {fileID: 1833167293}
-  isGround: 0
-  groundCount: 0
-  isInWall: 0
-  isJointed: 0
-  isEnableGrabMove: 0
-  isCeilingStick: 0
+  impulseSource: {fileID: 1942553676}
   OnRun:
     m_PersistentCalls:
       m_Calls: []
@@ -5877,37 +5883,10 @@ MonoBehaviour:
         m_CallState: 2
   OnHitJump:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1156661054}
-        m_TargetAssemblyTypeName: PlayerVFXPooler, Assembly-CSharp
-        m_MethodName: ActiveVFX
-        m_Mode: 5
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: PlayerHitJump
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
   OnDash:
     m_PersistentCalls:
-      m_Calls: []
-  OnRopeForceStart:
-    m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 537722040}
-        m_TargetAssemblyTypeName: HUD_RopeForce, Assembly-CSharp
-        m_MethodName: EnableHUD
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
       - m_Target: {fileID: 1156661054}
         m_TargetAssemblyTypeName: PlayerVFXPooler, Assembly-CSharp
         m_MethodName: ActiveVFX
@@ -5917,24 +5896,15 @@ MonoBehaviour:
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: PlayerRopeForce
-          m_BoolArgument: 0
-        m_CallState: 2
-  OnRopeForceEnd:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 537722040}
-        m_TargetAssemblyTypeName: HUD_RopeForce, Assembly-CSharp
-        m_MethodName: DisableHUD
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  OnRopeForceStart:
+    m_PersistentCalls:
+      m_Calls: []
+  OnRopeForceEnd:
+    m_PersistentCalls:
+      m_Calls: []
   OnGrabEnd:
     m_PersistentCalls:
       m_Calls: []
@@ -5943,52 +5913,36 @@ MonoBehaviour:
       m_Calls: []
   OnWallSliding:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1156661054}
-        m_TargetAssemblyTypeName: PlayerVFXPooler, Assembly-CSharp
-        m_MethodName: ActiveVFX
-        m_Mode: 5
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: PlayerWallSliding
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
   OnHookShoot:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1156661054}
-        m_TargetAssemblyTypeName: PlayerVFXPooler, Assembly-CSharp
-        m_MethodName: ActiveVFX
-        m_Mode: 5
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: PlayerShootGas
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
   OnTakeDamage:
     m_PersistentCalls:
       m_Calls: []
   OnLanding:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1156661054}
-        m_TargetAssemblyTypeName: PlayerVFXPooler, Assembly-CSharp
-        m_MethodName: ActiveVFX
-        m_Mode: 5
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: PlayerLanding
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
+--- !u!114 &8338325329431907392
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8338325329431907403}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 217a0958360d19643a95a8e816b64dfc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  player: {fileID: 0}
+  ceilingChecker: {fileID: 1833167293}
+  isGround: 0
+  groundCount: 0
+  isInWall: 0
+  isJointed: 0
+  isEnableGrabMove: 0
+  isCeilingStick: 0
 --- !u!114 &8338325329431907393
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6001,10 +5955,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3dfe3aaee7bb7ba49a02d49318a4acad, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rigid: {fileID: 0}
-  anim: {fileID: 0}
-  cam: {fileID: 0}
-  impulseSource: {fileID: 0}
+  player: {fileID: 0}
   movePower: 60
   maxMoveSpeed: 12
   hztBrakePower: 30
@@ -6036,10 +5987,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9c0d98875274f2a48b0b6b6a7fcbfc2c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rigid: {fileID: 0}
-  anim: {fileID: 0}
-  cam: {fileID: 0}
-  impulseSource: {fileID: 0}
+  player: {fileID: 0}
   cursorOb: {fileID: 0}
   hookAim: {fileID: 8338325328473934065}
   ropeJumpPower: 8
@@ -6064,10 +6012,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bb2a9d3c6d6eafe48b83aaf759c4a9e3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rigid: {fileID: 0}
-  anim: {fileID: 0}
-  cam: {fileID: 0}
-  impulseSource: {fileID: 0}
+  player: {fileID: 0}
   ropeForceParticle: {fileID: 488339195}
   ropeSkillPower: 15
   dashPower: 40

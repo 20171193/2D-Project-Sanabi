@@ -79,7 +79,39 @@ public class PlayerVFXPooler : MonoBehaviour
             }
 
             vfxPool.Add(name, new VFX(stack, originTr));
+            Debug.Log(name);
         }
+    }
+
+
+    public GameObject GetVFX(string name)
+    {
+        if (!vfxPool.ContainsKey(name))
+        {
+            Debug.Log($"{name} pool does not exist");
+            return null;
+        }
+
+        GameObject instance = null;
+        // 스택에 사용하지 않은 오브젝트가 존재할 경우 
+        if (vfxPool[name].vfxObjectPool.Count > 0)
+            instance = vfxPool[name].vfxObjectPool.Pop();
+        // 스택 내 모든 오브젝트를 사용한 경우
+        else
+        {
+            instance = Instantiate(prefabDic[name]);
+            PlayerVFX vfxInst = instance.GetComponent<PlayerVFX>();
+
+            instance.transform.parent = null;
+            vfxInst.VFXName = name;
+            vfxInst.Pooler = this;
+        }
+
+        instance.transform.parent = null;
+        instance.transform.position = vfxPool[name].originTr.position;
+        instance.transform.rotation = vfxPool[name].originTr.rotation;
+        instance.gameObject.SetActive(true);
+        return instance;
     }
 
     public void ActiveVFX(string name)

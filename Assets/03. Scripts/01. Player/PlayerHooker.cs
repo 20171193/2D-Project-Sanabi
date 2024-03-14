@@ -82,7 +82,7 @@ public class PlayerHooker : PlayerBase
     private void HookInitailSetting()
     {
         // assign player rigidbody2D for DistanceJoint2D
-        firedHook.OwnerRigid = rigid;
+        firedHook.OwnerRigid = Player.Rigid;
         firedHook.TrailSpeed = hookShootPower;
         firedHook.MaxDistance = maxRopeLength;
 
@@ -99,13 +99,13 @@ public class PlayerHooker : PlayerBase
     {
         // cursorPos is mousePos
         // +Linerendering
-        mousePos = cam.ScreenToWorldPoint(Input.mousePosition);
+        mousePos = Player.Cam.ScreenToWorldPoint(Input.mousePosition);
         // move cursor
         cursorOb.transform.position = new Vector3(mousePos.x, mousePos.y, 0);
 
         HookAimSet();
 
-        if (PrFSM.IsHookable())
+        if (Player.PrFSM.IsHookable())
             RopeRayCast();
         else
             hookAim.LineOff();
@@ -116,7 +116,7 @@ public class PlayerHooker : PlayerBase
         Vector2 rayDir = (mousePos - transform.position).normalized;
         hookHitInfo = Physics2D.Raycast(transform.position, rayDir, rayLength, Manager.Layer.hookInteractableLM);
 
-        if (!hookHitInfo || PrFSM.FSM.CurState == "Damaged" || Manager.Layer.rayBlockObjectLM.Contain(hookHitInfo.collider.gameObject.layer))
+        if (!hookHitInfo || Player.PrFSM.FSM.CurState == "Damaged" || Manager.Layer.rayBlockObjectLM.Contain(hookHitInfo.collider.gameObject.layer))
         {
             IsRaycastHit = false;
             hookAim.LineOff();
@@ -155,21 +155,21 @@ public class PlayerHooker : PlayerBase
             // : IsRaycastHit
             if (!IsRaycastHit) return;       // 레이캐스트에 실패한 경우
             if (isHookShootDelay) return;    // 딜레이 중
-            if (!PrFSM.IsHookable()) return; // 훅 샷이 불가능한 상태 
+            if (!Player.PrFSM.IsHookable()) return; // 훅 샷이 불가능한 상태 
 
             HookShoot();
         }
         else
         {
             // 로프액션 혹은 그랩 중 -> 점프
-            if (PrFSM.FSM.CurState == "Roping" ||
-                playerFSM.FSM.CurState == "Grab")
+            if (Player.PrFSM.FSM.CurState == "Roping" ||
+                Player.PrFSM.FSM.CurState == "Grab")
                 HookingJump();
             // 훅 샷이 닿기 전에 마우스를 뗀 경우 
             else if (isHookShootDelay)
             {
                 firedHook?.DisConnecting();
-                PrFSM.FSM.ChangeState("Idle");
+                Player.PrFSM.FSM.ChangeState("Idle");
             }
             // 그 외 상태
             else
@@ -179,16 +179,16 @@ public class PlayerHooker : PlayerBase
 
     private void HookingJump()
     {
-        rigid.gravityScale = 1;
+        Player.Rigid.gravityScale = 1;
         
         // 연결된 훅이 있을 경우 해제
         firedHook?.DisConnecting();
-        playerFSM.IsJointed = false;
+        Player.PrFSM.IsJointed = false;
         // 그랩중인 오브젝트가 있을경우 그랩해제
         grabedObject?.GrabEnd();
 
-        PrFSM.FSM.ChangeState("HookingJump");
-        rigid.AddForce(hookAim.transform.up * ropeJumpPower, ForceMode2D.Impulse);
+        Player.PrFSM.FSM.ChangeState("HookingJump");
+        Player.Rigid.AddForce(hookAim.transform.up * ropeJumpPower, ForceMode2D.Impulse);
     }
     #endregion
 
@@ -206,12 +206,12 @@ public class PlayerHooker : PlayerBase
     // 훅이 지면과 연결된 경우, Invoke OnGrabbedGround
     private void HookShoot()
     {
-        playerFSM.OnHookShoot?.Invoke();
+        Player.OnHookShoot?.Invoke();
 
         // reload Routine
         hookReloadRoutine = StartCoroutine(HookReloadRoutine());
         hookAim.LineOff();
-        PrFSM.FSM.ChangeState("HookShoot");
+        Player.PrFSM.FSM.ChangeState("HookShoot");
         ActiveHook();
     }
     #endregion
@@ -222,32 +222,32 @@ public class PlayerHooker : PlayerBase
         ReleaseHook();
 
         // 로프파워스킬 재 활성화
-        PrSkill.IsEnableRopeForce = true;
+        Player.PrSkill.IsEnableRopeForce = true;
         // 로프액션 종료 이벤트 발생
-        PrFSM.OnRopeForceEnd?.Invoke();
+        Player.OnRopeForceEnd?.Invoke();
         // 로프 연결상태 해제
-        playerFSM.IsJointed = false;
+        Player.PrFSM.IsJointed = false;
     }
     public void OnHookHitGround()
     {
         // 튀어오르는 효과 적용
-        rigid.AddForce(Vector2.up * 5f, ForceMode2D.Impulse);
+        Player.Rigid.AddForce(Vector2.up * 5f, ForceMode2D.Impulse);
 
-        playerFSM.IsJointed = true;
-        playerFSM.ChangeState("Roping");
+        Player.PrFSM.IsJointed = true;
+        Player.PrFSM.ChangeState("Roping");
     }
     public void OnHookHitObject(IGrabable grabed)
     {
         // 튀어오르는 효과 적용
-        rigid.AddForce(Vector2.up * 5f, ForceMode2D.Impulse);
+        Player.Rigid.AddForce(Vector2.up * 5f, ForceMode2D.Impulse);
 
         // 카메라 흔들림 효과 적용
-        DoImpulse();
+        Player.DoImpulse();
 
-        PrFSM.IsEnableGrabMove = grabed.IsMoveable();
+        Player.PrFSM.IsEnableGrabMove = grabed.IsMoveable();
 
         Debug.Log(grabed);
-        playerSkill.Dash(grabed);
+        Player.PrSkill.Dash(grabed);
     }
     #endregion
 

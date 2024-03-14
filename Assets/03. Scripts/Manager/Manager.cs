@@ -12,6 +12,7 @@ public class Manager : MonoBehaviour
     public static PoolManager Pool { get { return PoolManager.Instance; } }
     public static GameManager Game { get { return GameManager.Instance; } }
     public static CameraManager Camera { get { return CameraManager.Instance; }}
+    public static CoroutineManager Coroutine { get { return CoroutineManager.Instance;} }
 
     // 씬이 로드되기 전에 싱글턴 생성
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
@@ -21,11 +22,13 @@ public class Manager : MonoBehaviour
         LayerManager.ReleaseInstance();
         PoolManager.ReleaseInstance();
         CameraManager.ReleaseInstance();
+        CoroutineManager.ReleaseInstance();
 
         GameManager.CreateInstance();
         LayerManager.CreateInstance();
         PoolManager.CreateInstance();
         CameraManager.CreateInstance();
+        CoroutineManager.CreateInstance();
     }
     #endregion
 }

@@ -16,6 +16,8 @@ public class StateMachine<TOwner>
 
     private List<Transition> anyStateTransition;
 
+    private Coroutine hasExitTimer;
+
     public StateMachine(TOwner owner)
     {
         this.owner = owner;
@@ -56,6 +58,7 @@ public class StateMachine<TOwner>
         stateDic[curState].Enter();
     }
 
+
     public void Update()
     {
         stateDic[curState].Update();
@@ -76,11 +79,22 @@ public class StateMachine<TOwner>
         {
             if (transition.condition())
             {
-                ChangeState(transition.end);
+                if (transition.exitTime > 0)
+                    hasExitTimer = Manager.Coroutine.StartCoroutine(HasExitTimer(transition));
+                else
+                    ChangeState(transition.end); 
+
                 return;
             }
         }
     }
+
+    IEnumerator HasExitTimer(Transition transition)
+    {
+        yield return new WaitForSeconds(transition.exitTime);
+        ChangeState(transition.end);
+    }
+
     public void LateUpdate()
     {
         stateDic[curState].LateUpdate();
