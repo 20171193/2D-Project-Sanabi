@@ -29,6 +29,10 @@ public class Hook : MonoBehaviour
     [SerializeField]
     public UnityAction<IGrabable> OnHookHitObject;
     [SerializeField]
+    public UnityAction<IHookAttackable> OnHookAttacked;
+    [SerializeField]
+    public UnityAction OnHookAttackFailed;
+    [SerializeField]
     public UnityAction OnHookHitGround;
     [SerializeField]
     public UnityAction OnDestroyHook;
@@ -118,6 +122,19 @@ public class Hook : MonoBehaviour
         OnHookHitGround?.Invoke();
     }
 
+    // 공격용 훅
+    private void Attack(IHookAttackable attackable)
+    {
+        DisConnecting();
+        OnHookAttacked?.Invoke(attackable);
+    }
+    // 공격 실패
+    private void AttackFailed()
+    {
+        DisConnecting();
+        OnHookAttackFailed?.Invoke();
+    }
+
     private void Connecting(bool isGrab)
     {
         isConnected = true;
@@ -165,13 +182,19 @@ public class Hook : MonoBehaviour
         // 훅 vfx 출력
         hookHittedRoutine = StartCoroutine(HookHittedRoutine());
 
-        if (Manager.Layer.hookingGroundLM.Contain(hitInfo.collider.gameObject.layer))
+        int targetLayer = hitInfo.collider.gameObject.layer;
+        if (Manager.Layer.hookingGroundLM.Contain(targetLayer))
         {
             transform.parent = hitInfo.collider.gameObject.transform;
             Grip();
         }
-        else
+        else if (Manager.Layer.hookingPlatformLM.Contain(targetLayer) ||
+            Manager.Layer.enemyLM.Contain(targetLayer))
             Grab(hitInfo.collider.gameObject.GetComponent<IGrabable>());
+        else if (Manager.Layer.bossWeaknessLM.Contain(targetLayer))
+            Attack(hitInfo.collider.gameObject.GetComponent<IHookAttackable>());
+        else
+            AttackFailed();
 
         yield return null;
     }

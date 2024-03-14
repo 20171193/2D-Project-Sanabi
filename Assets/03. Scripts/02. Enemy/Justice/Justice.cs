@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using Cinemachine;
 public enum JusticeAttackType
 { 
     Slash,
@@ -36,9 +36,14 @@ public class Justice : MonoBehaviour
     [SerializeField]
     private JusticeVFXPooler agentVFXPool;
     public JusticeVFXPooler AgentVFXPool { get { return agentVFXPool; } }
+    
     [SerializeField]
     private JusticeVFXPooler chargeVFXPool;
     public JusticeVFXPooler ChargeVFXPool { get { return chargeVFXPool; } }
+
+    [SerializeField]
+    private CinemachineVirtualCamera battleModeCamera;
+    public CinemachineVirtualCamera BattleModeCamera { get { return battleModeCamera; } }
 
     //[SerializeField]
     //private Dictionary<string, JusticeVFX>;
@@ -278,6 +283,12 @@ public class Justice : MonoBehaviour
         sparkOb.transform.position = collision.transform.position;
     }
 
+    // 일정확률 카운터
+    public void Counter()
+    {
+        // 바로 카운터 상태로 돌입.
+        // 
+    }
     private void OnTriggerEnter2D(Collider2D collision)
     {
         // 훅과 닿은 경우
