@@ -29,8 +29,12 @@ public class Weakness : MonoBehaviour, IHookAttackable
     [Space(3)]
     [Header("Balancing")]
     [Space(2)]
+    [SerializeField]
     private bool isActive = false;
     public bool IsActive { get { return isActive; } set { isActive = value; } }
+
+    [SerializeField]
+    private string curState;
 
     // 유한상태머신
     private StateMachine<Weakness> fsm;
@@ -52,17 +56,18 @@ public class Weakness : MonoBehaviour, IHookAttackable
 
     private void Update()
     {
+        curState = fsm.CurState;
         fsm.Update();
     }
     private void FixedUpdate()
     {
-        
+        fsm.FixedUpdate();
     }
 
     public void Hitted()
     {
         fsm.ChangeState("Destroy");
-        OnHitted?.Invoke();
+        //OnHitted?.Invoke();
     }
 }
 

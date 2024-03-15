@@ -55,7 +55,7 @@ MonoBehaviour:
     m_Bits: 256
   hookInteractableLM:
     serializedVersion: 2
-    m_Bits: 1578176
+    m_Bits: 18355392
   hookingGroundLM:
     serializedVersion: 2
     m_Bits: 1024
@@ -77,6 +77,9 @@ MonoBehaviour:
   bossLM:
     serializedVersion: 2
     m_Bits: 524288
+  bossGroggyLM:
+    serializedVersion: 2
+    m_Bits: 16777216
   bossAttackLM:
     serializedVersion: 2
     m_Bits: 2097152

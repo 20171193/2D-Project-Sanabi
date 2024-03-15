@@ -52,6 +52,10 @@ public class BossRoomController : MonoBehaviour
     private bool isRunning = false;
     public bool IsRunning { get { return isRunning; } }
 
+    [SerializeField]
+    private bool isSpawn = false;
+    public bool IsSpawn { get { return isSpawn; } set { isSpawn = value; } }
+
     private void Awake()
     {
         railCarPool = new Stack<GameObject>();
@@ -110,10 +114,12 @@ public class BossRoomController : MonoBehaviour
             pillar.transform.Translate(Vector3.up * leftPillarSpeed * Time.deltaTime);
 
 
-            if (pillar.transform.position.y > GroundHeight)
+            if (pillar.transform.position.y > GroundHeight - 2f)
             {
                 pillar.transform.position = new Vector3(pillar.transform.position.x, -pillar.transform.position.y * 2, pillar.transform.position.z);
-                PillarReset(pillar);
+                
+                if(isSpawn)
+                    PillarReset(pillar);
             }
         }
 
@@ -122,10 +128,12 @@ public class BossRoomController : MonoBehaviour
             pillar.transform.Translate(Vector3.up * middlePillarSpeed * Time.deltaTime);
 
 
-            if (pillar.transform.position.y > GroundHeight)
+            if (pillar.transform.position.y > GroundHeight - 2f)
             {
                 pillar.transform.position = new Vector3(pillar.transform.position.x, -pillar.transform.position.y * 2, pillar.transform.position.z);
-                PillarReset(pillar);
+                
+                if (isSpawn)
+                    PillarReset(pillar);
             }
         }
 
@@ -134,10 +142,12 @@ public class BossRoomController : MonoBehaviour
             pillar.transform.Translate(Vector3.up * rightPillarSpeed * Time.deltaTime);
 
 
-            if (pillar.transform.position.y > GroundHeight)
+            if (pillar.transform.position.y > GroundHeight - 2f)
             {
                 pillar.transform.position = new Vector3(pillar.transform.position.x, -pillar.transform.position.y * 2, pillar.transform.position.z);
-                PillarReset(pillar);
+                
+                if (isSpawn)
+                    PillarReset(pillar);
             }
         }
     }
@@ -180,10 +190,13 @@ public class BossRoomController : MonoBehaviour
 
         GameObject rc = GetRailCar();
         pillar.spawnedRailCar = rc;
-        // 기둥의 스폰 위치 중 한 곳을 뽑아 스폰
-        int rand = Random.Range(0, pillar.spawnTr.Length-1);
-        rc.transform.position = pillar.GetSpawnPos(rand);
+        rc.transform.position = pillar.GetSpawnPos(2);
         rc.transform.parent = pillar.transform;
+
+        GameObject rc2 = GetRailCar();
+        pillar.spawnedRailCar = rc2;
+        rc2.transform.position = pillar.GetSpawnPos(5);
+        rc2.transform.parent = pillar.transform;
     }
 }
 

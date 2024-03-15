@@ -136,7 +136,9 @@ public class PlayerHooker : PlayerBase
 
         int layer = hookHitInfo.collider.gameObject.layer;
         // hit is Enemy
-        if (Manager.Layer.enemyLM.Contain(layer) || Manager.Layer.bossWeaknessLM.Contain(layer))
+        if (Manager.Layer.enemyLM.Contain(layer) 
+            || Manager.Layer.bossWeaknessLM.Contain(layer)
+            || Manager.Layer.bossGroggyLM.Contain(layer))
         {
             hitType = LineRenderType.Enemy;
             hookAim.LineOn(hitType, hookHitInfo.point);

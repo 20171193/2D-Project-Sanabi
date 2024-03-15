@@ -251,7 +251,6 @@ public class PlayerHookingJump : PlayerBaseState
 }
 public class PlayerFall : PlayerBaseState
 {
-
     public PlayerFall(Player owner)
     {
         this.owner = owner;
@@ -505,6 +504,7 @@ public class PlayerGrab : PlayerBaseState
 
     public override void Enter()
     {
+        owner.gameObject.layer = LayerMask.NameToLayer("PlayerGrabing");
         owner.Anim.Play("Grab");
     }
 
@@ -544,6 +544,7 @@ public class PlayerGrab : PlayerBaseState
 
     public override void Exit()
     {
+        owner.gameObject.layer = LayerMask.NameToLayer("Player");
         owner.PrFSM.IsEnableGrabMove = false;
         owner.OnGrabEnd?.Invoke();
     }

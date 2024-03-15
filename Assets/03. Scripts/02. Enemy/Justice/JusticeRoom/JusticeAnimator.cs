@@ -26,6 +26,14 @@ public class JusticeAnimator : MonoBehaviour
     {
         owner.BattleModeEnd();
     }
+    public void OnPhaseChangeMove()
+    {
+        owner.OnPhaseChangeMove();
+    }
+    public void OnPhaseChangeEnd()
+    {
+        owner.OnPhaseChangeEnd();
+    }
     public void OnDoImpulse()
     {
         impulse.GenerateImpulse();

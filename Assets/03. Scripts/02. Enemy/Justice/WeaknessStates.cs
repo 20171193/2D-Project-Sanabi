@@ -8,18 +8,6 @@ using static UnityEngine.RuleTile.TilingRuleOutput;
 public class WeaknessBaseState : BaseState
 {
     protected Weakness owner;
-
-    protected Coroutine exitTimer;
-
-    protected void ChangeWithDelay(string next) 
-    {
-        exitTimer = owner.StartCoroutine(ExitTimer(next));
-    }
-    IEnumerator ExitTimer(string next)
-    {
-        yield return new WaitForSeconds(0.5f);
-        owner.FSM.ChangeState(next);
-    }
 }
 
 public class Default : WeaknessBaseState
@@ -32,7 +20,7 @@ public class Appear : WeaknessBaseState
     public override void Enter()
     {
         owner.Anim.Play("Appear");
-        ChangeWithDelay("Idle");
+        owner.StartCoroutine(Extension.DelayRoutine(0.5f, () => owner.FSM.ChangeState("Idle")));
     }
 }
 
@@ -51,7 +39,7 @@ public class Active : WeaknessBaseState
     {
         owner.Anim.Play("Activate");
         owner.IsActive = true;
-        ChangeWithDelay("Idle");
+        owner.StartCoroutine(Extension.DelayRoutine(0.5f, () => owner.FSM.ChangeState("Idle")));
     }
 }
 
@@ -100,6 +88,6 @@ public class Destroy : WeaknessBaseState
         owner.CapCol.enabled = false;
         owner.IsActive = false;
         owner.OnDestroyed?.Invoke();
-        ChangeWithDelay("Default");
+        owner.StartCoroutine(Extension.DelayRoutine(0.5f, () => owner.FSM.ChangeState("Default")));
     }
 }

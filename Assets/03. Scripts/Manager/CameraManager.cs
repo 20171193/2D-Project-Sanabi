@@ -52,6 +52,8 @@ public class CameraManager : Singleton<CameraManager>
 
     public void SetCameraPriority(CameraType type, CinemachineVirtualCamera cc = null)
     {
+        mainCamera.Priority = (int)CameraOrder.IdleCamera;
+        zoomCamera.Priority=(int)CameraOrder.IdleCamera;
         currentCamera.Priority = (int)CameraOrder.IdleCamera;
 
         switch (type)

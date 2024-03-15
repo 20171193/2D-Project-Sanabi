@@ -188,7 +188,8 @@ public class Hook : MonoBehaviour
             Grip();
         }
         else if (Manager.Layer.hookingPlatformLM.Contain(targetLayer) ||
-            Manager.Layer.enemyLM.Contain(targetLayer))
+            Manager.Layer.enemyLM.Contain(targetLayer) || 
+            Manager.Layer.bossGroggyLM.Contain(targetLayer))
             Grab(hitInfo.collider.gameObject.GetComponent<IGrabable>());
         else if (Manager.Layer.bossWeaknessLM.Contain(targetLayer))
             Attack(hitInfo.collider.gameObject.GetComponent<IHookAttackable>());

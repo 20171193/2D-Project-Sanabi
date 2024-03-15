@@ -10,6 +10,10 @@ public class WeaknessController : MonoBehaviour
     [SerializeField]
     private Justice owner;
 
+    // 저스티스와 상호작용 액션
+    public UnityAction OnAllWeaknessDestroyed;
+
+
     [Space(3)]
     [Header("Weakness")]
     [Space(2)]
@@ -40,7 +44,6 @@ public class WeaknessController : MonoBehaviour
         }
     }
 
-
     [SerializeField]
     private bool isDisAppear = false;   // 약점이 꺼진 상태인지? 
     public bool IsDisAppear { get { return isDisAppear; } }
@@ -51,8 +54,6 @@ public class WeaknessController : MonoBehaviour
     [SerializeField]
     private float activeRoutineTime;
 
-    private Coroutine activeRoutine;
-
     private void Start()
     {
         // 약점 오브젝트 초기위치 지정
@@ -62,7 +63,6 @@ public class WeaknessController : MonoBehaviour
             weaknesses[i].transform.Rotate(rot);
             weaknesses[i].transform.position = transform.position + weaknesses[i].transform.up * 5;
             weaknesses[i].OnDestroyed += OnDestroyedWeakness;
-            weaknessCount++;
         }
     }
     private void Update()
@@ -89,9 +89,7 @@ public class WeaknessController : MonoBehaviour
         weaknessCount--;
         if (weaknessCount <= 0)
         {
-            if (activeRoutine != null)
-                StopCoroutine(activeRoutine);
-
+            OnAllWeaknessDestroyed?.Invoke();
             IsSpawnIdle = true;
         }
     }
@@ -101,7 +99,7 @@ public class WeaknessController : MonoBehaviour
         foreach (Weakness weakness in weaknesses)
         {
             if (weakness.FSM.CurState == "Destroy" || weakness.FSM.CurState == "Default") return;
-
+            Debug.Log("Weakness DisAppear");
             weakness.FSM.ChangeState("DisAppear");
         }
         isDisAppear = true;
@@ -111,8 +109,10 @@ public class WeaknessController : MonoBehaviour
         foreach (Weakness weakness in weaknesses)
         {
             if (weakness.FSM.CurState == "Destroy" || weakness.FSM.CurState == "Default") return;
-
+            Debug.Log("Weakness Appear");
             weakness.FSM.ChangeState("Appear");
+            if (!weakness.IsActive)
+                StartCoroutine(Extension.DelayRoutine(2f, () => weakness.FSM.ChangeState("Active")));
         }
         isDisAppear = false;
     }
@@ -122,27 +122,13 @@ public class WeaknessController : MonoBehaviour
         Debug.Log("Spawn");
 
         isSpawnIdle = false;
-        AppearAll();
-
-        activeRoutine = StartCoroutine(AcitveRoutine());
-    }
-
-    IEnumerator AcitveRoutine()
-    {
-        while(owner.FSM.CurState != "Die")
+        foreach (Weakness weakness in weaknesses)
         {
-            foreach (Weakness weakness in weaknesses)
-            {
-                if (owner.FSM.CurState != "Teleport" && 
-                    (weakness.FSM.CurState == "Default" ||
-                    weakness.FSM.CurState == "InActive"))
-                {
-                    weakness.FSM.ChangeState("Active");
-                    break;
-                }
-            }
-            // 일정시간에 맞춰 약점을 하나씩 활성화
-            yield return new WaitForSeconds(activeRoutineTime);
+            weaknessCount++;
+            weakness.FSM.ChangeState("Appear");
+            if (!weakness.IsActive)
+                StartCoroutine(Extension.DelayRoutine(2f, () => weakness.FSM.ChangeState("Active")));
         }
+        isDisAppear = false;
     }
 }
