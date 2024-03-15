@@ -39,7 +39,7 @@ public class ObjectEventTrigger : MonoBehaviour
         // 플레이어 입력 제어
         prInput.enabled = false;
         // 이벤트 카메라로 변경
-        Manager.Camera.SetCutSceneCamera(eventCamera);
+        Manager.Camera.SetCameraPriority(CameraType.CutScene, eventCamera);
 
         yield return new WaitForSeconds(cameraActionTime);
         

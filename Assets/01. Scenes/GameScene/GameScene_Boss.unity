@@ -5492,6 +5492,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: PlayerEventTrigger
       objectReference: {fileID: 0}
+    - target: {fileID: 2382331973124587490, guid: 476388c18931ce7408ec83786fca42d7, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3627250829124621258, guid: 476388c18931ce7408ec83786fca42d7, type: 3}
       propertyPath: m_RootOrder
       value: 7
@@ -6894,7 +6898,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 7.5
+  orthographic size: 9
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -11368,6 +11372,7 @@ MonoBehaviour:
   curAttackChargeTime: 0
   maxSlashCount: 2
   curSlashCount: 0
+  initState: BattleMode
 --- !u!50 &1889262069
 Rigidbody2D:
   serializedVersion: 4
