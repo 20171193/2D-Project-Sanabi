@@ -13,6 +13,9 @@ public class ObjectEventTrigger : MonoBehaviour
     private bool playOnce;
 
     [Header("Camera Action")]
+    [Space(2)]
+    [SerializeField]
+    private float blendTime;
     [SerializeField]
     private bool isCameraAciton;
     [SerializeField]
@@ -25,8 +28,24 @@ public class ObjectEventTrigger : MonoBehaviour
     public UnityEvent OnEnterTrigger;
     public UnityEvent OnExitTrigger;
 
+    [Space(3)]
+    [Header("Balancing")]
+    [Space(2)]
+    [SerializeField]
+    private float originBlendTime;
+
+    private CinemachineBrain cinemachineBrain;
+
+    private void Awake()
+    {
+        cinemachineBrain = Camera.main.GetComponent<CinemachineBrain>();
+    }
+
     private void OnEnable()
     {
+        originBlendTime = cinemachineBrain.m_DefaultBlend.BlendTime;
+        cinemachineBrain.m_DefaultBlend.m_Time = blendTime;
+
         prInput = GameObject.FindWithTag("Player").GetComponent<PlayerInput>();
     }
 
@@ -48,9 +67,13 @@ public class ObjectEventTrigger : MonoBehaviour
         Manager.Camera.SetCameraPriority(CameraType.Main);
 
         if (playOnce == true)
-            Destroy(gameObject);
+            Destroy(gameObject, cinemachineBrain.m_DefaultBlend.BlendTime);
     }
 
+    private void OnDestroy()
+    {
+        cinemachineBrain.m_DefaultBlend.m_Time = originBlendTime; 
+    }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {

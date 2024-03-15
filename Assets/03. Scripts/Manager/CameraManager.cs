@@ -37,6 +37,7 @@ public class CameraManager : Singleton<CameraManager>
     {
         base.Awake();
         mainConfiner = mainCamera.GetComponent<CinemachineConfiner2D>();
+        currentCamera = mainCamera;
     }
 
     private void Start()
@@ -47,7 +48,6 @@ public class CameraManager : Singleton<CameraManager>
 
         zoomCamera.Priority = (int)CameraOrder.IdleCamera;
         mainCamera.Priority = (int)CameraOrder.CurrentCamera;
-        currentCamera = mainCamera;
     }
 
     public void SetCameraPriority(CameraType type, CinemachineVirtualCamera cc = null)

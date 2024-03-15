@@ -230,27 +230,39 @@ public class Justice : MonoBehaviour
 
     #region Cinematic
     // 이벤트 트리거
-    public void EnterBeforeBattleMode()
+    public void EnterPowerOn()
     {
         fsm.ChangeState("PowerOn");
-
-        StartCoroutine(Extension.DelayRoutine(5f, () => fsm.ChangeState("BeforeBattleMode")));
+    }
+    public void EnterBeforeBattleMode()
+    {
+        transform.position = beforeBattleModePos;
+        transform.rotation = Quaternion.Euler(0, 180, 0);
+        fsm.ChangeState("BeforeBattleMode");
     }
 
     // 시네마틱 용 애니메이션
-    public void SetBeforeBattlePos()
-    {
-        transform.position = beforeBattleModePos;
-        transform.rotation = Quaternion.Euler(0, 0, 0);
-    }
     public void SetBattlePos()
     {
-        transform.position = battleModePos;
+        StartCoroutine(TranslateRoutine());
+    }
+    IEnumerator TranslateRoutine()
+    {
+        while(transform.position.y <= battleModePos.y)
+        {
+            transform.Translate(Vector3.up * 1.5f * Time.deltaTime);
+            yield return null;
+        }
+        yield return null;
     }
     public void EnableObjects()
     {
         embientAnim.Play("EnterBattleMode");
         weaknessController.IsSpawnIdle = true;
+    }
+    public void BattleModeEnd()
+    {
+        fsm.ChangeState("Track");
     }
     #endregion
 
@@ -284,7 +296,7 @@ public class Justice : MonoBehaviour
         // vfx : 반사 스파크 
         sparkOb = agentVFXPool.ActiveVFX("ParryingSpark");
         sparkOb.transform.up = dir;
-        sparkOb.transform.position = hitPos;
+        sparkOb.transform.position = hitPos + dir*2f;
     }
 
     // 일정확률 카운터
