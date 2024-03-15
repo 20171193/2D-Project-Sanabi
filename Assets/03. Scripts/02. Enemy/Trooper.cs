@@ -68,7 +68,7 @@ public class Trooper : EnemyShooter, IKnockbackable, IGrabable
         bullet.Rigid.AddForce(aimPos.right * bulletPower, ForceMode2D.Impulse);
     }
 
-
+    #region IGrabable Interface override
     public void Grabbed(Rigidbody2D ownerRigid)
     {
         markerAnim.SetBool("IsEnable", false);
@@ -91,6 +91,7 @@ public class Trooper : EnemyShooter, IKnockbackable, IGrabable
     public bool IsMoveable() { return true; }
     public GameObject GetGameObject() { return gameObject; }
     public Vector3 GetGrabPosition() { return new Vector2(this.transform.position.x, this.transform.position.y + grabbedYPos); }
+    #endregion
 
     public void KnockBack(Vector3 force)
     {

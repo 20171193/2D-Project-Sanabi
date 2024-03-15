@@ -1,9 +1,12 @@
+using Cinemachine;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.InputSystem;
 using UnityEngine.Rendering;
+using UnityEngine.UIElements;
 
 public class JusticeBaseState : BaseState
 {
@@ -11,7 +14,11 @@ public class JusticeBaseState : BaseState
 }
 public class PowerOff : JusticeBaseState
 {
-    // 더미클래스
+    public PowerOff(Justice owner) { this.owner = owner; }
+    public override void Enter()
+    {
+        owner.BodyRenderer.sortingLayerName = "Default";
+    }
 }
 public class PowerOn : JusticeBaseState
 {
@@ -20,10 +27,13 @@ public class PowerOn : JusticeBaseState
 
     public override void Enter()
     {
+        owner.BodyRenderer.sortingLayerName = "Enemy";
         owner.Anim.Play("PowerOn");
     }
     public override void Exit()
     {
+        // 보스 룸 활성화
+        owner.BossRoomController.enabled = true;
     }
 }
 
@@ -34,32 +44,34 @@ public class BeforeBattleMode : JusticeBaseState
     // 플레이어가 트리거 진입 시
     public override void Enter()
     {
+        // 플레이어 입력제어
+        GameObject.FindWithTag("Player").GetComponent<PlayerInput>().enabled = false;
+
         owner.CircleCol.enabled = true;
         owner.Anim.Play("BeforeBattleMode");
     }
     public override void Exit()
     {
+        // 플레이어 입력제어 해제
+        GameObject.FindWithTag("Player").GetComponent<PlayerInput>().enabled = true;
     }
 }
-
 public class BattleMode : JusticeBaseState
 {
     // 한번 공격을 받았을 때
     // 공격모드 진입 상태
-    private Coroutine battleModeTimer;
     public BattleMode(Justice owner) { this.owner = owner; }
 
     public override void Enter()
     {
         owner.Anim.Play("BattleMode");
-        Manager.Camera.SetCameraPriority(CameraType.CutScene, owner.BattleModeCamera);
+        Manager.Camera.SetCameraPriority(CameraType.CutScene, owner.JusticeCamera);
     }
     public override void Exit()
     {
+        // 보스 룸 레일카 스폰
+        owner.BossRoomController.IsSpawn = true;
         Manager.Camera.SetCameraPriority(CameraType.Main);
-
-        if (battleModeTimer != null)
-            owner.StopCoroutine(battleModeTimer);
     }
 }
 public class Track : JusticeBaseState
@@ -147,6 +159,7 @@ public class Track : JusticeBaseState
         // 상태 전환 코루틴 실행
         owner.Anim.Play("MoveEnd");
         // 트래킹 -> 텔레포트
+        owner.CircleCol.enabled = false;
         animationRoutine = owner.StartCoroutine(Extension.DelayRoutine(0.3f, () => owner.FSM.ChangeState("Teleport")));
     }
 }
@@ -163,7 +176,6 @@ public class Teleport : JusticeBaseState
             owner.WeaknessController.DisAppearAll();
 
         owner.CircleCol.enabled = false;
-        owner.WeaknessController.DisAppearAll();
         owner.EmbientAnim.Play("DisAppear");
         owner.Anim.Play("TeleportStart");
         // 텔레포트 딜레이 시간만큼 딜레이 후 상태전환
@@ -171,7 +183,7 @@ public class Teleport : JusticeBaseState
     }
     public override void Exit()
     {
-        if(teleportDelayTimer != null)
+        if (teleportDelayTimer != null)
             owner.StopCoroutine(teleportDelayTimer);
     }
 
@@ -196,6 +208,7 @@ public class Charge : JusticeBaseState
 
     public override void Enter()
     {
+
         Debug.Log("Justice Charge");
 
         switch (owner.CurrentAttackType)
@@ -309,6 +322,7 @@ public class Attack : JusticeBaseState
             case JusticeAttackType.CloakingSlash:
                 owner.Anim.Play("CircleSlashAttack");
                 vfx = owner.AgentVFXPool.ActiveVFX("CircleSlash").GetComponent<JusticeVFX>();
+                owner.CircleCol.enabled = true;
 
                 owner.CurSlashCount++;
                 break;
@@ -333,10 +347,6 @@ public class Attack : JusticeBaseState
             owner.StopCoroutine(attackRoutine);
         
         vfx.Release();
-    }
-
-    private void VFXRotation()
-    {
     }
 
     private void DashSlash()
@@ -369,6 +379,87 @@ public class Groggy : JusticeBaseState
     // 어떤 상태에서든 전이될 수 있는 상태
     // 약점이 모두 파괴된 경우 Groggy 상태 진입
     public Groggy(Justice owner) { this.owner = owner; }
+    public override void Enter()
+    {
+        owner.CircleCol.enabled = true;
+        // 대쉬, 그랩이 가능한 BossGroggy레이어로 변경
+        owner.gameObject.layer = LayerMask.NameToLayer("BossGroggy");
+        owner.Anim.Play("GroggyStart");
+    }
+}
+public class Grabbed : JusticeBaseState
+{
+    public Grabbed(Justice owner) { this.owner = owner; }
 
+    public override void Enter()
+    {
+        Time.timeScale = 0.7f;
+        owner.gameObject.layer = LayerMask.NameToLayer("PlayerGrabing");
+        owner.Anim.Play("GrabbedStart");
+    }
+    public override void Exit()
+    {
+    }
+}
+public class GrabbedEnd : JusticeBaseState
+{
+    // 데미지를 받는 상태
+    public GrabbedEnd(Justice owner) { this.owner = owner; }
+
+    private Coroutine takeDamageRoutine;
+    public override void Enter()
+    {
+        owner.Anim.Play("TakeDamage");
+        owner.CurHp--;
+        if(owner.CurHp <= 0)
+            // 애니메이션 딜레이 이후 페이즈체인지 상태로 변경
+            takeDamageRoutine = owner.StartCoroutine(Extension.DelayRoutine(1f, () => owner.FSM.ChangeState("PhaseChange")));
+        else
+            // 애니메이션 딜레이 이후 텔레포트 상태로 변경
+            takeDamageRoutine = owner.StartCoroutine(Extension.DelayRoutine(1f, () => owner.FSM.ChangeState("Teleport")));
+    }
+
+    public override void Exit()
+    {
+        Time.timeScale = 1f;
+        // 대쉬, 그랩이 불가한 Boss레이어로 변경
+        owner.gameObject.layer = LayerMask.NameToLayer("Boss");
+    }
 }
 
+public class PhaseChange : JusticeBaseState
+{
+    public PhaseChange(Justice owner) { this.owner = owner; }
+
+    public override void Enter()
+    {
+        Debug.Log("PhaseChange");
+        owner.BossRoomController.enabled = false;
+        owner.EmbientAnim.Play("DisAppear");
+
+        if (!owner.LoadPhaseData()) 
+            owner.FSM.ChangeState("Die");
+        else
+        {
+            // 페이즈 변경 시네마틱
+            owner.Anim.Play("PhaseChange");
+            GameObject.FindWithTag("Player").GetComponent<PlayerInput>().enabled = false;
+            Camera.main.GetComponent<CinemachineBrain>().m_DefaultBlend.m_Time = 0.5f;
+            Manager.Camera.SetCameraPriority(CameraType.CutScene, owner.JusticeCamera);
+        }
+    }
+    public override void Exit()
+    {
+        owner.BossRoomController.enabled = true;
+
+        owner.EmbientAnim.Play("Appear");
+
+        GameObject.FindWithTag("Player").GetComponent<PlayerInput>().enabled = true;
+        Manager.Camera.SetCameraPriority(CameraType.Main);
+        Camera.main.GetComponent<CinemachineBrain>().m_DefaultBlend.m_Time = 2f;
+    }
+}
+public class Die : JusticeBaseState
+{
+    public Die(Justice owner) { this.owner = owner; }
+}

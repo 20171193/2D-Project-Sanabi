@@ -39,6 +39,7 @@ public class LayerManager : Singleton<LayerManager>
     [Space(3)]
     #region Boss
     public LayerMask bossLM;
+    public LayerMask bossGroggyLM;
     public LayerMask bossAttackLM;
     public LayerMask bossWeaknessLM;
     #endregion

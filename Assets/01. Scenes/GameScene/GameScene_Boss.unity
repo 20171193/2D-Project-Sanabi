@@ -303,7 +303,7 @@ GameObject:
   - component: {fileID: 5668478}
   - component: {fileID: 5668480}
   - component: {fileID: 5668479}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: GroundCollider (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2366,6 +2366,8 @@ MonoBehaviour:
   justiceTr: {fileID: 1889262067}
   anim: {fileID: 492102263}
   capCol: {fileID: 394296790}
+  isActive: 0
+  curState: 
 --- !u!70 &394296790
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
@@ -2685,6 +2687,8 @@ MonoBehaviour:
   justiceTr: {fileID: 1889262067}
   anim: {fileID: 876024026}
   capCol: {fileID: 448754523}
+  isActive: 0
+  curState: 
 --- !u!70 &448754523
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
@@ -2874,7 +2878,7 @@ GameObject:
   - component: {fileID: 477725648}
   - component: {fileID: 477725650}
   - component: {fileID: 477725649}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: GroundCollider (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4989,6 +4993,7 @@ MonoBehaviour:
   - {fileID: 3751243093840489183, guid: adbeca74c7aeee64594057950f522db2, type: 3}
   - {fileID: 3002397818773948275, guid: 36ca9ce26a3466c43a71b1c0f9595a47, type: 3}
   isRunning: 1
+  isSpawn: 0
 --- !u!1 &836356236
 GameObject:
   m_ObjectHideFlags: 0
@@ -9796,6 +9801,90 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1569474107
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1569474108}
+  - component: {fileID: 1569474109}
+  m_Layer: 19
+  m_Name: SwordRenderer
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!4 &1569474108
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1569474107}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2101162311}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!212 &1569474109
+SpriteRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1569474107}
+  m_Enabled: 1
+  m_CastShadows: 0
+  m_ReceiveShadows: 0
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 0
+  m_RayTraceProcedural: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 0
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_Sprite: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_FlipX: 0
+  m_FlipY: 0
+  m_DrawMode: 0
+  m_Size: {x: 1, y: 1}
+  m_AdaptiveModeThreshold: 0.5
+  m_SpriteTileMode: 0
+  m_WasSpriteAssigned: 0
+  m_MaskInteraction: 0
+  m_SpriteSortPoint: 0
 --- !u!1 &1584065785
 GameObject:
   m_ObjectHideFlags: 0
@@ -11028,6 +11117,8 @@ MonoBehaviour:
   justiceTr: {fileID: 1889262067}
   anim: {fileID: 1159220886}
   capCol: {fileID: 1800155729}
+  isActive: 0
+  curState: 
 --- !u!70 &1800155729
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
@@ -11531,25 +11622,32 @@ MonoBehaviour:
   weaknessController: {fileID: 465378862}
   agentVFXPool: {fileID: 1382140256}
   chargeVFXPool: {fileID: 251275119}
-  battleModeCamera: {fileID: 1873301497}
+  justiceCamera: {fileID: 1873301497}
+  bodyRenderer: {fileID: 2101162313}
+  bossRoomController: {fileID: 826255762}
   slashAttackRange: 13
   dashSlashAttackRange: 26
+  groggyTime: 0
   beforeBattleModePos: {x: 11, y: -26, z: 0}
   battleModePos: {x: -18, y: -10, z: 0}
-  phase1Pos: {x: 0, y: 0, z: 0}
+  phasePos: {x: 0, y: -10, z: 0}
+  nextPhaseIndex: 0
+  phaseDatas:
+  - {fileID: 11400000, guid: 26e1d682ca379cb4d864027c2669f448, type: 2}
+  - {fileID: 11400000, guid: 26e1d682ca379cb4d864027c2669f448, type: 2}
   maxHp: 3
   moveSpeed: 5
   trackingTime: 2
   teleportTime: 1.5
+  maxSlashCount: 2
   slashAttackChargeTime: 2
   circleAttackChargeTime: 3
   dashSlashAttackChargeTime: 4
   attackDelayTime: 2
   attackDir: {x: 0, y: 0, z: 0}
   playerTr: {fileID: 0}
-  curHp: 3
+  curHp: 0
   curAttackChargeTime: 0
-  maxSlashCount: 2
   curSlashCount: 0
   initState: PowerOff
 --- !u!50 &1889262069
@@ -12785,7 +12883,8 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 1569474108}
   m_Father: {fileID: 1889262067}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -12849,8 +12948,8 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -523561653
   m_SortingLayer: 2
-  m_SortingOrder: 1
-  m_Sprite: {fileID: 21300000, guid: cd017af6b4159cb41aaec5fa48976d94, type: 3}
+  m_SortingOrder: 5
+  m_Sprite: {fileID: 21300000, guid: e3a2bef7520dc2d4fb8d44dd835cca41, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0

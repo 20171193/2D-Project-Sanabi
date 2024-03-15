@@ -30,8 +30,8 @@ TagManager:
   - BossWeakness
   - BossAttack
   - CeilingChecker
-  - 
-  - 
+  - PlayerGrabing
+  - BossGroggy
   - 
   - 
   - 
