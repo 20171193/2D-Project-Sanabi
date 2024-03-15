@@ -52,7 +52,7 @@ public class BattleMode : JusticeBaseState
     public override void Enter()
     {
         owner.Anim.Play("BattleMode");
-        Manager.Camera.SetCutSceneCamera(owner.BattleModeCamera);
+        Manager.Camera.SetCameraPriority(CameraType.CutScene, owner.BattleModeCamera);
         battleModeTimer = owner.StartCoroutine(Extension.DelayRoutine(8f, ()=>owner.FSM.ChangeState("Track")));
     }
     public override void Exit()
@@ -209,25 +209,26 @@ public class Charge : JusticeBaseState
                 isAiming = true;
                 break;
             case JusticeAttackType.CircleSlash:
-                isAiming = false;
-
                 // VFX 활성화
                 vfx = owner.ChargeVFXPool.ActiveVFX("CircleSlashCharge").GetComponent<JusticeVFX>();
+                isAiming = false;
                 break;
             case JusticeAttackType.DashSlash:
                 owner.Anim.Play("DashAttackStart");
-
                 // VFX 활성화
                 vfx = owner.ChargeVFXPool.ActiveVFX("DashSlashCharge").GetComponent<JusticeVFX>();
                 isAiming = true;
                 break;
             case JusticeAttackType.CloakingSlash:
-                isAiming = false;
                 // VFX 활성화
                 vfx = owner.ChargeVFXPool.ActiveVFX("CloakingSlashCharge").GetComponent<JusticeVFX>();
+                isAiming = false;
                 break;
         }
 
+        // vfx 초기위치 설정
+        vfx.transform.position = owner.transform.position;
+        
         chargeTimer = owner.StartCoroutine(ChargeTimer());  
     }
 
@@ -303,7 +304,6 @@ public class Attack : JusticeBaseState
                 owner.Anim.Play("SlashAttack");
                 // vfx 출력
                 vfx = owner.AgentVFXPool.ActiveVFX("Slash").GetComponent<JusticeVFX>();
-
                 owner.CurSlashCount++;
                 break;
             case JusticeAttackType.CircleSlash:
@@ -322,7 +322,8 @@ public class Attack : JusticeBaseState
                 break;
         }
 
-        // vfx 회전
+        // vfx 위치, 회전 세팅
+        vfx.transform.position = owner.transform.position;
         vfx.transform.up = owner.AttackDir;
 
         attackRoutine = owner.StartCoroutine(AttackDelayTimer());

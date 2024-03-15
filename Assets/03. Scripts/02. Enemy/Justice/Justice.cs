@@ -114,6 +114,7 @@ public class Justice : MonoBehaviour
     [Space(3)]
     [Header("Balancing")]
     [Space(2)]
+
     [SerializeField]
     private Vector3 attackDir;
     public Vector3 AttackDir { get { return attackDir; } set { attackDir = value; } }
@@ -190,7 +191,13 @@ public class Justice : MonoBehaviour
     // 유한상태머신
     private StateMachine<Justice> fsm;
     public StateMachine<Justice> FSM { get { return fsm; } }
-
+    /*******************************
+     * 디버그용
+     ******************************/
+    [Header("Debug")]
+    [SerializeField]
+    private string initState;
+    /******************************/
     private void Awake()
     {
         playerTr = GameObject.FindWithTag("Player").transform;
@@ -210,7 +217,7 @@ public class Justice : MonoBehaviour
         // 추후
         fsm.AddState("Counter", new Counter(this));
 
-        fsm.Init("PowerOff");
+        fsm.Init(initState);
     }
     private void Update()
     {
@@ -257,11 +264,9 @@ public class Justice : MonoBehaviour
     }
 
     // 공격 반사
-    private void Parrying(Collider2D collision)
+    private void Parrying(Vector3 hitPos)
     {
-        collision.GetComponent<Hook>().OnHookAttackFailed?.Invoke();
-
-        Vector3 dir = (collision.transform.position - transform.position).normalized;
+        Vector3 dir = (hitPos - transform.position).normalized;
 
         GameObject parryingOb = null;
         GameObject sparkOb = null;
@@ -274,12 +279,12 @@ public class Justice : MonoBehaviour
             parryingOb = agentVFXPool.ActiveVFX("ParryingB");
 
         parryingOb.transform.right = -dir;
-        parryingOb.transform.position += dir * 1.5f;
+        parryingOb.transform.position = transform.position + dir * 1.5f;
         
         // vfx : 반사 스파크 
         sparkOb = agentVFXPool.ActiveVFX("ParryingSpark");
         sparkOb.transform.up = dir;
-        sparkOb.transform.position = collision.transform.position;
+        sparkOb.transform.position = hitPos;
     }
 
     // 일정확률 카운터
@@ -302,7 +307,9 @@ public class Justice : MonoBehaviour
             // 반격
             else
             {
-                Parrying(collision);
+                Debug.Log("Parrying!");
+                Parrying(collision.transform.position);
+                collision.GetComponent<Hook>().OnHookAttackFailed?.Invoke();
 
                 if (fsm.CurState == "BeforeBattleMode")
                     fsm.ChangeState("BattleMode");

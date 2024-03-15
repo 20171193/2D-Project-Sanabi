@@ -6,7 +6,8 @@ using Cinemachine;
 public enum CameraType
 {
     Main,
-    Zoom
+    Zoom,
+    CutScene
 }
 
 public class CameraManager : Singleton<CameraManager>
@@ -49,42 +50,28 @@ public class CameraManager : Singleton<CameraManager>
         currentCamera = mainCamera;
     }
 
-
-    private void InitPriority()
+    public void SetCameraPriority(CameraType type, CinemachineVirtualCamera cc = null)
     {
-        if(currentCamera)
-            currentCamera.Priority = (int)CameraOrder.IdleCamera;
+        currentCamera.Priority = (int)CameraOrder.IdleCamera;
 
-        zoomCamera.Priority = (int)CameraOrder.IdleCamera;
-        mainCamera.Priority = (int)CameraOrder.CurrentCamera;
-
-        currentCamera = mainCamera;
-    }
-
-    public void SetCameraPriority(CameraType type)
-    {
-        InitPriority();
-
-        switch(type)
+        switch (type)
         {
             case CameraType.Main:
+                mainCamera.Priority = (int)CameraOrder.CurrentCamera;
+                currentCamera = mainCamera;
                 break;
             case CameraType.Zoom:
                 zoomCamera.Priority = (int)CameraOrder.CurrentCamera;
-                mainCamera.Priority = (int)CameraOrder.IdleCamera;
                 currentCamera = zoomCamera;
+                break;
+            case CameraType.CutScene:
+                if (cc == null) break;
+                cc.Priority = (int)CameraOrder.CurrentCamera;
+                currentCamera = cc;
                 break;
             default:
                 break;
         }
-    }
-    public void SetCutSceneCamera(CinemachineVirtualCamera cutSceneCamera)
-    {
-        InitPriority();
-        currentCamera.Priority = (int)CameraOrder.IdleCamera;
-        cutSceneCamera.Priority = (int)CameraOrder.CurrentCamera;
-
-        currentCamera = cutSceneCamera;
     }
 
     public void SetConfiner(Collider2D shape)
