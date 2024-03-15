@@ -71,10 +71,7 @@ public class WeaknessController : MonoBehaviour
 
         Rotation();
         if (IsSpawnIdle &&
-            owner.FSM.CurState != "Init" &&
-            owner.FSM.CurState != "Teleport" &&
-            owner.FSM.CurState != "Counter" &&
-            owner.FSM.CurState != "Groggy")
+            owner.FSM.CurState == "Track")
         {
             Spawn();
         }

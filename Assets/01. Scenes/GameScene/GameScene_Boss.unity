@@ -11901,6 +11901,18 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 488339194, guid: e983d07af2f1f474cb1ddca9ebe5b6da, type: 3}
+      propertyPath: m_SortingLayer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 488339194, guid: e983d07af2f1f474cb1ddca9ebe5b6da, type: 3}
+      propertyPath: m_SortingOrder
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 488339194, guid: e983d07af2f1f474cb1ddca9ebe5b6da, type: 3}
+      propertyPath: m_SortingLayerID
+      value: -1935177449
+      objectReference: {fileID: 0}
     - target: {fileID: 1942553676, guid: e983d07af2f1f474cb1ddca9ebe5b6da, type: 3}
       propertyPath: m_ImpulseDefinition.m_ImpulseShape
       value: 2
@@ -11949,6 +11961,10 @@ PrefabInstance:
       propertyPath: hud_ArmJammed
       value: 
       objectReference: {fileID: 1197507760}
+    - target: {fileID: 8338325329431907394, guid: e983d07af2f1f474cb1ddca9ebe5b6da, type: 3}
+      propertyPath: hookAttackFailedTime
+      value: 5
+      objectReference: {fileID: 0}
     - target: {fileID: 8338325329431907400, guid: e983d07af2f1f474cb1ddca9ebe5b6da, type: 3}
       propertyPath: m_RootOrder
       value: 1

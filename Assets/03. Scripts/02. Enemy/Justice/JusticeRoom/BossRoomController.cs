@@ -69,7 +69,7 @@ public class BossRoomController : MonoBehaviour
         // 활성화 : 3개
         // 비활성화 : 3개
         // 비활성화->활성화 시 겹치는 경우를 고려해서 각 레일카를 6개씩 풀링
-        for (int i = 0; i < 6; i++)
+        for (int i = 0; i < 20; i++)
         {
             foreach(GameObject rc in railCarPrefabs)
             {
