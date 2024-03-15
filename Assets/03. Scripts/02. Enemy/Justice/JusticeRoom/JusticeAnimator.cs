@@ -11,13 +11,9 @@ public class JusticeAnimator : MonoBehaviour
     private void Awake()
     {
         owner = transform.parent.GetComponent<Justice>();
-        impulse = GameObject.FindWithTag("Player").GetComponent<CinemachineImpulseSource>();
+        impulse = GetComponent<CinemachineImpulseSource>();
     }
 
-    public void OnAnimationBeforeBattle()
-    {
-        owner.SetBeforeBattlePos();
-    }
     public void OnAnimationBattle()
     {
         owner.SetBattlePos();
@@ -25,6 +21,10 @@ public class JusticeAnimator : MonoBehaviour
     public void OnAnimationBattle2()
     {
         owner.EnableObjects();
+    }
+    public void OnEndBattleMode()
+    {
+        owner.BattleModeEnd();
     }
     public void OnDoImpulse()
     {

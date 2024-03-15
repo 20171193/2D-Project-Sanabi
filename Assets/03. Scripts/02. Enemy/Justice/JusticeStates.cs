@@ -53,7 +53,6 @@ public class BattleMode : JusticeBaseState
     {
         owner.Anim.Play("BattleMode");
         Manager.Camera.SetCameraPriority(CameraType.CutScene, owner.BattleModeCamera);
-        battleModeTimer = owner.StartCoroutine(Extension.DelayRoutine(8f, ()=>owner.FSM.ChangeState("Track")));
     }
     public override void Exit()
     {

@@ -100,6 +100,12 @@ public class Player : MonoBehaviour
         PrHooker.FiredHook?.DisConnecting();
     }
 
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Tab))
+            DoImpulse();
+    }
+
     // 히트 점프로 데미지 루틴을 빠져나간 경우
     // 글리치 이펙트 초기화, 무적상태 초기화
     public void InitDamageRoutine()
