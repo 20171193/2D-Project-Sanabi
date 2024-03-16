@@ -590,9 +590,13 @@ public class PlayerCutSceneMode : PlayerBaseState
 
     public override void Enter()
     {
+        owner.Rigid.velocity = Vector2.zero;
         owner.PrInput.enabled = false;
+
         if (owner.CutSceneAnim.Length > 0)
             owner.Anim.Play(owner.CutSceneAnim);
+        else
+            owner.Anim.Play("Idle");
     }
 
     public override void Exit()
