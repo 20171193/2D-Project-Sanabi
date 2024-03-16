@@ -1,15 +1,20 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class DeathEvent : MonoBehaviour
-{
+{ 
     [SerializeField]
     private Animator anim;
 
-    public void SetAnimator(bool isActive)
+    public void EnableAnimator()
     {
-        anim.enabled = isActive;
+        anim.SetBool("IsActive", true);
+    }
+    public void DisableAnimator()
+    {
+        anim.SetBool("IsActive", false);
     }
 
     public void EnableGlitch()

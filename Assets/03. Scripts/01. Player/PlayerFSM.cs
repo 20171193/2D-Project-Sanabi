@@ -30,6 +30,10 @@ public class PlayerFSM : PlayerBase
     public bool IsGround { get { return isGround; } set { isGround = value; } }
 
     [SerializeField]
+    private bool isDamageable = true;
+    public bool IsDamageable { get { return isDamageable; } set { isDamageable = value; } }
+
+    [SerializeField]
     private int groundCount;
 
     [SerializeField]
@@ -87,7 +91,8 @@ public class PlayerFSM : PlayerBase
         fsm.AddState("CeilingStickStart", new PlayerCeilingStickStart(Player));
         fsm.AddState("CeilingStickIdle", new PlayerCeilingStickIdle(Player));
         fsm.AddState("CeilingStickMove", new PlayerCeilingStickMove(Player));
-        
+
+        fsm.AddState("Respawn", new PlayerRespawn(Player));
         fsm.AddState("DeadZoneDie", new PlayerDeadZoneDie(Player));
         fsm.AddState("DamagedDie", new PlayerDamagedDie(Player));
         fsm.AddState("CutSceneMode", new PlayerCutSceneMode(Player));
@@ -109,14 +114,17 @@ public class PlayerFSM : PlayerBase
 
         fsm.AddAnyState("Fall", () =>
         {
-            return !isGround && 
-            fsm.CurState != "CeilingStickStart" && 
-            fsm.CurState != "CeilingStickStart" && 
+            return !isGround &&
+            fsm.CurState != "CeilingStickStart" &&
+            fsm.CurState != "CeilingStickStart" &&
             fsm.CurState != "HookShoot" &&
-            fsm.CurState != "Roping" && 
-            fsm.CurState != "WallSlide" && 
+            fsm.CurState != "Roping" &&
+            fsm.CurState != "WallSlide" &&
             fsm.CurState != "Grab" &&
             fsm.CurState != "CutSceneMode" &&
+            fsm.CurState != "Respawn" && 
+            fsm.CurState != "DamagedDie" &&
+            fsm.CurState != "DeadZoneDie" &&
             Player.Rigid.velocity.y < -Player.JumpForce_Threshold;
         });
         fsm.AddTransition("Fall", "Idle", 0f, () =>

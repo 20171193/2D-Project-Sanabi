@@ -32,6 +32,15 @@ public class CameraManager : Singleton<CameraManager>
 
     [SerializeField]
     private CinemachineConfiner2D mainConfiner;
+    public Collider2D CurrentConfiner { get { return mainConfiner?.m_BoundingShape2D; } }
+
+    [SerializeField]
+    private CinemachineBrain cameraBrain;
+    public CinemachineBrain CameraBrain { get { return cameraBrain; } }
+
+    [SerializeField]
+    private float originBlendTime;
+    public float OriginBlendTime { get { return originBlendTime; } }
 
     [SerializeField]
     private GlitchEffect glitch;
@@ -48,6 +57,9 @@ public class CameraManager : Singleton<CameraManager>
     {
         GameObject player = GameObject.FindWithTag("Player");
         glitch = Camera.main.GetComponent<GlitchEffect>();
+        cameraBrain = Camera.main.GetComponent<CinemachineBrain>();
+        originBlendTime = cameraBrain.m_DefaultBlend.m_Time;
+
         mainCamera.Follow = player.transform;
         zoomCamera.Follow = player.transform;
 
@@ -55,6 +67,18 @@ public class CameraManager : Singleton<CameraManager>
         mainCamera.Priority = (int)CameraOrder.CurrentCamera;
     }
 
+    // 카메라 전환 블렌딩타임 적용
+    public void SetBlendTime(float time)
+    {
+        cameraBrain.m_DefaultBlend.m_Time = time;
+    }
+    // 카메라 전환 블렌딩타임 원복
+    public void SetDefaultBlendTime()
+    {
+        cameraBrain.m_DefaultBlend.m_Time = originBlendTime;
+    }
+
+    // 카메라 우선순위 적용
     public void SetCameraPriority(CameraType type, CinemachineVirtualCamera cc = null)
     {
         mainCamera.Priority = (int)CameraOrder.IdleCamera;
@@ -80,7 +104,14 @@ public class CameraManager : Singleton<CameraManager>
                 break;
         }
     }
+    
+    // Confiner 적용
+    public void SetConfiner(Collider2D shape)
+    {
+        mainConfiner.m_BoundingShape2D = shape;
+    }
 
+    // 글리치 이펙트 
     public void OnGlitchEffect()
     {
         glitch.enabled = true;
@@ -90,9 +121,6 @@ public class CameraManager : Singleton<CameraManager>
         glitch.enabled = false;
     }
 
-    public void SetConfiner(Collider2D shape)
-    {
-        mainConfiner.m_BoundingShape2D = shape;
-    }
+
 
 }
