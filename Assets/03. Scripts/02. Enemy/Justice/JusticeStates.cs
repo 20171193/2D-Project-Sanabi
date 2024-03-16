@@ -32,8 +32,6 @@ public class PowerOn : JusticeBaseState
     }
     public override void Exit()
     {
-        // 보스 룸 활성화
-        owner.BossRoomController.enabled = true;
     }
 }
 
@@ -44,16 +42,13 @@ public class BeforeBattleMode : JusticeBaseState
     // 플레이어가 트리거 진입 시
     public override void Enter()
     {
-        // 플레이어 입력제어
-        GameObject.FindWithTag("Player").GetComponent<PlayerInput>().enabled = false;
-
         owner.CircleCol.enabled = true;
         owner.Anim.Play("BeforeBattleMode");
     }
     public override void Exit()
     {
-        // 플레이어 입력제어 해제
-        GameObject.FindWithTag("Player").GetComponent<PlayerInput>().enabled = true;
+        // 보스 룸 활성화
+        owner.BossRoomController.enabled = true;
     }
 }
 public class BattleMode : JusticeBaseState
@@ -64,11 +59,17 @@ public class BattleMode : JusticeBaseState
 
     public override void Enter()
     {
+        // 플레이어 입력제어
+        GameObject.FindWithTag("Player").GetComponent<PlayerInput>().enabled = false;
+
         owner.Anim.Play("BattleMode");
         Manager.Camera.SetCameraPriority(CameraType.CutScene, owner.JusticeCamera);
     }
     public override void Exit()
     {
+        // 플레이어 입력제어 해제
+        GameObject.FindWithTag("Player").GetComponent<PlayerInput>().enabled = true;
+
         // 보스 룸 레일카 스폰
         owner.BossRoomController.IsSpawn = true;
         Manager.Camera.SetCameraPriority(CameraType.Main);
