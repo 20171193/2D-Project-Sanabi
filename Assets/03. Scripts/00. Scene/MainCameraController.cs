@@ -7,6 +7,7 @@ public class MainCameraController : MonoBehaviour
 {
     [SerializeField]
     private CinemachineConfiner2D confiner;
+    public CinemachineConfiner2D Confiner { get { return confiner; } }
 
     public void Awake()
     {

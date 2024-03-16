@@ -33,9 +33,13 @@ public class CameraManager : Singleton<CameraManager>
     [SerializeField]
     private CinemachineConfiner2D mainConfiner;
 
+    [SerializeField]
+    private GlitchEffect glitch;
+
     protected override void Awake()
     {
         base.Awake();
+
         mainConfiner = mainCamera.GetComponent<CinemachineConfiner2D>();
         currentCamera = mainCamera;
     }
@@ -43,6 +47,7 @@ public class CameraManager : Singleton<CameraManager>
     private void Start()
     {
         GameObject player = GameObject.FindWithTag("Player");
+        glitch = Camera.main.GetComponent<GlitchEffect>();
         mainCamera.Follow = player.transform;
         zoomCamera.Follow = player.transform;
 
@@ -74,6 +79,15 @@ public class CameraManager : Singleton<CameraManager>
             default:
                 break;
         }
+    }
+
+    public void OnGlitchEffect()
+    {
+        glitch.enabled = true;
+    }
+    public void OffGlitchEffect()
+    {
+        glitch.enabled = false;
     }
 
     public void SetConfiner(Collider2D shape)

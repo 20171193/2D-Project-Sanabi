@@ -578,10 +578,25 @@ public class PlayerDamaged : PlayerBaseState
     }
 }
 
-public class PlayerDie : PlayerBaseState
+public class PlayerDeadZoneDie : PlayerBaseState
 {
-    public PlayerDie(Player owner){this.owner = owner;}
+    public PlayerDeadZoneDie(Player owner){this.owner = owner;}
 
+}
+public class PlayerDamagedDie : PlayerBaseState
+{
+    public PlayerDamagedDie(Player owner) { this.owner = owner; }
+
+    public override void Enter()
+    {
+        Time.timeScale = 0.3f;
+        Manager.Camera.SetCameraPriority(CameraType.Zoom);
+    }
+    public override void Exit()
+    {
+        Time.timeScale = 1f;
+        Manager.Camera.SetCameraPriority(CameraType.Main);
+    }
 }
 
 public class PlayerCutSceneMode : PlayerBaseState
