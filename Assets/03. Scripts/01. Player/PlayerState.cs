@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Events;
 using static UnityEngine.RuleTile.TilingRuleOutput;
 
 public class PlayerBaseState : BaseState
@@ -574,5 +575,28 @@ public class PlayerDamaged : PlayerBaseState
     public override void Exit()
     {
         Time.timeScale = 1f;
+    }
+}
+
+public class PlayerDie : PlayerBaseState
+{
+    public PlayerDie(Player owner){this.owner = owner;}
+
+}
+
+public class PlayerCutSceneMode : PlayerBaseState
+{
+    public PlayerCutSceneMode(Player owner) { this.owner = owner; }
+
+    public override void Enter()
+    {
+        owner.PrInput.enabled = false;
+        if (owner.CutSceneAnim.Length > 0)
+            owner.Anim.Play(owner.CutSceneAnim);
+    }
+
+    public override void Exit()
+    {
+        owner.PrInput.enabled = true;
     }
 }

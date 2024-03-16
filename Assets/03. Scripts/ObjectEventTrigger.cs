@@ -35,10 +35,12 @@ public class ObjectEventTrigger : MonoBehaviour
     private float originBlendTime;
 
     private CinemachineBrain cinemachineBrain;
+    private CinemachineImpulseSource impulseSource;
 
     private void Awake()
     {
         cinemachineBrain = Camera.main.GetComponent<CinemachineBrain>();
+        impulseSource = GetComponent<CinemachineImpulseSource>();
     }
 
     private void OnEnable()
@@ -47,6 +49,11 @@ public class ObjectEventTrigger : MonoBehaviour
         cinemachineBrain.m_DefaultBlend.m_Time = blendTime;
 
         prInput = GameObject.FindWithTag("Player").GetComponent<PlayerInput>();
+    }
+
+    public void DoImpulse()
+    {
+        impulseSource.GenerateImpulse();
     }
 
     public void OnCameraAction()

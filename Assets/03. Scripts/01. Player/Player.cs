@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.InputSystem;
 
 public class Player : MonoBehaviour
 {
@@ -43,6 +44,10 @@ public class Player : MonoBehaviour
     public Camera Cam { get { return cam; } }
 
     [SerializeField]
+    private PlayerInput prInput;
+    public PlayerInput PrInput { get { return prInput; } }
+
+    [SerializeField]
     private CinemachineImpulseSource impulseSource;
     public CinemachineImpulseSource ImpulseSource { get { return impulseSource; } }
 
@@ -70,11 +75,15 @@ public class Player : MonoBehaviour
     private Coroutine takeDamageRoutine;
     public Coroutine TakeDamageCoroutine { get { return takeDamageRoutine; } }
 
+    private string cutSceneAnim;
+    public string CutSceneAnim { get { return cutSceneAnim; } set { cutSceneAnim = value; } }
+
     private void Awake()
     { 
         impulseSource = GetComponent<CinemachineImpulseSource>();
         rigid = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
+        prInput = GetComponent<PlayerInput>();
         cam = Camera.main;
 
         // Assign linked class
@@ -89,6 +98,16 @@ public class Player : MonoBehaviour
         impulseSource.GenerateImpulse();
     }
 
+    public void OnEnterCutSceneMode(string anim = null)
+    {
+        cutSceneAnim = anim;
+        PrFSM.FSM.ChangeState("CutSceneMode");
+    }
+    public void OnExitCutSceneMode()
+    {
+        cutSceneAnim = null;
+        PrFSM.FSM.ChangeState("Idle");
+    }
     private void TakeDamage()
     {
         DoImpulse();
