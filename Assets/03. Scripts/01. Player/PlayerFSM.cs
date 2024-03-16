@@ -88,6 +88,9 @@ public class PlayerFSM : PlayerBase
         fsm.AddState("CeilingStickIdle", new PlayerCeilingStickIdle(Player));
         fsm.AddState("CeilingStickMove", new PlayerCeilingStickMove(Player));
 
+        fsm.AddState("CutSceneMode", new PlayerCutSceneMode(Player));
+        fsm.AddState("Die", new PlayerDie(Player));
+
         fsm.AddTransition("Roping", "Idle", 0f, () =>
         {
             return IsGround && !isJointed;
@@ -105,8 +108,15 @@ public class PlayerFSM : PlayerBase
 
         fsm.AddAnyState("Fall", () =>
         {
-            return !isGround && fsm.CurState != "CeilingStickStart" && fsm.CurState != "HookShoot" && fsm.CurState != "Roping" && fsm.CurState != "WallSlide" && fsm.CurState != "Grab"
-                    && Player.Rigid.velocity.y < -Player.JumpForce_Threshold;
+            return !isGround && 
+            fsm.CurState != "CeilingStickStart" && 
+            fsm.CurState != "CeilingStickStart" && 
+            fsm.CurState != "HookShoot" &&
+            fsm.CurState != "Roping" && 
+            fsm.CurState != "WallSlide" && 
+            fsm.CurState != "Grab" &&
+            fsm.CurState != "CutSceneMode" &&
+            Player.Rigid.velocity.y < -Player.JumpForce_Threshold;
         });
         fsm.AddTransition("Fall", "Idle", 0f, () =>
         {

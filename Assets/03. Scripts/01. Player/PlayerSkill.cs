@@ -9,6 +9,8 @@ public class PlayerSkill : PlayerBase
     [Header("Component")]
     [SerializeField]
     private ParticleSystem ropeForceParticle;
+    [SerializeField]
+    private ParticleSystem ceilingStickParticle;
 
     [Header("Specs")]
     [SerializeField]
@@ -35,7 +37,13 @@ public class PlayerSkill : PlayerBase
     {
         base.Awake();
     }
-    
+
+    private void Update()
+    {
+        ropeForceParticle.gameObject.transform.position = transform.position - transform.right;
+        ceilingStickParticle.gameObject.transform.position = transform.position - transform.up * 1.5f;
+    }
+
     // 로프파워 스킬
     public void RopeForce()
     {
@@ -52,7 +60,7 @@ public class PlayerSkill : PlayerBase
             StopCoroutine(ghostTrailRoutine);
 
         // 잔상 파티클 출력
-        ghostTrailRoutine = StartCoroutine(GhostTrailRoutine(0.5f, () => Player.PrMover.CurrentMaxRopingPower -= ropeSkillPower));
+        ghostTrailRoutine = StartCoroutine(GhostTrailRoutine(0.5f, ropeForceParticle, () => Player.PrMover.CurrentMaxRopingPower -= ropeSkillPower));
 
         // 잔상 파티클 렌더러 플립
         if (transform.rotation.y == 0)
@@ -181,19 +189,19 @@ public class PlayerSkill : PlayerBase
         else
             transform.rotation = Quaternion.Euler(0, -180, 0);
 
-        ghostTrailRoutine = StartCoroutine(GhostTrailRoutine(1f, null));
+        ghostTrailRoutine = StartCoroutine(GhostTrailRoutine(0.2f, ceilingStickParticle,  null));
         Player.PrHooker.FiredHook.DistJoint.distance = 0.8f;
         // 상태 전이는 PlayerFSM의 OnTriggerEnter2D에서 실행
         // CeilingCheck와 충돌 시 -> CeilingStickIdle로 전환
     }
 
     // 잔상 루틴
-    IEnumerator GhostTrailRoutine(float activeTime, UnityAction afterAction)
+    IEnumerator GhostTrailRoutine(float activeTime, ParticleSystem particle, UnityAction afterAction)
     {
-        ropeForceParticle.Play();
+        particle.Play();
         yield return new WaitForSeconds(activeTime);
         afterAction?.Invoke();
-        ropeForceParticle.Stop();
+        particle.Stop();
     }
 
 }
