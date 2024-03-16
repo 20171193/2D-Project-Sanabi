@@ -72,7 +72,7 @@ public class ObjectEventTrigger : MonoBehaviour
         // 원상 복구
         prInput.enabled = true;
         Manager.Camera.SetCameraPriority(CameraType.Main);
-
+        OnExitTrigger?.Invoke();
         if (playOnce == true)
             Destroy(gameObject, cinemachineBrain.m_DefaultBlend.BlendTime);
     }

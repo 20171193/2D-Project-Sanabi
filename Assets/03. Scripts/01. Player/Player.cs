@@ -55,6 +55,25 @@ public class Player : MonoBehaviour
     private PlayerVFXPooler playerVFXPooler;
     public PlayerVFXPooler PrVFX { get { return playerVFXPooler; } }
 
+    [SerializeField]
+    private HUD_HP hp_HUD;
+    public HUD_HP HP_HUD { get { return hp_HUD; } }
+
+    [Space(3)]
+    [Header("Specs")]
+    [Space(2)]
+    [SerializeField]
+    private int maxHP;
+    public int MaxHP { get { return maxHP; }}
+
+    [Space(3)]
+    [Header("Balancing")]
+    [Space(2)]
+    [SerializeField]
+    private int currentHp;
+    public int CurrentHP { get { return currentHp; } set { currentHp = value; } }
+
+
     [Space(3)]
     [Header("Player Action Events")]
     [Space(2)]
@@ -91,6 +110,8 @@ public class Player : MonoBehaviour
         playerFSM = GetComponent<PlayerFSM>();
         playerHooker = GetComponent<PlayerHooker>();
         playerSkill = GetComponent<PlayerSkill>();
+
+        currentHp = maxHP;
     }
 
     public void DoImpulse()
@@ -112,11 +133,23 @@ public class Player : MonoBehaviour
     {
         DoImpulse();
 
-        takeDamageRoutine = StartCoroutine(TakeDamageRoutine());
+        if (currentHp < 1)
+        {
+            PrFSM.ChangeState("Die");
+            return;
+        }
 
+        hp_HUD.OnDamaged(--currentHp);
+        takeDamageRoutine = StartCoroutine(TakeDamageRoutine());
         // 상태전이 : ? -> Damaged
         PrFSM.ChangeState("Damaged");
         PrHooker.FiredHook?.DisConnecting();
+    }
+    private void RestoreHP()
+    {
+        if (currentHp >= maxHP) return;
+
+        hp_HUD.OnRestore(++currentHp);
     }
 
     private void Update()

@@ -162,8 +162,12 @@ public class PlayerFSM : PlayerBase
         fsm.ChangeState(name);
     }
 
+    [SerializeField]
+    private string currentState;
+
     private void Update()
     {
+        currentState = fsm.CurState;
         fsm.Update();
 
         Debug.DrawLine(transform.position, transform.position + Vector3.up * 1.5f, Color.red);
