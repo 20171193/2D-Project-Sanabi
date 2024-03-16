@@ -15,14 +15,15 @@ public class SavePoint : MonoBehaviour, ISaveable
     private void Start()
     {
         gameData = new GameData();
-        gameData.sceneIndex = SceneManager.GetActiveScene().buildIndex;
+        //gameData.sceneIndex = SceneManager.GetActiveScene().buildIndex;
         gameData.saveType = SaveType.GameFlow;
         gameData.startPos = playerRespawnTr.position;
-        gameData.confiner = Camera.main.GetComponent<MainCameraController>().Confiner.m_BoundingShape2D;
+        
     }
 
     public void SaveData()
     {
+        gameData.confiner = Manager.Camera.CurrentConfiner;
         Manager.Data.SaveData(gameData);
     }
 
@@ -31,4 +32,14 @@ public class SavePoint : MonoBehaviour, ISaveable
         anim.SetTrigger("OnActive");
         SaveData();
     }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.tag == "Player")
+        {
+            OnSaveData();
+            gameObject.GetComponent<Collider2D>().enabled = false;
+        }
+    }
+
 }

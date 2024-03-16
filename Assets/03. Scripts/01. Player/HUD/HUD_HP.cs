@@ -11,6 +11,13 @@ public class HUD_HP : PlayerHUD
 
     private Coroutine disappearRoutine;
 
+    public void OnRespawn()
+    {
+        anim.Play("Restore4_4");
+        anim.SetInteger("CurrentHP",4);
+        disappearRoutine = StartCoroutine(DisappearRoutine());
+    }
+
     public void OnDamaged(int hpValue)
     {
         // ªÁ∏¡√≥∏Æ
@@ -24,6 +31,7 @@ public class HUD_HP : PlayerHUD
             StopCoroutine(disappearRoutine);
 
         anim.Play($"Damaged4_{hpValue}");
+        anim.SetInteger("CurrentHP", hpValue);
         disappearRoutine = StartCoroutine(DisappearRoutine());
     }
     public void OnRestore(int hpValue)
@@ -35,6 +43,7 @@ public class HUD_HP : PlayerHUD
             StopCoroutine(disappearRoutine);
 
         anim.Play($"Restore4_{hpValue}");
+        anim.SetInteger("CurrentHP", hpValue);
         disappearRoutine = StartCoroutine(DisappearRoutine());
     }
 

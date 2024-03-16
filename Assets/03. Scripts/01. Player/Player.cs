@@ -1,4 +1,5 @@
 using Cinemachine;
+using System.Buffers;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -59,6 +60,10 @@ public class Player : MonoBehaviour
     private HUD_HP hp_HUD;
     public HUD_HP HP_HUD { get { return hp_HUD; } }
 
+    [SerializeField]
+    private EventController eventController;
+    public EventController EventController { get { return eventController; } }
+
     [Space(3)]
     [Header("Specs")]
     [Space(2)]
@@ -111,7 +116,7 @@ public class Player : MonoBehaviour
         playerHooker = GetComponent<PlayerHooker>();
         playerSkill = GetComponent<PlayerSkill>();
 
-        currentHp = maxHP;
+        Respawn();
     }
 
     public void DoImpulse()
@@ -119,6 +124,27 @@ public class Player : MonoBehaviour
         impulseSource.GenerateImpulse();
     }
 
+    public void Respawn()
+    {
+        eventController.DisableDeathEvent(DeathType.DeadZone);
+        eventController.DisableDeathEvent(DeathType.Damaged);
+
+        GameData loadedData = Manager.Data.LoadCurrentData();
+
+        // 로드한 데이터가 있을 경우
+        if (loadedData != null) 
+        {
+            Manager.Camera.SetConfiner(loadedData.confiner);
+            transform.position = loadedData.startPos;
+        }
+
+        currentHp = maxHP;
+        hp_HUD.OnRespawn();
+        eventController.FadeOut();
+        StartCoroutine(Extension.DelayRoutine(0.3f, () => PrFSM.ChangeState("Respawn")));
+    }
+
+    #region CutSceneSetting
     public void OnEnterCutSceneMode(string anim = null)
     {
         cutSceneAnim = anim;
@@ -129,11 +155,14 @@ public class Player : MonoBehaviour
         cutSceneAnim = null;
         PrFSM.FSM.ChangeState("Idle");
     }
+    #endregion
+
+    #region TakeDamage / Restore
     private void TakeDamage()
     {
         DoImpulse();
 
-        if (currentHp < 1)
+        if (currentHp <= 1)
         {
             PrFSM.ChangeState("DamagedDie");
             return;
@@ -151,13 +180,6 @@ public class Player : MonoBehaviour
 
         hp_HUD.OnRestore(++currentHp);
     }
-
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Tab))
-            DoImpulse();
-    }
-
     // 히트 점프로 데미지 루틴을 빠져나간 경우
     // 글리치 이펙트 초기화, 무적상태 초기화
     public void InitDamageRoutine()
@@ -169,7 +191,6 @@ public class Player : MonoBehaviour
         // 레이어 변경
         gameObject.layer = LayerMask.NameToLayer("Player");
     }
-
     IEnumerator TakeDamageRoutine()
     {
         // 무적상태로 변경
@@ -182,7 +203,9 @@ public class Player : MonoBehaviour
         PrFSM.ChangeState("Idle");
         gameObject.layer = LayerMask.NameToLayer("Player");
     }
+    #endregion
 
+    // Ground Check Raycaster
     private bool CheckGround(GroundType groundType)
     {
         RaycastHit2D hit;
@@ -223,6 +246,10 @@ public class Player : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D collision)
     {
         Debug.Log("Trigger enter");
+
+        if (collision.gameObject.layer == LayerMask.NameToLayer("DeadZone"))
+            PrFSM.ChangeState("DeadZoneDie");
+
 
         // 우선순위 
         // 천장 > 바닥 > 벽
@@ -270,7 +297,9 @@ public class Player : MonoBehaviour
         }
 
 
-        if (Manager.Layer.damageGroundLM.Contain(collision.gameObject.layer))
+        if (PrFSM.IsDamageable &&
+            gameObject.layer != LayerMask.NameToLayer("PlayerInvincible") &&
+            Manager.Layer.damageGroundLM.Contain(collision.gameObject.layer))
         {
             // 모든 상태 탈출
             PrFSM.IsInWall = false;
@@ -282,7 +311,9 @@ public class Player : MonoBehaviour
             return;
         }
 
-        if (Manager.Layer.enemyBulletLM.Contain(collision.gameObject.layer) ||
+        if (PrFSM.IsDamageable &&
+            gameObject.layer != LayerMask.NameToLayer("PlayerInvincible") &&
+            Manager.Layer.enemyBulletLM.Contain(collision.gameObject.layer) ||
             (Manager.Layer.bossAttackLM.Contain(collision.gameObject.layer)))
         {
             TakeDamage();

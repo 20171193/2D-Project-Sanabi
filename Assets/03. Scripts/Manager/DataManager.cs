@@ -11,4 +11,9 @@ public class DataManager : Singleton<DataManager>
     {
         currentData = saveData;
     }
+
+    public GameData LoadCurrentData()
+    {
+        return currentData;
+    }
 }

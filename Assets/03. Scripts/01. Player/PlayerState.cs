@@ -581,23 +581,81 @@ public class PlayerDamaged : PlayerBaseState
 public class PlayerDeadZoneDie : PlayerBaseState
 {
     public PlayerDeadZoneDie(Player owner){this.owner = owner;}
+    private Coroutine dieRoutine;
+
+    public override void Enter()
+    {
+        owner.EventController.EnableDeathEvent(DeathType.DeadZone);
+        owner.PrFSM.IsDamageable = false;
+
+        Time.timeScale = 0.8f;
+
+        Manager.Camera.SetBlendTime(0.5f);
+        Manager.Camera.SetCameraPriority(CameraType.Zoom);
+        dieRoutine = owner.StartCoroutine(Extension.DelayRoutine(1f, () => owner.Respawn()));
+    }
+    public override void Exit()
+    {
+        if (dieRoutine != null)
+            owner.StopCoroutine(dieRoutine);
+
+        owner.PrFSM.IsDamageable = true;
+
+        Time.timeScale = 1f;
+        Manager.Camera.SetDefaultBlendTime();
+        Manager.Camera.SetCameraPriority(CameraType.Main);
+    }
 
 }
 public class PlayerDamagedDie : PlayerBaseState
 {
     public PlayerDamagedDie(Player owner) { this.owner = owner; }
+    private Coroutine dieRoutine;
 
     public override void Enter()
     {
-        Time.timeScale = 0.3f;
+        owner.EventController.EnableDeathEvent(DeathType.Damaged);
+        owner.PrFSM.IsDamageable = false;
+
+        Time.timeScale = 0.4f;
+        Manager.Camera.SetBlendTime(0.5f);
         Manager.Camera.SetCameraPriority(CameraType.Zoom);
+
+        dieRoutine = owner.StartCoroutine(Extension.DelayRoutine(2f, () => owner.Respawn()));
     }
     public override void Exit()
     {
+        if (dieRoutine != null)
+            owner.StopCoroutine(dieRoutine);
+
+        owner.PrFSM.IsDamageable = true;
+
         Time.timeScale = 1f;
+        Manager.Camera.SetDefaultBlendTime();
         Manager.Camera.SetCameraPriority(CameraType.Main);
     }
 }
+public class PlayerRespawn : PlayerBaseState
+{
+    public PlayerRespawn(Player owner) { this.owner = owner; }
+
+    public override void Enter()
+    {
+        owner.PrFSM.IsDamageable = false;
+
+        owner.Anim.Play("PlayerRespawn");
+        owner.PrInput.enabled = false;
+        owner.StartCoroutine(Extension.DelayRoutine(3f, () => owner.PrFSM.ChangeState("Idle")));
+    }
+
+    public override void Exit()
+    {
+        owner.PrFSM.IsDamageable = true;
+
+        owner.PrInput.enabled = true;
+    }
+}
+
 
 public class PlayerCutSceneMode : PlayerBaseState
 {
@@ -605,6 +663,8 @@ public class PlayerCutSceneMode : PlayerBaseState
 
     public override void Enter()
     {
+        owner.PrFSM.IsDamageable = false;
+
         owner.Rigid.velocity = Vector2.zero;
         owner.PrInput.enabled = false;
 
@@ -616,6 +676,8 @@ public class PlayerCutSceneMode : PlayerBaseState
 
     public override void Exit()
     {
+        owner.PrFSM.IsDamageable = true;
+
         owner.PrInput.enabled = true;
     }
 }
