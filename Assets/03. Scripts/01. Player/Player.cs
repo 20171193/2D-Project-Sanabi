@@ -135,7 +135,7 @@ public class Player : MonoBehaviour
 
         if (currentHp < 1)
         {
-            PrFSM.ChangeState("Die");
+            PrFSM.ChangeState("DamagedDie");
             return;
         }
 

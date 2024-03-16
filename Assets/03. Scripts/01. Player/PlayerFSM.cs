@@ -87,9 +87,10 @@ public class PlayerFSM : PlayerBase
         fsm.AddState("CeilingStickStart", new PlayerCeilingStickStart(Player));
         fsm.AddState("CeilingStickIdle", new PlayerCeilingStickIdle(Player));
         fsm.AddState("CeilingStickMove", new PlayerCeilingStickMove(Player));
-
+        
+        fsm.AddState("DeadZoneDie", new PlayerDeadZoneDie(Player));
+        fsm.AddState("DamagedDie", new PlayerDamagedDie(Player));
         fsm.AddState("CutSceneMode", new PlayerCutSceneMode(Player));
-        fsm.AddState("Die", new PlayerDie(Player));
 
         fsm.AddTransition("Roping", "Idle", 0f, () =>
         {
