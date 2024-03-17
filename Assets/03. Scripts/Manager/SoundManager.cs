@@ -24,22 +24,30 @@ public class SoundManager : Singleton<SoundManager>
     private AudioClip[] bgm;
     public AudioClip[] BGM { get { return bgm; } }
     private Dictionary<string, AudioClip> bgmDic;
+    public Dictionary<string, AudioClip> BGMDic { get { return bgmDic; } }
 
     [SerializeField]
     private AudioClip[] amb;
     public AudioClip[] AMB { get { return bgm; } }
     private Dictionary<string, AudioClip> ambDic;
+    public Dictionary<string, AudioClip> AMBDic { get { return ambDic; } }
 
     [SerializeField]
     private AudioClip[] sfx;
     public AudioClip[] SFX { get { return bgm; } }
     private Dictionary<string, AudioClip> sfxDic;
+    public Dictionary<string, AudioClip> SFXDic { get { return sfxDic; } }
 
+    [SerializeField]
     private AudioSource bgmSource;
+
+    [SerializeField]
     private AudioSource[] ambSource;
+
+    [SerializeField]
     private AudioSource sfxSource;
 
-    public void Awake()
+    private void OnEnable()
     {
         bgmDic = new Dictionary<string, AudioClip>();
         ambDic = new Dictionary<string, AudioClip>();
@@ -51,11 +59,11 @@ public class SoundManager : Singleton<SoundManager>
         }
         foreach (AudioClip sound in amb)
         {
-            bgmDic.Add(sound.name, sound);
+            ambDic.Add(sound.name, sound);
         }
         foreach (AudioClip sound in sfx)
         {
-            bgmDic.Add(sound.name, sound);
+            sfxDic.Add(sound.name, sound);
         }
     }
 
@@ -73,14 +81,14 @@ public class SoundManager : Singleton<SoundManager>
             case SoundType.AMB:
                 if (!ambDic.ContainsKey(name)) return;
                 int index = GetAMBChanelIndex();
-                ambSource[index].clip = bgmDic[name];
+                ambSource[index].clip = ambDic[name];
                 ambSource[index].Play();
                 break;
 
             case SoundType.SFX:
                 if (!sfxDic.ContainsKey(name)) return;
-                bgmSource.clip = bgmDic[name];
-                bgmSource.Play();
+                sfxSource.clip = sfxDic[name];
+                sfxSource.Play();
                 break;
 
             default:

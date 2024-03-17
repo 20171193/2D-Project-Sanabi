@@ -39,7 +39,7 @@ public class CameraManager : Singleton<CameraManager>
     public CinemachineBrain CameraBrain { get { return cameraBrain; } }
 
     [SerializeField]
-    private float originBlendTime;
+    private float originBlendTime = 2f;
     public float OriginBlendTime { get { return originBlendTime; } }
 
     [SerializeField]
@@ -58,7 +58,6 @@ public class CameraManager : Singleton<CameraManager>
         GameObject player = GameObject.FindWithTag("Player");
         glitch = Camera.main.GetComponent<GlitchEffect>();
         cameraBrain = Camera.main.GetComponent<CinemachineBrain>();
-        originBlendTime = cameraBrain.m_DefaultBlend.m_Time;
 
         mainCamera.Follow = player.transform;
         zoomCamera.Follow = player.transform;

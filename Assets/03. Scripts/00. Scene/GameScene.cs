@@ -12,12 +12,18 @@ public class GameScene : MonoBehaviour
     private PooledObject enemyBullet;
 
     [SerializeField]
+    private string[] loopAMB;
+    [SerializeField]
+    private string introBGM;
+    [SerializeField]
+    private string loopBGM;
+
+    [SerializeField]
     private GameChapter curChapter;
     public GameChapter CurChapter { get { return curChapter; }  set { curChapter = value; } }
 
     public UnityEvent OnEnableScene;
     public UnityEvent OnDisableScene;
-
 
     private void Awake()
     {
@@ -35,5 +41,16 @@ public class GameScene : MonoBehaviour
     private void OnDisable()
     {
         OnDisableScene?.Invoke();
+    }
+
+    private void Start()
+    {
+        foreach (string amb in loopAMB)
+            Manager.Sound.PlaySound(SoundType.AMB, amb);
+
+        Manager.Sound.PlaySound(SoundType.BGM, introBGM);
+        StartCoroutine(
+            Extension.DelayRoutine(Manager.Sound.BGMDic[introBGM].length,
+            () => Manager.Sound.PlaySound(SoundType.BGM, loopBGM)));
     }
 }
