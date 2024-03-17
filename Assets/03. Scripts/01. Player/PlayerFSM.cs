@@ -199,12 +199,7 @@ public class PlayerFSM : PlayerBase
         string myState = FSM.CurState;
 
         return
-            !isCeilingStick ||
-            !isJointed ||
-            myState == "Idle" ||
-            myState == "Run" ||
-            myState == "RunStop" ||
-            myState == "Jump" ||
-            myState == "Fall";
+            (!isCeilingStick && !isJointed ) &&
+            (myState == "Idle" || myState == "Run" || myState == "RunStop" || myState == "Jump" || myState == "Fall");
     }
 }
