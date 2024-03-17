@@ -585,6 +585,8 @@ public class PlayerDeadZoneDie : PlayerBaseState
 
     public override void Enter()
     {
+        owner.OnDeathByDeadZone?.Invoke();
+
         owner.EventController.EnableDeathEvent(DeathType.DeadZone);
         owner.PrFSM.IsDamageable = false;
 
@@ -614,6 +616,8 @@ public class PlayerDamagedDie : PlayerBaseState
 
     public override void Enter()
     {
+        owner.OnDeathByDamaged?.Invoke();
+
         owner.EventController.EnableDeathEvent(DeathType.Damaged);
         owner.PrFSM.IsDamageable = false;
 
@@ -641,6 +645,9 @@ public class PlayerRespawn : PlayerBaseState
 
     public override void Enter()
     {
+        Manager.Camera.SetBlendTime(0);
+        Manager.Camera.SetCameraPriority(CameraType.Zoom);
+
         owner.PrFSM.IsDamageable = false;
 
         owner.Anim.Play("PlayerRespawn");
@@ -650,6 +657,9 @@ public class PlayerRespawn : PlayerBaseState
 
     public override void Exit()
     {
+        Manager.Camera.SetDefaultBlendTime();
+        Manager.Camera.SetCameraPriority(CameraType.Main);
+
         owner.PrFSM.IsDamageable = true;
 
         owner.PrInput.enabled = true;

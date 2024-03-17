@@ -95,6 +95,9 @@ public class Player : MonoBehaviour
     public UnityEvent OnHookShoot;      // invoke by PlayerHooker (HookShoot)
     public UnityEvent OnTakeDamage;     // invoke by state
     public UnityEvent OnLanding;        // invoke by PlayerMover (TriggerEnter2D)
+    public UnityEvent OnDeathByDeadZone;// invoke by state
+    public UnityEvent OnDeathByDamaged; // invoke by state
+
 
     private Coroutine takeDamageRoutine;
     public Coroutine TakeDamageCoroutine { get { return takeDamageRoutine; } }

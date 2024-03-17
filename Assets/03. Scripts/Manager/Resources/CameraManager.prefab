@@ -50,6 +50,9 @@ MonoBehaviour:
   zoomCamera: {fileID: 6616243605097930643}
   currentCamera: {fileID: 0}
   mainConfiner: {fileID: 0}
+  cameraBrain: {fileID: 0}
+  originBlendTime: 2
+  glitch: {fileID: 0}
 --- !u!1001 &5340306033718754186
 PrefabInstance:
   m_ObjectHideFlags: 0
