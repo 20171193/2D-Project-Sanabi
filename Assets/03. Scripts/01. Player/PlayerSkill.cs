@@ -41,7 +41,7 @@ public class PlayerSkill : PlayerBase
     private void Update()
     {
         ropeForceParticle.gameObject.transform.position = transform.position - transform.right;
-        ceilingStickParticle.gameObject.transform.position = transform.position - transform.up * 1.5f;
+        ceilingStickParticle.gameObject.transform.position = transform.position - transform.up * 1f;
     }
 
     // 로프파워 스킬

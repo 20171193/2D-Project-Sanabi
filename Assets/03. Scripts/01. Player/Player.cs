@@ -98,7 +98,6 @@ public class Player : MonoBehaviour
     public UnityEvent OnDeathByDeadZone;// invoke by state
     public UnityEvent OnDeathByDamaged; // invoke by state
 
-
     private Coroutine takeDamageRoutine;
     public Coroutine TakeDamageCoroutine { get { return takeDamageRoutine; } }
 
