@@ -85,7 +85,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_Enabled
-    path: AudioSource/SFX_Footstep
+    path: SFX/SFX_Footstep
     classID: 82
     script: {fileID: 0}
   - curve:
@@ -140,7 +140,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_Enabled
-    path: AudioSource/SFX_Footstep2
+    path: SFX/SFX_Footstep2
     classID: 82
     script: {fileID: 0}
   m_PPtrCurves:
@@ -242,14 +242,14 @@ AnimationClip:
   m_ClipBindingConstant:
     genericBindings:
     - serializedVersion: 2
-      path: 2446731853
+      path: 306638250
       attribute: 3305885265
       script: {fileID: 0}
       typeID: 82
       customType: 0
       isPPtrCurve: 0
     - serializedVersion: 2
-      path: 304698634
+      path: 751088150
       attribute: 3305885265
       script: {fileID: 0}
       typeID: 82
@@ -447,7 +447,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_Enabled
-    path: AudioSource/SFX_Footstep
+    path: SFX/SFX_Footstep
     classID: 82
     script: {fileID: 0}
   - curve:
@@ -502,7 +502,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_Enabled
-    path: AudioSource/SFX_Footstep2
+    path: SFX/SFX_Footstep2
     classID: 82
     script: {fileID: 0}
   m_EulerEditorCurves: []

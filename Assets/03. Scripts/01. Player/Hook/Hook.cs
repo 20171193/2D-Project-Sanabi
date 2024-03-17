@@ -20,6 +20,10 @@ public class Hook : MonoBehaviour
     private LineRenderer lr;
     [SerializeField]
     private GameObject hookHittedVFX;
+    [SerializeField]
+    private AudioSource disconnectingSFX;
+    [SerializeField]
+    private AudioSource connectingSFX;
 
 
     // should be set by HookPooler
@@ -136,6 +140,7 @@ public class Hook : MonoBehaviour
 
     private void Connecting(bool isGrab)
     {
+        connectingSFX.Play();
         isConnected = true;
         //OnHookHitGround?.Invoke();
 
@@ -212,6 +217,7 @@ public class Hook : MonoBehaviour
             StopCoroutine(trailRoutine);
         if (hookHittedRoutine != null)
             StopCoroutine(hookHittedRoutine);
+        disconnectingSFX.Play();
         hookHittedVFX.SetActive(false);
         hookHittedVFX.transform.parent = ownerRigid.transform;
     }
