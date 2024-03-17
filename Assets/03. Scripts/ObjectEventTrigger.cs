@@ -60,6 +60,29 @@ public class ObjectEventTrigger : MonoBehaviour
     {
         cameraActionRoutine = StartCoroutine(CameraActionRoutine());
     }
+
+    public void OnChangeBGM(string name)
+    {
+        Manager.Sound.PlaySound(SoundType.BGM, name);
+    }
+    public void OnPlayAMB(string name)
+    {
+        Manager.Sound.PlaySound(SoundType.AMB, name);
+    }
+    public void OffAMB()
+    {
+        Manager.Sound.UnPlaySound(SoundType.AMB);
+    }
+    public void OnPlaySFX(string name)
+    {
+        Manager.Sound.PlaySound(SoundType.SFX, name);
+    }
+    public void OffSFX()
+    {
+        Manager.Sound.UnPlaySound(SoundType.SFX);
+    }
+
+
     IEnumerator CameraActionRoutine()
     {
         // 플레이어 입력 제어
