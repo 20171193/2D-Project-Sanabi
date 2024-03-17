@@ -97,7 +97,6 @@ public class PlayerRunStop : PlayerBaseState
 #region WallSliding
 public class PlayerWallSlide : PlayerBaseState
 {
-    
     public PlayerWallSlide(Player owner)
     {
         this.owner = owner;
@@ -108,6 +107,7 @@ public class PlayerWallSlide : PlayerBaseState
         owner.Rigid.gravityScale = 0;
         owner.Rigid.velocity = Vector2.zero;
 
+        owner.OnClimb?.Invoke();
         owner.Anim.Play("WallSlide");
     }
     public override void Update()
@@ -126,15 +126,11 @@ public class PlayerWallSlide : PlayerBaseState
         {
             if (owner.PrMover.MoveVtc < -Player.MoveForce_Threshold)
             {
-                owner.OnWallSliding?.Invoke();
-
                 float moveYPos = Mathf.Lerp(owner.transform.position.y, owner.transform.position.y + owner.PrMover.SlidingPower * owner.PrMover.MoveVtc, Time.deltaTime);
                 owner.transform.position = new Vector3(owner.transform.position.x, moveYPos, 0);
             }
             else if (owner.PrMover.MoveVtc > Player.MoveForce_Threshold)
             {
-                owner.OnClimb?.Invoke();
-
                 float moveYPos = Mathf.Lerp(owner.transform.position.y, owner.transform.position.y + owner.PrMover.ClimbPower * owner.PrMover.MoveVtc, Time.deltaTime);
                 owner.transform.position = new Vector3(owner.transform.position.x, moveYPos, 0);
             }

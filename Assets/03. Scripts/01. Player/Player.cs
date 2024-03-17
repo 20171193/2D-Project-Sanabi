@@ -91,7 +91,6 @@ public class Player : MonoBehaviour
     public UnityEvent OnRopeForceEnd;   // invoke by PlayerHooker (OnHookDestroyed())
     public UnityEvent OnGrabEnd;        // invoke by state
     public UnityEvent OnClimb;          // invoke by state
-    public UnityEvent OnWallSliding;    // invoke by state
     public UnityEvent OnHookShoot;      // invoke by PlayerHooker (HookShoot)
     public UnityEvent OnTakeDamage;     // invoke by state
     public UnityEvent OnLanding;        // invoke by PlayerMover (TriggerEnter2D)

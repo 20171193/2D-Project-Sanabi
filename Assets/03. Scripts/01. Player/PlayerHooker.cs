@@ -114,7 +114,7 @@ public class PlayerHooker : PlayerBase
 
         HookAimSet();
 
-        if (Player.PrFSM.IsHookable() || !isHookShootDelay)
+        if (Player.PrFSM.IsHookable() && !isHookShootDelay)
             RopeRayCast();
         else
             hookAim.LineOff();
