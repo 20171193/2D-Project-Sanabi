@@ -8,6 +8,9 @@ public class GameChapterController : MonoBehaviour
     private SavePoint chapterSavePoint;
 
     [SerializeField]
+    private ObjectEventTrigger chapterChangeEvent;
+
+    [SerializeField]
     private GameObject[] chapterArray;
 
     private void Awake()
@@ -25,6 +28,7 @@ public class GameChapterController : MonoBehaviour
         // 다음 챕터가 있을 경우
         if (nextPhaseNumber < chapterArray.Length)
         {
+            chapterChangeEvent.gameObject.SetActive(true);
             // 세이브 포인터에 데이터 저장
             chapterSavePoint.OnSaveData(curChapter.ChapterPhase + 1);
             // 다음 챕터 활성화

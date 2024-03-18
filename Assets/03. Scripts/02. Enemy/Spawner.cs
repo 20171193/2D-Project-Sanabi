@@ -9,6 +9,7 @@ public abstract class Spawner : MonoBehaviour
     public abstract void EnableSpawner();
     public abstract void Spawn();
     public abstract void InitSpawner();
+
     public virtual void DisableSpawner() 
     {
         OnDestroySpawner?.Invoke();

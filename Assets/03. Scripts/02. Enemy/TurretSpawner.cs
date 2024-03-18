@@ -27,6 +27,7 @@ public class TurretSpawner : Spawner
     [Space(2)]
     [SerializeField]
     private int spawnedCount;       // 积己茄 磐房 俺荐
+
     [SerializeField]
     private int destroyedCount;     // 颇鲍等 磐房 俺荐
     [SerializeField]
