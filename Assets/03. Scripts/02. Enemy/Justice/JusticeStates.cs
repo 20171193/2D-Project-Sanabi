@@ -412,9 +412,13 @@ public class GrabbedEnd : JusticeBaseState
     {
         owner.Anim.Play("TakeDamage");
         owner.CurHp--;
-        if(owner.CurHp <= 0)
+        Debug.Log($"CurHP = {owner.CurHp}");
+        if (owner.CurHp <= 0)
+        {
+            Debug.Log($"CurHP = {owner.CurHp}  Change Phase!");
             // 애니메이션 딜레이 이후 페이즈체인지 상태로 변경
             takeDamageRoutine = owner.StartCoroutine(Extension.DelayRoutine(1f, () => owner.FSM.ChangeState("PhaseChange")));
+        }
         else
             // 애니메이션 딜레이 이후 텔레포트 상태로 변경
             takeDamageRoutine = owner.StartCoroutine(Extension.DelayRoutine(1f, () => owner.FSM.ChangeState("Teleport")));

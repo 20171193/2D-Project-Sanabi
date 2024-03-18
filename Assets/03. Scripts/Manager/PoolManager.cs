@@ -23,6 +23,16 @@ public class PoolManager : Singleton<PoolManager>
 
         poolDic.Remove(prefab.name);
     }
+    public void ClearPool()
+    {
+        foreach (ObjectPooler pooler in poolDic.Values)
+        {
+            Destroy(pooler.gameObject);
+        }
+
+        poolDic.Clear();
+    }
+
     public PooledObject GetPool(PooledObject prefab, Vector3 position, Quaternion rotation)
     {
         return poolDic[prefab.name].GetPool(position, rotation);

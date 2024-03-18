@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
-public class GameScene : MonoBehaviour
+public class GameScene : BaseScene
 {
     [SerializeField]
     private PooledObject eneTrooperPrefab;
@@ -41,16 +41,27 @@ public class GameScene : MonoBehaviour
     private void OnDisable()
     {
         OnDisableScene?.Invoke();
+        Manager.Sound.UnPlaySound(SoundType.BGM);
+        Manager.Sound.UnPlaySound(SoundType.AMB);
+        Manager.Sound.UnPlaySound(SoundType.SFX);
     }
 
     private void Start()
     {
         foreach (string amb in loopAMB)
             Manager.Sound.PlaySound(SoundType.AMB, amb);
+    }
 
+    public void StartMainBGM()
+    {
         Manager.Sound.PlaySound(SoundType.BGM, introBGM);
         StartCoroutine(
             Extension.DelayRoutine(Manager.Sound.BGMDic[introBGM].length,
             () => Manager.Sound.PlaySound(SoundType.BGM, loopBGM)));
+    }
+
+    public override IEnumerator LoadingRoutine()
+    {
+        yield return null;
     }
 }

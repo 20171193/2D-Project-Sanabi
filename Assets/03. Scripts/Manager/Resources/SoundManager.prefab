@@ -52,11 +52,16 @@ MonoBehaviour:
   ambGroup: {fileID: 5046915341241283852, guid: b9ba56c9688bac948ae9e5b156b6466b, type: 2}
   sfxGroup: {fileID: 5500054969311266701, guid: b9ba56c9688bac948ae9e5b156b6466b, type: 2}
   bgm:
+  - {fileID: 8300000, guid: e6d6ae32e66e5df4c81e2822a72d0a2f, type: 3}
+  - {fileID: 8300000, guid: 0529c518f6bb5ae4f8e4b0091794d60d, type: 3}
+  - {fileID: 8300000, guid: 8165893b60f9f06459e76617f1f5e848, type: 3}
+  - {fileID: 8300000, guid: 668ff75007c1cf34d952a0a6ad256790, type: 3}
+  - {fileID: 8300000, guid: 03d395bd23ee77d4d8ffec9bd5cc8333, type: 3}
   - {fileID: 8300000, guid: 61a3a2701cda8784eb158fb1b9515c18, type: 3}
-  - {fileID: 8300000, guid: b0cbeb10a67dfbc4686aa2aaedcc1cc0, type: 3}
-  - {fileID: 8300000, guid: e13dc22b91234f74a89957c47a540e6a, type: 3}
   amb:
   - {fileID: 8300000, guid: 3159de0fa8912e24491f613eb81d77fb, type: 3}
+  - {fileID: 8300000, guid: 1b3f92960a041294ea366ffb6f858f25, type: 3}
+  - {fileID: 8300000, guid: 32ad290ced017b44ab836f9dc8e239b2, type: 3}
   sfx: []
   bgmSource: {fileID: 1107890401820256359}
   ambSource:
