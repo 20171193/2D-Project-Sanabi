@@ -55,13 +55,19 @@ public class CameraManager : Singleton<CameraManager>
 
     private void Start()
     {
+        InitCameraSetting();
+    }
+
+    public void InitCameraSetting()
+    {
         GameObject player = GameObject.FindWithTag("Player");
         glitch = Camera.main.GetComponent<GlitchEffect>();
         cameraBrain = Camera.main.GetComponent<CinemachineBrain>();
 
+        if (player == null) return;
+
         mainCamera.Follow = player.transform;
         zoomCamera.Follow = player.transform;
-
         zoomCamera.Priority = (int)CameraOrder.IdleCamera;
         mainCamera.Priority = (int)CameraOrder.CurrentCamera;
     }

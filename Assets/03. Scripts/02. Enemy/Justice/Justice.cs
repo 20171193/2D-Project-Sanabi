@@ -53,6 +53,9 @@ public class Justice : MonoBehaviour, IGrabable
     private BossRoomController bossRoomController;
     public BossRoomController BossRoomController { get { return bossRoomController; } }
 
+    [SerializeField]
+    private AudioSource parryingSource;
+
     //[SerializeField]
     //private Dictionary<string, JusticeVFX>;
 
@@ -362,6 +365,7 @@ public class Justice : MonoBehaviour, IGrabable
         parryingOb.transform.right = -dir;
         parryingOb.transform.position = transform.position + dir * 1.5f;
 
+        parryingSource.Play();
         // vfx : 반사 스파크 
         sparkOb = agentVFXPool.ActiveVFX("ParryingSpark");
         sparkOb.transform.up = dir;

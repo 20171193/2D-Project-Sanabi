@@ -248,8 +248,6 @@ public class Player : MonoBehaviour
     }
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        Debug.Log("Trigger enter");
-
         if (collision.gameObject.layer == LayerMask.NameToLayer("DeadZone"))
             PrFSM.ChangeState("DeadZoneDie");
 
@@ -284,7 +282,6 @@ public class Player : MonoBehaviour
         // 바닥 체크 
         if (Manager.Layer.groundLM.Contain(collision.gameObject.layer) && CheckGround(GroundType.Ground))
         {
-            Debug.Log("Check Ground");
             // 마찰력을 줄이기 위한 소프트 랜딩
             Rigid.velocity = new Vector2(Rigid.velocity.x, -0.01f);
             // ground check
@@ -325,8 +322,6 @@ public class Player : MonoBehaviour
     }
     private void OnTriggerExit2D(Collider2D collision)
     {
-        Debug.Log("Trigger exit");
-
         if (Manager.Layer.groundLM.Contain(collision.gameObject.layer))
         {
             PrFSM.IsGround = false;
