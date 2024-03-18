@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class BossScene : BaseScene
 {
+    [SerializeField]
+    private Transform startPos;
+
     private void Awake()
     {
         Manager.Sound.PlaySound(SoundType.AMB, "Scene2_Rumble");
@@ -11,7 +14,9 @@ public class BossScene : BaseScene
 
     private void Start()
     {
-        GameObject.FindWithTag("Player").GetComponent<Player>().PrFSM.ChangeState("Idle");
+        Player player = GameObject.FindWithTag("Player").GetComponent<Player>();
+        player.transform.position = startPos.position;
+        player.PrFSM.ChangeState("Idle");
     }
     public override IEnumerator LoadingRoutine()
     {

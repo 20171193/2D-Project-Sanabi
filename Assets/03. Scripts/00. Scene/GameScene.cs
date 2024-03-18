@@ -48,6 +48,8 @@ public class GameScene : BaseScene
 
     private void Start()
     {
+        Manager.Camera.InitCameraSetting();
+
         foreach (string amb in loopAMB)
             Manager.Sound.PlaySound(SoundType.AMB, amb);
     }
