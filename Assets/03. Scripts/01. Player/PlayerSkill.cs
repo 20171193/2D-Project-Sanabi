@@ -179,6 +179,8 @@ public class PlayerSkill : PlayerBase
     // 그랩대쉬 스킬 
     public void CeilingStick()
     {
+        Player.OnCeilingStickStart?.Invoke();
+
         Player.PrFSM.IsCeilingStick = true;
         Player.PrFSM.IsGround = false;
         Player.PrFSM.ChangeState("CeilingStickStart");

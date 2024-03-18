@@ -41,7 +41,7 @@ public class Turret : EnemyShooter, IGrabable
 
         lr.positionCount = 2;
         lr.SetPosition(0, muzzlePos.position);
-        lr.SetPosition(1, (targetPos - muzzlePos.position).normalized * 100f);
+        lr.SetPosition(1, muzzlePos.position + (targetPos - muzzlePos.position).normalized * 50f);
 
         // Aim Rotation
         Vector3 dir = (targetPos - aimPos.position).normalized;

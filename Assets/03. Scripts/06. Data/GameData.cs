@@ -5,12 +5,16 @@ using UnityEngine;
 public enum SaveType
 {
     GameFlow,
-    BossBattle
+    GameChapter,
+    Boss
 }
 public class GameData
 {
     [SerializeField]
     public int sceneIndex;
+
+    [SerializeField]
+    public int phaseNumber;
 
     [SerializeField]
     public SaveType saveType;
@@ -20,4 +24,7 @@ public class GameData
 
     [SerializeField]
     public Vector3 startPos;
+
+    [SerializeField]
+    public SavePoint savePoint;
 }

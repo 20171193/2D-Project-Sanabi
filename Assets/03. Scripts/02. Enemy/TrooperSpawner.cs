@@ -18,6 +18,9 @@ public class TrooperSpawner : Spawner
     [Header("Specs")]
     [Space(2)]
     [SerializeField]
+    private int originSpawnCount;
+
+    [SerializeField]
     private int spawnCount;
 
     [Space(3)]
@@ -25,14 +28,24 @@ public class TrooperSpawner : Spawner
     [Space(2)]
     private Trooper spawnedTrooper;
 
+    private void Awake()
+    {
+        originSpawnCount = spawnCount;
+    }
+
     public override void EnableSpawner()
     {
         anim.SetBool("IsEnable", true);
         anim.SetTrigger("OnSpawn");
     }
-    public override void DestroySpawner()
+    public override void DisableSpawner()
     {
-        base.DestroySpawner();
+        InitSpawner();
+        base.DisableSpawner();
+    }
+    public override void InitSpawner()
+    {
+        spawnCount = originSpawnCount;
     }
 
     public override void Spawn()
@@ -59,6 +72,6 @@ public class TrooperSpawner : Spawner
     }
     public void OnAnimationDisable()
     {
-        DestroySpawner();
+        DisableSpawner();
     }
 }

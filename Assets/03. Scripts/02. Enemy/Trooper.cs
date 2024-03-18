@@ -44,7 +44,7 @@ public class Trooper : EnemyShooter, IKnockbackable, IGrabable
 
         lr.positionCount = 2;
         lr.SetPosition(0, muzzlePos.position);
-        lr.SetPosition(1, (targetPos - muzzlePos.position).normalized * 100f);
+        lr.SetPosition(1, muzzlePos.position + (targetPos - muzzlePos.position).normalized * 50f);
 
         // ¸öÃ¼ È¸Àü
         if (transform.position.x > targetPos.x)
@@ -64,6 +64,7 @@ public class Trooper : EnemyShooter, IKnockbackable, IGrabable
         lr.positionCount = 0;
 
         EnemyBulletObject bullet = Manager.Pool.GetPool(bulletPrefab, muzzlePos.position, aimPos.rotation) as EnemyBulletObject;
+        Debug.Log(bullet);
         bullet.transform.up = AimPos.right;
         bullet.Rigid.AddForce(aimPos.right * bulletPower, ForceMode2D.Impulse);
     }

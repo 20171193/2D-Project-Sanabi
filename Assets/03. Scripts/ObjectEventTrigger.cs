@@ -51,6 +51,11 @@ public class ObjectEventTrigger : MonoBehaviour
         prInput = GameObject.FindWithTag("Player").GetComponent<PlayerInput>();
     }
 
+    public void LoadScene()
+    {
+
+    }
+
     public void DoImpulse()
     {
         impulseSource.GenerateImpulse();
