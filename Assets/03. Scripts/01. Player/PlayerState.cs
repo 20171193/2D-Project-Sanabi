@@ -638,7 +638,7 @@ public class PlayerDamagedDie : PlayerBaseState
 public class PlayerRespawn : PlayerBaseState
 {
     public PlayerRespawn(Player owner) { this.owner = owner; }
-
+    private Coroutine respawnRoutine;
     public override void Enter()
     {
         Manager.Camera.SetBlendTime(0);
@@ -648,16 +648,18 @@ public class PlayerRespawn : PlayerBaseState
 
         owner.Anim.Play("PlayerRespawn");
         owner.PrInput.enabled = false;
-        owner.StartCoroutine(Extension.DelayRoutine(3f, () => owner.PrFSM.ChangeState("Idle")));
+        respawnRoutine = owner.StartCoroutine(Extension.DelayRoutine(3f, () => owner.PrFSM.ChangeState("Idle")));
     }
 
     public override void Exit()
     {
+        if(respawnRoutine!= null)
+            owner.StopCoroutine(respawnRoutine);
+
         Manager.Camera.SetDefaultBlendTime();
         Manager.Camera.SetCameraPriority(CameraType.Main);
 
         owner.PrFSM.IsDamageable = true;
-
         owner.PrInput.enabled = true;
     }
 }

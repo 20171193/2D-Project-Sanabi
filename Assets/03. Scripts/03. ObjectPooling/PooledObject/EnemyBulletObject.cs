@@ -23,6 +23,8 @@ public class EnemyBulletObject : PooledObject
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
+        Debug.Log($"Bullet Trigger : {collision.name}");
+
         if (collision.gameObject.tag == "Player")
         {
             Vector3 forceDir = new Vector3(
