@@ -443,7 +443,7 @@ public class PhaseChange : JusticeBaseState
         owner.EmbientAnim.Play("DisAppear");
 
         if (!owner.LoadPhaseData()) 
-            owner.FSM.ChangeState("Die");
+            owner.FSM.ChangeState("LastStanding");
         else
         {
             // 페이즈 변경 시네마틱
@@ -464,7 +464,12 @@ public class PhaseChange : JusticeBaseState
         Camera.main.GetComponent<CinemachineBrain>().m_DefaultBlend.m_Time = 2f;
     }
 }
-public class Die : JusticeBaseState
+public class LastStanding : JusticeBaseState
 {
-    public Die(Justice owner) { this.owner = owner; }
+    public LastStanding(Justice owner) { this.owner = owner; }
+
+    public override void Enter()
+    {
+        owner.WeaknessController.DisAppearAll();
+    }
 }

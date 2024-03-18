@@ -242,7 +242,7 @@ public class Justice : MonoBehaviour, IGrabable
         fsm.AddState("Grabbed", new Grabbed(this));
         fsm.AddState("GrabbedEnd", new GrabbedEnd(this));
         fsm.AddState("PhaseChange", new PhaseChange(this));
-        fsm.AddState("Die", new Die(this));
+        fsm.AddState("LastStanding", new LastStanding(this));
         // ÃßÈÄ
         fsm.AddState("Counter", new Counter(this));
 
