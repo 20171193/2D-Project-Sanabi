@@ -7,6 +7,7 @@ public class SceneManager : Singleton<SceneManager>
 {
     [SerializeField] Image fade;
     [SerializeField] float fadeTime;
+    public float FadeTime { get { return fadeTime; } set { fadeTime = value; } }
 
     private BaseScene curScene;
     public BaseScene GetCurScene()

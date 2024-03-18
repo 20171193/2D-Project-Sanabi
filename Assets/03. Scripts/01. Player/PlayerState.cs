@@ -689,3 +689,14 @@ public class PlayerCutSceneMode : PlayerBaseState
         owner.PrInput.enabled = true;
     }
 }
+
+public class PlayerExecute : PlayerBaseState
+{
+    public PlayerExecute(Player owner) { this.owner = owner; }
+
+    public override void Enter()
+    {
+        owner.Anim.Play("Idle");
+    }
+
+}

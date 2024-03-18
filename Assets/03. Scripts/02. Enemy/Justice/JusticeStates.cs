@@ -471,5 +471,7 @@ public class LastStanding : JusticeBaseState
     public override void Enter()
     {
         owner.WeaknessController.DisAppearAll();
+
+        owner.Anim.Play("LastStanding_Appear");
     }
 }

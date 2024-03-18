@@ -87,6 +87,7 @@ public class PlayerFSM : PlayerBase
         fsm.AddState("Dash", new PlayerDash(Player));
         fsm.AddState("Grab", new PlayerGrab(Player));
         fsm.AddState("WallSlide", new PlayerWallSlide(Player));
+        fsm.AddState("Execute", new PlayerExecute(Player));
 
         fsm.AddState("CeilingStickStart", new PlayerCeilingStickStart(Player));
         fsm.AddState("CeilingStickIdle", new PlayerCeilingStickIdle(Player));
@@ -125,6 +126,7 @@ public class PlayerFSM : PlayerBase
             fsm.CurState != "Respawn" && 
             fsm.CurState != "DamagedDie" &&
             fsm.CurState != "DeadZoneDie" &&
+            fsm.CurState != "Execute" && 
             Player.Rigid.velocity.y < -Player.JumpForce_Threshold;
         });
         fsm.AddTransition("Fall", "Idle", 0f, () =>

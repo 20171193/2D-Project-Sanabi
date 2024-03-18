@@ -78,7 +78,6 @@ public class PlayerHooker : PlayerBase
     private bool isHookShootDelay = false;
     public bool IsHookShootDelay { get { return isHookShootDelay; } set { isHookShootDelay = value; } }
 
-
     protected override void Awake()
     {
         base.Awake();
@@ -161,6 +160,14 @@ public class PlayerHooker : PlayerBase
     {
         if (value.isPressed)
         {
+            // 플레이어 Execute 모드
+            if(Player.PrFSM.FSM.CurState == "Execute")
+            {
+                Player.OnClickDown();
+                return;
+            }
+
+
             // 훅 샷이 가능한 상태
             // : Idle, Run, RunStop, Jump, Fall
             // 조건
@@ -173,6 +180,16 @@ public class PlayerHooker : PlayerBase
         }
         else
         {
+            // 플레이어 Execute 모드
+            if (Player.PrFSM.FSM.CurState == "Execute")
+            {
+                Player.OnClickUp();
+                return;
+            }
+
+
+
+
             // 로프액션 혹은 그랩 중 -> 점프
             if (Player.PrFSM.FSM.CurState == "Roping" ||
                 Player.PrFSM.FSM.CurState == "Grab")

@@ -98,6 +98,11 @@ public class Player : MonoBehaviour
     public UnityEvent OnDeathByDamaged; // invoke by state
     public UnityEvent OnCeilingStickStart; // invoke by PlayerSkill
 
+    // 플레이어 마우스 클릭 액션
+    public UnityAction OnClickDown;
+    public UnityAction OnClickUp;
+
+
     private Coroutine takeDamageRoutine;
     public Coroutine TakeDamageCoroutine { get { return takeDamageRoutine; } }
 

@@ -10,7 +10,7 @@ public class TitleScene : BaseScene
     }
     public override IEnumerator LoadingRoutine()
     {
-        throw new System.NotImplementedException();
+        yield return null;
     }
 
     private void Update()
