@@ -8,9 +8,10 @@ public abstract class Spawner : MonoBehaviour
     public UnityAction OnDestroySpawner;
     public abstract void EnableSpawner();
     public abstract void Spawn();
-    public virtual void DestroySpawner() 
+    public abstract void InitSpawner();
+    public virtual void DisableSpawner() 
     {
         OnDestroySpawner?.Invoke();
-        Destroy(gameObject); 
+        gameObject.SetActive(false);
     }
 }

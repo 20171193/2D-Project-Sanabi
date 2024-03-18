@@ -96,6 +96,7 @@ public class Player : MonoBehaviour
     public UnityEvent OnLanding;        // invoke by PlayerMover (TriggerEnter2D)
     public UnityEvent OnDeathByDeadZone;// invoke by state
     public UnityEvent OnDeathByDamaged; // invoke by state
+    public UnityEvent OnCeilingStickStart; // invoke by PlayerSkill
 
     private Coroutine takeDamageRoutine;
     public Coroutine TakeDamageCoroutine { get { return takeDamageRoutine; } }
@@ -137,6 +138,7 @@ public class Player : MonoBehaviour
         {
             Manager.Camera.SetConfiner(loadedData.confiner);
             transform.position = loadedData.startPos;
+            loadedData.savePoint.OnPlayerRespawn();
         }
 
         currentHp = maxHP;
