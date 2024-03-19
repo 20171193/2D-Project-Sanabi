@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b33f447a8c3ff544da6abfe9105caa64, type: 3}
   m_Name: JusticePhase2
   m_EditorClassIdentifier: 
-  maxHp: 3
+  maxHp: 1
   moveSpeed: 8
   trackingTime: 2
   slashCount: 1

@@ -478,14 +478,18 @@ public class LastStanding : JusticeBaseState
 
         // 카메라 액션 적용
         Manager.Camera.SetCameraPriority(CameraType.CutScene, owner.JusticeCamera);
-        owner.StartCoroutine(Extension.DelayRoutine(2f, () => Manager.Camera.SetCameraPriority(CameraType.Main)));
+
+        PlayerInput prInput = GameObject.FindWithTag("Player").GetComponent<Player>().PrInput;
+        prInput.enabled = false;
+        owner.StartCoroutine(Extension.DelayRoutine(10f, () => prInput.enabled = true));
+        owner.StartCoroutine(Extension.DelayRoutine(10f, () => Manager.Camera.SetCameraPriority(CameraType.Main)));
+        owner.BossRoomController.enabled = false;
 
         // ExecuteTrigger 오브젝트 활성화
         owner.ExecuteTrigger.SetActive(true);
+        owner.WeaknessController.gameObject.SetActive(false);
 
-        owner.WeaknessController.DisAppearAll();
-
-        owner.Anim.Play("LastStanding_Appear");
+        owner.Anim.Play("LastStanding");
     }
 }
 

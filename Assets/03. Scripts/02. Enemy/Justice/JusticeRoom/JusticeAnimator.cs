@@ -57,6 +57,23 @@ public class JusticeAnimator : MonoBehaviour
     {
         owner.OnPhaseChangeEnd();
     }
+
+    public void OnLastStandingPos()
+    {
+        Debug.Log("Call LastPos");
+        owner.transform.position = owner.LastStandingPos.position;
+        owner.transform.rotation = Quaternion.Euler(0, 0, 0);
+    }
+
+    public void OnCameraZoom()
+    {
+        owner.JusticeCamera.m_Lens.OrthographicSize = 7;
+    }
+    public void ResetZoom()
+    {
+        owner.JusticeCamera.m_Lens.OrthographicSize = 9;
+    }
+
     public void OnDoImpulse()
     {
         impulse.GenerateImpulse();

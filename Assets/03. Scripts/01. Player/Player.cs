@@ -217,6 +217,14 @@ public class Player : MonoBehaviour
     public float drawRay_wall;
     public float drawRay_ceiling;
 
+    private void OnPause(InputValue value)
+    {
+        if (PrFSM.FSM.CurState != "CutSceneMode")
+        {
+            Manager.UI.OnPause(prInput);
+        }
+    }
+
     private void Update()
     {
         if (CheckGround(GroundType.Ground))
@@ -257,8 +265,6 @@ public class Player : MonoBehaviour
                 return false;
         }
 
-        if (hit)
-            Debug.Log($"Type Change {groundType}");
         return hit;
     }
 
