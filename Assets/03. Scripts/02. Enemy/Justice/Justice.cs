@@ -63,6 +63,11 @@ public class Justice : MonoBehaviour, IGrabable
     public GameObject ExecuteTrigger { get { return executeTrigger; } }
 
     [SerializeField]
+    private Transform lastStandingPos;
+    public Transform LastStandingPos { get { return lastStandingPos; } }
+
+
+    [SerializeField]
     private SavePoint savePoint;
 
     //[SerializeField]
@@ -100,7 +105,7 @@ public class Justice : MonoBehaviour, IGrabable
     private Vector3 phasePos;
 
     [SerializeField]
-    public int nextPhaseIndex = -1;
+    public int nextPhaseIndex = 0;
     public int NextPhaseIndex { get { return nextPhaseIndex; } set { nextPhaseIndex = value; } }
 
     [SerializeField]
@@ -162,6 +167,8 @@ public class Justice : MonoBehaviour, IGrabable
     [SerializeField]
     private int curHp;
     public int CurHp { get { return curHp; } set { curHp = value; } }
+
+    public string curState;
 
     [SerializeField]
     private float curAttackChargeTime;
@@ -266,6 +273,7 @@ public class Justice : MonoBehaviour, IGrabable
     private void Update()
     {
         fsm.Update();
+        curState = fsm.CurState;
     }
     private void FixedUpdate()
     {
@@ -274,11 +282,12 @@ public class Justice : MonoBehaviour, IGrabable
 
     public bool LoadPhaseData()
     {
-        if (nextPhaseIndex >= phaseDatas.Count-1) return false;
+        if (nextPhaseIndex >= phaseDatas.Count) return false;
 
-        savePoint.OnSaveData(nextPhaseIndex);
+        Debug.Log("Load Data");
+        //savePoint.OnSaveData(nextPhaseIndex);
         OnPhaseChange?.Invoke();
-        ApplyData(phaseDatas[++nextPhaseIndex]);
+        ApplyData(phaseDatas[nextPhaseIndex++]);
         return true;
     }
     private void ApplyData(JusticePhaseData data)

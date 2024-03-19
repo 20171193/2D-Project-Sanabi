@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 public class UIManager : Singleton<UIManager>
 {
@@ -10,13 +11,45 @@ public class UIManager : Singleton<UIManager>
     private Slider sfxSlider;
 
     [SerializeField]
+    private Canvas myCanvas;
+    private GraphicRaycaster graphicRaycaster;
+
+    [SerializeField]
     private GameObject mainPopUp;
     [SerializeField]
     private GameObject optionPopUp;
     [SerializeField]
     private GameObject currentPopUp;
-    public void OnPause()
+
+    private bool isPause = false;
+    public bool IsPause { get { return isPause; } }
+
+    private PlayerInput prInput;
+
+    private void Start()
     {
+        myCanvas.worldCamera = Camera.main;
+        graphicRaycaster = myCanvas.GetComponent<GraphicRaycaster>();
+    }
+
+    public void OnPause(PlayerInput prInput = null)
+    {
+        this.prInput = prInput;
+
+        if (isPause) 
+        {
+            OnClickContinueButton();
+            return;
+        }
+
+        if(this.prInput)
+            this.prInput.enabled = false;
+
+
+        Cursor.visible = true;
+
+        graphicRaycaster.enabled = true;
+        isPause = true;
         Time.timeScale = 0f;
         mainPopUp.SetActive(true);
         currentPopUp = mainPopUp;
@@ -49,16 +82,24 @@ public class UIManager : Singleton<UIManager>
     {
         OffPause();
 
+        if (this.prInput)
+            this.prInput.enabled = true;
+
+        Cursor.visible = false;
+        graphicRaycaster.enabled = false;
+        isPause = false;
         Time.timeScale = 1f;
     }
 
     public void OnBGMControll()
     {
         Manager.Sound.BGMGroup.audioMixer.SetFloat("BGM", bgmSlider.value);
+        if (bgmSlider.value <= -39f) Manager.Sound.BGMGroup.audioMixer.SetFloat("BGM", -80f);
     }
     public void OnSFXControll()
     {
         Manager.Sound.SFXGroup.audioMixer.SetFloat("SFX", sfxSlider.value);
+        if(sfxSlider.value <= -39f) Manager.Sound.SFXGroup.audioMixer.SetFloat("SFX", -80f);
     }
     
 }

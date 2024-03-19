@@ -494,19 +494,19 @@ AnimatorStateMachine:
     m_Position: {x: 180, y: -450, z: 0}
   - serializedVersion: 1
     m_State: {fileID: -1260194600436343674}
-    m_Position: {x: 540, y: -520, z: 0}
+    m_Position: {x: 540, y: -540, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 5397884754637336261}
     m_Position: {x: 540, y: -470, z: 0}
   - serializedVersion: 1
     m_State: {fileID: -1595857371002983651}
-    m_Position: {x: 540, y: -420, z: 0}
+    m_Position: {x: 540, y: -400, z: 0}
   - serializedVersion: 1
     m_State: {fileID: -4458661593503667766}
-    m_Position: {x: 540, y: -360, z: 0}
+    m_Position: {x: 540, y: -330, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 3347556280862147052}
-    m_Position: {x: 540, y: -300, z: 0}
+    m_Position: {x: 540, y: -270, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 6561646462931692960}
     m_Position: {x: 780, y: -520, z: 0}
@@ -798,7 +798,7 @@ AnimatorState:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: LastStanding
-  m_Speed: 1
+  m_Speed: 0.3
   m_CycleOffset: 0
   m_Transitions:
   - {fileID: -4219515044430989746}
@@ -811,7 +811,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 0}
+  m_Motion: {fileID: 7400000, guid: c0d9e58b530b67841868239aebc57354, type: 2}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
