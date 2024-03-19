@@ -50,7 +50,7 @@ public class BossRoomController : MonoBehaviour
 
     [SerializeField]
     private bool isRunning = false;
-    public bool IsRunning { get { return isRunning; } }
+    public bool IsRunning { get { return isRunning; } set { isRunning = value; } }
 
     [SerializeField]
     private bool isSpawn = false;

@@ -55,6 +55,6 @@ public class GameChapterController : MonoBehaviour
     private void ResetChapter()
     {
         foreach (GameObject chapter in chapterArray)
-            chapter.SetActive(false);
+            chapter.GetComponent<GameChapter>().DisableChapter();
     }
 }

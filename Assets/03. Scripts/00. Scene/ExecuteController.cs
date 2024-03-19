@@ -35,7 +35,10 @@ public class ExecuteController : MonoBehaviour
     public void EnterCurrentPhase()
     {
         if (currentPhase == 1)
+        {
+
             buttonClickHUD.SetActive(true);
+        }
         else
             buttonHoldHUD.SetActive(true);
 
@@ -46,7 +49,6 @@ public class ExecuteController : MonoBehaviour
         player.Rigid.velocity = Vector3.zero;
         player.PrFSM.ChangeState("Execute");
     }
-
     public void OnEndCurrentPhase()
     {
         if (currentPhase == 1)
@@ -64,7 +66,6 @@ public class ExecuteController : MonoBehaviour
         currentPhase++;
         StartCoroutine(Extension.DelayRoutine(2f, () => EnterCurrentPhase()));
     }
-
     public void PlayCurrentPhase()
     {
         Time.timeScale = 0.5f;
@@ -88,7 +89,6 @@ public class ExecuteController : MonoBehaviour
             Manager.Scene.LoadScene("Title");
         }
     }
-
     public void OnClickUp()
     {
         if (currentPhase == 1)

@@ -40,12 +40,15 @@ public class SoundManager : Singleton<SoundManager>
 
     [SerializeField]
     private AudioSource bgmSource;
+    public AudioSource BGMSource { get { return bgmSource; } }
 
     [SerializeField]
     private AudioSource[] ambSource;
+    public AudioSource[] AMBSource { get { return ambSource; } }
 
     [SerializeField]
     private AudioSource sfxSource;
+    public AudioSource SFXSource { get { return sfxSource; } }
 
     private void OnEnable()
     {
@@ -100,6 +103,7 @@ public class SoundManager : Singleton<SoundManager>
         switch (type)
         {
             case SoundType.BGM:
+                if (bgmSource == null) return;
                 bgmSource.Stop();
                 bgmSource.clip = null;
                 break;
@@ -107,12 +111,14 @@ public class SoundManager : Singleton<SoundManager>
             case SoundType.AMB:
                 foreach (AudioSource source in ambSource)
                 {
+                    if (source == null) return;
                     source.Stop();
                     source.clip = null;
                 }
                 break;
 
             case SoundType.SFX:
+                if (sfxSource == null) return; 
                 sfxSource.Stop();
                 sfxSource.clip = null;
                 break;

@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Cinemachine;
+using UnityEngine.Events;
+
 public enum JusticeAttackType
 {
     Slash,
@@ -56,6 +58,13 @@ public class Justice : MonoBehaviour, IGrabable
     [SerializeField]
     private AudioSource parryingSource;
 
+    [SerializeField]
+    private GameObject executeTrigger;
+    public GameObject ExecuteTrigger { get { return executeTrigger; } }
+
+    [SerializeField]
+    private SavePoint savePoint;
+
     //[SerializeField]
     //private Dictionary<string, JusticeVFX>;
 
@@ -91,7 +100,7 @@ public class Justice : MonoBehaviour, IGrabable
     private Vector3 phasePos;
 
     [SerializeField]
-    public int nextPhaseIndex = 0;
+    public int nextPhaseIndex = -1;
     public int NextPhaseIndex { get { return nextPhaseIndex; } set { nextPhaseIndex = value; } }
 
     [SerializeField]
@@ -134,6 +143,9 @@ public class Justice : MonoBehaviour, IGrabable
     [SerializeField]
     private float attackDelayTime;
     public float AttackDelayTime { get { return attackDelayTime; } }
+
+    // 페이즈 체인지 액션
+    public UnityAction OnPhaseChange;
 
     [Space(3)]
     [Header("Balancing")]
@@ -250,6 +262,7 @@ public class Justice : MonoBehaviour, IGrabable
 
         weaknessController.OnAllWeaknessDestroyed += OnAllWeaknessDestroyed;
     }
+
     private void Update()
     {
         fsm.Update();
@@ -261,9 +274,11 @@ public class Justice : MonoBehaviour, IGrabable
 
     public bool LoadPhaseData()
     {
-        if (nextPhaseIndex >= phaseDatas.Count) return false;
-        
-        ApplyData(phaseDatas[nextPhaseIndex++]);
+        if (nextPhaseIndex >= phaseDatas.Count-1) return false;
+
+        savePoint.OnSaveData(nextPhaseIndex);
+        OnPhaseChange?.Invoke();
+        ApplyData(phaseDatas[++nextPhaseIndex]);
         return true;
     }
     private void ApplyData(JusticePhaseData data)

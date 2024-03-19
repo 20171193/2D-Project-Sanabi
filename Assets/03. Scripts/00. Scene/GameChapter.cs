@@ -81,6 +81,25 @@ public class GameChapter : MonoBehaviour
 
         doorAnim.SetBool("IsEnable", true);
     }
+
+    public void EnableChapter()
+    {
+        // 챕터 비활성화
+        foreach (Spawner spawner in spawnerArray)
+        {
+            spawner.gameObject.SetActive(true);
+        }
+    }
+
+    public void DisableChapter()
+    {
+        // 챕터 비활성화
+        foreach (Spawner spawner in spawnerArray)
+        {
+            spawner.gameObject.SetActive(false);
+        }
+    }
+
     public void ExitChapter()
     {
         // 애니메이션 출력, 데이터 저장 등
