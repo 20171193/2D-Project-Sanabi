@@ -15,6 +15,9 @@ public class UIManager : Singleton<UIManager>
     private GraphicRaycaster graphicRaycaster;
 
     [SerializeField]
+    private AudioSource dummySFX;
+
+    [SerializeField]
     private GameObject mainPopUp;
     [SerializeField]
     private GameObject optionPopUp;
@@ -98,6 +101,9 @@ public class UIManager : Singleton<UIManager>
     }
     public void OnSFXControll()
     {
+        // 더미 사운드 출력
+        // dummySFX?.Play();
+
         Manager.Sound.SFXGroup.audioMixer.SetFloat("SFX", sfxSlider.value);
         if(sfxSlider.value <= -39f) Manager.Sound.SFXGroup.audioMixer.SetFloat("SFX", -80f);
     }
