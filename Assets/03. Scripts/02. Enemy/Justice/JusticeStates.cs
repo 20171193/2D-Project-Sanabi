@@ -470,8 +470,41 @@ public class LastStanding : JusticeBaseState
 
     public override void Enter()
     {
+        // 볼륨 세팅, AMB 초기화
+        Manager.Sound.UnPlaySound(SoundType.AMB);
+        Manager.Sound.PlaySound(SoundType.AMB, "Scene2_Rumble");
+        Manager.Sound.AMBSource[0].volume = 0.5f;
+        Manager.Sound.BGMSource.volume = 0.3f;
+
+        // 카메라 액션 적용
+        Manager.Camera.SetCameraPriority(CameraType.CutScene, owner.JusticeCamera);
+        owner.StartCoroutine(Extension.DelayRoutine(2f, () => Manager.Camera.SetCameraPriority(CameraType.Main)));
+
+        // ExecuteTrigger 오브젝트 활성화
+        owner.ExecuteTrigger.SetActive(true);
+
         owner.WeaknessController.DisAppearAll();
 
         owner.Anim.Play("LastStanding_Appear");
+    }
+}
+
+public class OnDisable : JusticeBaseState
+{
+    // 비활성화 상태
+    // 플레이어 리스폰 루틴 중
+
+    public OnDisable(Justice owner) { this.owner = owner; }
+
+    public override void Enter()
+    {
+        // 약점 비활성화
+        owner.WeaknessController.DisAppearAll();
+        // Embient 비활성화 
+        owner.EmbientAnim.Play("DisAppear");
+        // 정지상태
+        owner.Rigid.velocity = Vector3.zero;
+        // BGM 정지
+        Manager.Sound.BGMSource.Stop();
     }
 }

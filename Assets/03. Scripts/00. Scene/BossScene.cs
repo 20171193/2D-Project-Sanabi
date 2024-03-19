@@ -23,4 +23,10 @@ public class BossScene : BaseScene
         Manager.Camera.InitCameraSetting();
         yield return null;
     }
+
+    private void OnDisable()
+    {
+        if(Manager.Sound.BGMSource != null)
+            Manager.Sound.BGMSource.volume = 1f;
+    }
 }

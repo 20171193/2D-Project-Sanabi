@@ -26,19 +26,21 @@ public class SavePoint : MonoBehaviour, ISaveable
     private GameData gameData;
 
     private bool isSave = false;
+    
 
     private void Awake()
     {
-        triggerAudio= GetComponent<AudioSource>();  
-    }
-
-    private void Start()
-    {
+        triggerAudio= GetComponent<AudioSource>();
         gameData = new GameData();
         //gameData.sceneIndex = SceneManager.GetActiveScene().buildIndex;
         gameData.saveType = saveType;
         gameData.startPos = playerRespawnTr.position;
         gameData.savePoint = this;
+    }
+
+    private void Start()
+    {
+
     }
 
     public void OnPlayerRespawn()
@@ -65,7 +67,7 @@ public class SavePoint : MonoBehaviour, ISaveable
     {
         if (collision.tag == "Player" && !isSave)
         {
-            triggerAudio.Play();
+            triggerAudio?.Play();
             OnSaveData();
             isSave = true;
         }

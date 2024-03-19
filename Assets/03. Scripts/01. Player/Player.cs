@@ -213,33 +213,50 @@ public class Player : MonoBehaviour
     }
     #endregion
 
+    public float drawRay_ground;
+    public float drawRay_wall;
+    public float drawRay_ceiling;
+
+    private void Update()
+    {
+        if (CheckGround(GroundType.Ground))
+            PrFSM.IsGround = true;
+        else
+            PrFSM.IsGround = false;
+
+        Debug.DrawLine(transform.position, transform.position + Vector3.up * drawRay_ceiling, Color.red);
+        Debug.DrawLine(transform.position, transform.position + Vector3.down * drawRay_ground, Color.red);
+        Debug.DrawLine(transform.position, transform.position + transform.right * drawRay_wall, Color.red);
+    }
+
     // Ground Check Raycaster
     private bool CheckGround(GroundType groundType)
     {
         RaycastHit2D hit;
         Vector2 rayDir = Vector2.zero;
         LayerMask layerMask = 0;
-        float rayLength = 2f;
 
         switch (groundType)
         {
             case GroundType.Ground:
                 layerMask = Manager.Layer.groundLM;
                 rayDir = Vector2.down;
+                hit = Physics2D.Raycast(transform.position, rayDir, drawRay_ground, layerMask);
                 break;
             case GroundType.HookingGround:
                 layerMask = Manager.Layer.hookingGroundLM;
                 rayDir = Vector2.up;
+                hit = Physics2D.Raycast(transform.position, rayDir, drawRay_ceiling, layerMask);
                 break;
             case GroundType.Wall:
                 layerMask = Manager.Layer.wallLM;
                 rayDir = transform.right;
+                hit = Physics2D.Raycast(transform.position, rayDir, drawRay_wall, layerMask);
                 break;
             default:
                 return false;
         }
 
-        hit = Physics2D.Raycast(transform.position, rayDir, rayLength, layerMask);
         if (hit)
             Debug.Log($"Type Change {groundType}");
         return hit;
