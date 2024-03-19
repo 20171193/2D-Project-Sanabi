@@ -15,6 +15,8 @@ public class Manager : MonoBehaviour
     public static SoundManager Sound {  get { return SoundManager.Instance;} }
     public static CoroutineManager Coroutine { get { return CoroutineManager.Instance;} }
     public static SceneManager Scene { get { return SceneManager.Instance;} }
+    public static UIManager UI { get { return UIManager.Instance;} }
+
     // 씬이 로드되기 전에 싱글턴 생성
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
     private static void Initialize()
@@ -27,6 +29,7 @@ public class Manager : MonoBehaviour
         SoundManager.ReleaseInstance();
         CoroutineManager.ReleaseInstance();
         SceneManager.ReleaseInstance();
+        UIManager.ReleaseInstance();
 
         GameManager.CreateInstance();
         LayerManager.CreateInstance();
@@ -36,5 +39,6 @@ public class Manager : MonoBehaviour
         SoundManager.CreateInstance();
         CoroutineManager.CreateInstance();
         SceneManager.CreateInstance();
+        UIManager.CreateInstance();
     }
 }

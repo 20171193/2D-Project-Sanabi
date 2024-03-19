@@ -15,10 +15,15 @@ public class SoundManager : Singleton<SoundManager>
 {
     [SerializeField]
     private AudioMixerGroup bgmGroup;
+    public AudioMixerGroup BGMGroup { get { return bgmGroup; } }
+
     [SerializeField]
     private AudioMixerGroup ambGroup;
+    public AudioMixerGroup AMBGroup { get { return ambGroup; } }
+    
     [SerializeField]
     private AudioMixerGroup sfxGroup;
+    public AudioMixerGroup SFXGroup { get { return sfxGroup; } }
 
     [SerializeField]
     private AudioClip[] bgm;
