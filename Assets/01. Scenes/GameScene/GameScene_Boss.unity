@@ -2399,11 +2399,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 2033457782050536341, guid: 2a1e14e8c19b4b148904c4913dbcbde3, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 39.9
+      value: 40.49
       objectReference: {fileID: 0}
     - target: {fileID: 2033457782050536341, guid: 2a1e14e8c19b4b148904c4913dbcbde3, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.1
+      value: -0.49
       objectReference: {fileID: 0}
     - target: {fileID: 2033457782171304460, guid: 2a1e14e8c19b4b148904c4913dbcbde3, type: 3}
       propertyPath: saveType
@@ -5588,7 +5588,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   boss: {fileID: 1889262068}
-  player: {fileID: 0}
+  player: {fileID: 1942967582}
   savePoint: {fileID: 1326892145}
 --- !u!4 &721983459
 Transform:
@@ -9135,7 +9135,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1074020298}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -31.960758, y: -25.999239, z: -10}
+  m_LocalPosition: {x: -25.596064, y: -25.99638, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

@@ -13,6 +13,11 @@ public class BossChapterController : MonoBehaviour
     [SerializeField]
     private SavePoint savePoint;
 
+    private void Start()
+    {
+        savePoint.OnSaveData();
+    }
+
     public void EnableChapter(int phaseNumber)
     {
         boss.nextPhaseIndex = phaseNumber;
