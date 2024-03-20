@@ -1,13 +1,6 @@
 using System;
-using System.Buffers;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using UnityEditorInternal;
 using UnityEngine;
-using UnityEngine.UIElements;
-using static UnityEditor.PlayerSettings;
-using static UnityEngine.UI.Image;
 
 public class PlayerVFXPooler : MonoBehaviour
 {
@@ -121,7 +114,7 @@ public class PlayerVFXPooler : MonoBehaviour
             return;
         }
 
-        GameObject instance = null; 
+        GameObject instance = null;
 
         // 스택에 사용하지 않은 오브젝트가 존재할 경우 
         if (vfxPool[name].vfxObjectPool.Count > 0)

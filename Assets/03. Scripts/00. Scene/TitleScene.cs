@@ -17,8 +17,14 @@ public class TitleScene : BaseScene
     { 
 
     }
+
+    private void OnEnable()
+    {
+        Cursor.visible = true;
+    }
     private void OnDisable()
     {
+        Cursor.visible = false;
         Manager.Sound.UnPlaySound(SoundType.BGM);
     }
 }
