@@ -470,11 +470,12 @@ public class LastStanding : JusticeBaseState
 
     public override void Enter()
     {
+        owner.gameObject.layer = LayerMask.NameToLayer("Default");
+
         // 볼륨 세팅, AMB 초기화
         Manager.Sound.UnPlaySound(SoundType.AMB);
         Manager.Sound.PlaySound(SoundType.AMB, "Scene2_Rumble");
-        Manager.Sound.AMBSource[0].volume = 0.5f;
-        Manager.Sound.BGMSource.volume = 0.3f;
+        Manager.Sound.BGMGroup.audioMixer.SetFloat("BGM", -20f);
 
         // 카메라 액션 적용
         Manager.Camera.SetCameraPriority(CameraType.CutScene, owner.JusticeCamera);

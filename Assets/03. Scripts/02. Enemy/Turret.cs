@@ -1,7 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
-using UnityEditor.Tilemaps;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -86,12 +83,12 @@ public class Turret : EnemyShooter, IGrabable
     }
     public bool IsMoveable() { return false; }
     public GameObject GetGameObject() { return gameObject; }
-    public Vector3 GetGrabPosition() 
+    public Vector3 GetGrabPosition()
     {
         Vector3 returnPos = this.transform.position;
         returnPos += this.transform.up * grabbedYPos;
 
-        return new Vector2(returnPos.x, returnPos.y); 
+        return new Vector2(returnPos.x, returnPos.y);
     }
     #endregion
 }

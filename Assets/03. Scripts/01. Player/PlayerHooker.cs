@@ -1,9 +1,5 @@
 using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
-using UnityEditor.Experimental.GraphView;
 using UnityEngine;
-using UnityEngine.Events;
 using UnityEngine.InputSystem;
 
 public class PlayerHooker : PlayerBase
@@ -135,7 +131,7 @@ public class PlayerHooker : PlayerBase
 
         int layer = hookHitInfo.collider.gameObject.layer;
         // hit is Enemy
-        if (Manager.Layer.enemyLM.Contain(layer) 
+        if (Manager.Layer.enemyLM.Contain(layer)
             || Manager.Layer.bossWeaknessLM.Contain(layer)
             || Manager.Layer.bossGroggyLM.Contain(layer))
         {
@@ -161,7 +157,7 @@ public class PlayerHooker : PlayerBase
         if (value.isPressed)
         {
             // 플레이어 Execute 모드
-            if(Player.PrFSM.FSM.CurState == "Execute")
+            if (Player.PrFSM.FSM.CurState == "Execute")
             {
                 Player.OnClickDown();
                 return;
@@ -202,14 +198,14 @@ public class PlayerHooker : PlayerBase
             }
             // 그 외 상태
             else
-                return;            
+                return;
         }
     }
 
     private void HookingJump()
     {
         Player.Rigid.gravityScale = 1;
-        
+
         // 연결된 훅이 있을 경우 해제
         firedHook?.DisConnecting();
         Player.PrFSM.IsJointed = false;
